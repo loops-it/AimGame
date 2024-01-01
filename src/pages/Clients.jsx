@@ -1,3 +1,5 @@
+/* eslint-disable react/prop-types */
+/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from 'react'
 import AuthenticatedLayout from '../layouts/AuthenticatedLayout'
 import { PlusIcon, ArrowPathIcon, EllipsisVerticalIcon, PencilSquareIcon } from '@heroicons/react/24/solid'
@@ -40,9 +42,9 @@ export default function Clients({ title }) {
 
 
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 50;
+    const itemsPerPage = 8;
 
-    
+
 
     useEffect(() => {
         setTimeout(() => {
@@ -53,37 +55,53 @@ export default function Clients({ title }) {
 
     // api data
     const [clients, setClients] = useState([]);
+    const [industryTypes, setIndustryTypes] = useState([]);
+
 
     useEffect(() => {
-      const fetchData = async () => {
-        try {
-          const response = await fetch('http://localhost:4065/api-v1/clients');
-          const data = await response.json();
-  
-          const clientsWithIndustryNames = await Promise.all(
-            data.data.map(async (client) => {
-              const industryTypeResponse = await fetch(
-                `http://localhost:4065/api-v1/industryTypes/${client.industryTypeId}`
-              );
-              const industryTypeData = await industryTypeResponse.json();
-              return {
-                ...client,
-                industryTypeName: industryTypeData.data.name,
-              };
-            })
-          );
-  
-          setClients(clientsWithIndustryNames);
-        } catch (error) {
-          console.error('Error fetching data:', error);
-        }
-      };
-  
-      fetchData();
-    }, []);
-  
-    // console.log('Opportunity data:', clients);
+        const fetchData = async () => {
+            try {
+                const response = await fetch('http://localhost:4065/api-v1/industryTypes');
+                const data = await response.json();
+                setIndustryTypes(data.data);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        };
 
+        fetchData();
+    }, []);
+    console.log("industryTypes data : ", industryTypes);
+
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await fetch('http://localhost:4065/api-v1/clients');
+                const data = await response.json();
+
+                const clientsWithIndustryNames = await Promise.all(
+                    data.data.map(async (client) => {
+                        const industryTypeResponse = await fetch(
+                            `http://localhost:4065/api-v1/industryTypes/${client.industryTypeId}`
+                        );
+                        const industryTypeData = await industryTypeResponse.json();
+                        return {
+                            ...client,
+                            industryTypeName: industryTypeData.data.name,
+                        };
+                    })
+                );
+
+                setClients(clientsWithIndustryNames);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        };
+
+        fetchData();
+    }, []);
+    console.log(clients)
     const paginatedData = clients.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
     return (
@@ -192,6 +210,7 @@ export default function Clients({ title }) {
             </div>
             <CreateUpdateModal
                 data={selectedData}
+                industryTypes={industryTypes}
                 show={show}
                 onClose={() => setShow(false)}
             />

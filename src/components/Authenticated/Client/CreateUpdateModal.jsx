@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable react/prop-types */
 import React, { useEffect, useState } from 'react'
 import { Transition } from '@headlessui/react'
 import { XCircleIcon } from '@heroicons/react/24/outline'
@@ -14,16 +16,15 @@ import MainImageInput from '../../MainImageInput'
 // ]
 
 const initialState = {
-    industryType: null,
-    image: null
+    industryTypeId: null,
+    photo: null
 }
 
-export default function CreateUpdateModal({ show, onClose, data }) {
+export default function CreateUpdateModal({ show, onClose, data, industryTypes }) {
 
     const [client, setClient] = useState(initialState)
     const [loading, setLoading] = useState(false)
-    const [industryTypes, setIndustryTypes] = useState([]);
-    
+
 
     useEffect(() => {
         if (data) {
@@ -35,28 +36,33 @@ export default function CreateUpdateModal({ show, onClose, data }) {
     }, [data])
 
     async function onCreate() {
-        onClose()
+        try {
+            const response = await fetch('http://localhost:4065/api-v1/clients', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(client),
+            });
+            console.log("Request Payload: ", JSON.stringify(client));
+            if (response.ok) {
+                console.log('Client created successfully');
+                onClose();
+            } else {
+                console.error('Failed to create client:', response.statusText);
+            }
+        } catch (error) {
+            console.error('Error creating client:', error);
+        }
     }
+
 
     async function onUpdate() {
+        console.log("client : ", client)
         onClose()
     }
 
 
-    useEffect(() => {
-        const fetchData = async () => {
-          try {
-            const response = await fetch('http://localhost:4065/api-v1/industryTypes');
-            const data = await response.json();
-            setIndustryTypes(data.data);
-          } catch (error) {
-            console.error('Error fetching data:', error);
-          }
-        };
-    
-        fetchData();
-      }, []);
-      console.log("industryTypes data : ",industryTypes);
 
     return (
         <Transition
@@ -82,26 +88,30 @@ export default function CreateUpdateModal({ show, onClose, data }) {
                     <div className='flex justify-center items-center mt-5' >
                         <MainImageInput
                             type="client"
-                            onChange={file => setClient({ ...client, image: file })}
-                            value={client?.image}
+                            onChange={file => setClient({ ...client, photo: file.path })}
+                            value={client?.photo}
                         />
                     </div>
                     <div className='grid gap-5 grid-cols-1 lg:grid-cols-2 px-10 pt-10' >
                         <MainInput
                             disabled={loading}
                             value={client?.companyName}
-                            onChange={text => setClient({ ...client, companyName: text })}
+                            onChange={text => setClient({ ...client, name: text })}
                             label={"Company Name"}
                             placeholder={"Enter Company Name"}
                         />
                         <MainSelect
                             disabled={loading}
-                            value={industryTypes?.find(row => row?.name == client?.industryType)}
-                            onChange={value => setClient({ ...client, industryType: value?.name })}
+                            value={industryTypes?.find(row => row?.name === client?.industryType)}
+                            onChange={value => setClient({
+                                ...client,
+                                industryTypeId: value?._id || ''
+                            })}
                             label={"Industry Type"}
                             placeholder={"Please Select Industry Type"}
                             options={industryTypes}
                         />
+
                         <MainInput
                             disabled={loading}
                             value={client?.email}
@@ -112,12 +122,20 @@ export default function CreateUpdateModal({ show, onClose, data }) {
                         <MainInput
                             disabled={loading}
                             value={client?.contact}
-                            onChange={text => setClient({ ...client, contact: text })}
+                            onChange={text => setClient({ ...client, phone: text })}
                             label={"Contact Number"}
                             placeholder={"Enter Contact Number"}
                         />
+                        
                     </div>
                     <div className='px-10 py-5' >
+                    <MainInput
+                            disabled={loading}
+                            value={client?.workspaceId}
+                            onChange={text => setClient({ ...client, workspaceId: text })}
+                            label={"workspaceId"}
+                            placeholder={"workspaceId"}
+                        />
                         <MainInput
                             disabled={loading}
                             value={client?.address}
@@ -133,14 +151,22 @@ export default function CreateUpdateModal({ show, onClose, data }) {
                             className='disabled:bg-app-gray disabled:border-app-gray disabled:text-white flex items-center gap-3 border text-app-blue-2 border-app-blue-2 rounded-lg w-fit px-10 py-2' >
                             Cancel
                         </button>
-                        <button
+                        {/* <button
                             onClick={() => {
                                 data ? onCreate() : onUpdate()
                             }}
                             disabled={loading}
                             className='disabled:bg-app-gray flex items-center gap-3 bg-app-blue-2 rounded-lg w-fit px-10 py-2 text-white' >
                             {data ? "Save" : "Create"}
+                        </button> */}
+                        <button
+                            onClick={onCreate}
+                            disabled={loading}
+                            className='disabled:bg-app-gray flex items-center gap-3 bg-app-blue-2 rounded-lg w-fit px-10 py-2 text-white'
+                        >
+                            Create
                         </button>
+
                     </div>
                 </div>
 
