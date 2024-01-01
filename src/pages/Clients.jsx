@@ -172,6 +172,7 @@ export default function Clients({ title }) {
                     </thead>
                     <tbody>
                         {clients?.map((row, index) => {
+                            const formattedDate = new Date(row?.createdAt).toLocaleDateString();
                             return (
                                 <tr key={index} className="bg-white border-b text-gray-900 ">
                                     <td className="py-5 px-6" >{row?.id}</td>
@@ -182,7 +183,7 @@ export default function Clients({ title }) {
                                             sx={{ border: "0.5px solid #ABB3BB" }}
                                         />
                                     </td>
-                                    <td className="py-5 px-6" >{row?.createdAt}</td>
+                                    <td className="py-5 px-6" >{formattedDate}</td>
                                     <td className="py-5 px-6" >{row?.name}</td>
                                     <td className="py-5 px-6" >{row?.industryTypeName}</td>
                                     <td className="py-5 px-6" >{row?.address}</td>
