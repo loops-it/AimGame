@@ -42,13 +42,49 @@ export default function Clients({ title }) {
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 50;
 
-    const paginatedData = tempData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+    
 
     useEffect(() => {
         setTimeout(() => {
             setLoading(false)
         }, 3000);
     }, [loading])
+
+
+    // api data
+    const [clients, setClients] = useState([]);
+
+    useEffect(() => {
+      const fetchData = async () => {
+        try {
+          const response = await fetch('http://localhost:4065/api-v1/clients');
+          const data = await response.json();
+  
+          const clientsWithIndustryNames = await Promise.all(
+            data.data.map(async (client) => {
+              const industryTypeResponse = await fetch(
+                `http://localhost:4065/api-v1/industryTypes/${client.industryTypeId}`
+              );
+              const industryTypeData = await industryTypeResponse.json();
+              return {
+                ...client,
+                industryTypeName: industryTypeData.data.name,
+              };
+            })
+          );
+  
+          setClients(clientsWithIndustryNames);
+        } catch (error) {
+          console.error('Error fetching data:', error);
+        }
+      };
+  
+      fetchData();
+    }, []);
+  
+    // console.log('Opportunity data:', clients);
+
+    const paginatedData = clients.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
     return (
         <AuthenticatedLayout>
@@ -84,7 +120,7 @@ export default function Clients({ title }) {
                     setCurrentPage={page => setCurrentPage(page)}
                     itemsPerPage={itemsPerPage}
                     pagination={true}
-                    data={tempData}
+                    data={clients}
                     loading={loading}
                     emptyMessage="No Clients Found"
                 >
@@ -121,21 +157,22 @@ export default function Clients({ title }) {
                     </thead>
                     <tbody>
                         {paginatedData?.map((row, index) => {
+                            const formattedDate = new Date(row?.createdAt).toLocaleDateString();
                             return (
                                 <tr key={index} className="bg-white border-b text-gray-900 ">
                                     <td className="py-5 px-6" >{row?.id}</td>
                                     <td className="py-5 px-6" >
                                         <Avatar
-                                            alt={row?.companyName}
-                                            src={row?.image}
+                                            alt={row?.name}
+                                            src={row?.photo}
                                             sx={{ border: "0.5px solid #ABB3BB" }}
                                         />
                                     </td>
-                                    <td className="py-5 px-6" >{row?.createdAt}</td>
-                                    <td className="py-5 px-6" >{row?.companyName}</td>
-                                    <td className="py-5 px-6" >{row?.industryType}</td>
+                                    <td className="py-5 px-6" >{formattedDate}</td>
+                                    <td className="py-5 px-6" >{row?.name}</td>
+                                    <td className="py-5 px-6" >{row?.industryTypeName}</td>
                                     <td className="py-5 px-6" >{row?.address}</td>
-                                    <td className="py-5 px-6" >{row?.contact}</td>
+                                    <td className="py-5 px-6" >{row?.phone}</td>
                                     <td className="py-5 px-6" >{row?.email}</td>
                                     <td>
                                         <button
