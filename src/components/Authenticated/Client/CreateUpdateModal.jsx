@@ -6,12 +6,12 @@ import MainSelect from '../../MainSelect'
 import MainMultipleSelect from '../../MainMultipleSelect'
 import MainImageInput from '../../MainImageInput'
 
-const industryTypes = [
-    { id: 1, name: 'Transport' },
-    { id: 2, name: 'Logistics' },
-    { id: 3, name: 'ICT' },
-    { id: 4, name: 'Telecommunication' },
-]
+// const industryTypes = [
+//     { id: 1, name: 'Transport' },
+//     { id: 2, name: 'Logistics' },
+//     { id: 3, name: 'ICT' },
+//     { id: 4, name: 'Telecommunication' },
+// ]
 
 const initialState = {
     industryType: null,
@@ -22,6 +22,8 @@ export default function CreateUpdateModal({ show, onClose, data }) {
 
     const [client, setClient] = useState(initialState)
     const [loading, setLoading] = useState(false)
+    const [industryTypes, setIndustryTypes] = useState([]);
+    
 
     useEffect(() => {
         if (data) {
@@ -39,6 +41,22 @@ export default function CreateUpdateModal({ show, onClose, data }) {
     async function onUpdate() {
         onClose()
     }
+
+
+    useEffect(() => {
+        const fetchData = async () => {
+          try {
+            const response = await fetch('http://localhost:4065/api-v1/industryTypes');
+            const data = await response.json();
+            setIndustryTypes(data.data);
+          } catch (error) {
+            console.error('Error fetching data:', error);
+          }
+        };
+    
+        fetchData();
+      }, []);
+      console.log("industryTypes data : ",industryTypes);
 
     return (
         <Transition
