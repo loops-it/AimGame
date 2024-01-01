@@ -42,7 +42,7 @@ export default function Clients({ title }) {
 
 
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 8;
+    const itemsPerPage = 20;
 
 
 
@@ -56,8 +56,10 @@ export default function Clients({ title }) {
     // api data
     const [clients, setClients] = useState([]);
     const [industryTypes, setIndustryTypes] = useState([]);
+    const [workspaces, setWorkspaces] = useState([]);
 
 
+    // industry types
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -71,8 +73,23 @@ export default function Clients({ title }) {
 
         fetchData();
     }, []);
-    console.log("industryTypes data : ", industryTypes);
+    // console.log("industryTypes data : ", industryTypes);
 
+    // workspaces
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await fetch('http://localhost:4065/api-v1/workspaces');
+                const data = await response.json();
+                setWorkspaces(data.data);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        };
+
+        fetchData();
+    }, []);
+    console.log("workspaces data : ", workspaces);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -211,6 +228,7 @@ export default function Clients({ title }) {
             <CreateUpdateModal
                 data={selectedData}
                 industryTypes={industryTypes}
+                workspaces={workspaces}
                 show={show}
                 onClose={() => setShow(false)}
             />

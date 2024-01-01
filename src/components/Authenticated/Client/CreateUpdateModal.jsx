@@ -20,7 +20,7 @@ const initialState = {
     photo: null
 }
 
-export default function CreateUpdateModal({ show, onClose, data, industryTypes }) {
+export default function CreateUpdateModal({ show, onClose, data, industryTypes, workspaces }) {
 
     const [client, setClient] = useState(initialState)
     const [loading, setLoading] = useState(false)
@@ -129,12 +129,23 @@ export default function CreateUpdateModal({ show, onClose, data, industryTypes }
                         
                     </div>
                     <div className='px-10 py-5' >
-                    <MainInput
+                    {/* <MainInput
                             disabled={loading}
                             value={client?.workspaceId}
                             onChange={text => setClient({ ...client, workspaceId: text })}
                             label={"workspaceId"}
                             placeholder={"workspaceId"}
+                        /> */}
+                        <MainSelect
+                            disabled={loading}
+                            value={workspaces?.find(row => row?.name === client?.workspaceId)}
+                            onChange={value => setClient({
+                                ...client,
+                                workspaceId: value?._id || ''
+                            })}
+                            label={"Workspaces"}
+                            placeholder={"Please Select workspaces"}
+                            options={workspaces}
                         />
                         <MainInput
                             disabled={loading}
