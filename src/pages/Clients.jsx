@@ -42,7 +42,7 @@ export default function Clients({ title }) {
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 50;
 
-    const paginatedData = tempData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+    
 
     useEffect(() => {
         setTimeout(() => {
@@ -52,23 +52,6 @@ export default function Clients({ title }) {
 
 
     // api data
-    // const [clients, setClients] = useState([]);
-    // useEffect(() => {
-    //     const fetchData = async () => {
-    //       try {
-    //         const response = await fetch('http://localhost:4065/api-v1/clients');
-    //         const data = await response.json();
-    //         setClients(data.data);
-    //       } catch (error) {
-    //         console.error('Error fetching data:', error);
-    //       }
-    //     };
-    
-    //     fetchData();
-    //   }, []);
-
-    //   console.log("opportunity data : ",clients);
-
     const [clients, setClients] = useState([]);
 
     useEffect(() => {
@@ -99,7 +82,9 @@ export default function Clients({ title }) {
       fetchData();
     }, []);
   
-    console.log('Opportunity data:', clients);
+    // console.log('Opportunity data:', clients);
+
+    const paginatedData = clients.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
     return (
         <AuthenticatedLayout>
@@ -135,7 +120,7 @@ export default function Clients({ title }) {
                     setCurrentPage={page => setCurrentPage(page)}
                     itemsPerPage={itemsPerPage}
                     pagination={true}
-                    data={tempData}
+                    data={clients}
                     loading={loading}
                     emptyMessage="No Clients Found"
                 >
@@ -171,7 +156,7 @@ export default function Clients({ title }) {
                         </tr>
                     </thead>
                     <tbody>
-                        {clients?.map((row, index) => {
+                        {paginatedData?.map((row, index) => {
                             const formattedDate = new Date(row?.createdAt).toLocaleDateString();
                             return (
                                 <tr key={index} className="bg-white border-b text-gray-900 ">
