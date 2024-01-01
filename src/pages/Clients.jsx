@@ -50,6 +50,57 @@ export default function Clients({ title }) {
         }, 3000);
     }, [loading])
 
+
+    // api data
+    // const [clients, setClients] = useState([]);
+    // useEffect(() => {
+    //     const fetchData = async () => {
+    //       try {
+    //         const response = await fetch('http://localhost:4065/api-v1/clients');
+    //         const data = await response.json();
+    //         setClients(data.data);
+    //       } catch (error) {
+    //         console.error('Error fetching data:', error);
+    //       }
+    //     };
+    
+    //     fetchData();
+    //   }, []);
+
+    //   console.log("opportunity data : ",clients);
+
+    const [clients, setClients] = useState([]);
+
+    useEffect(() => {
+      const fetchData = async () => {
+        try {
+          const response = await fetch('http://localhost:4065/api-v1/clients');
+          const data = await response.json();
+  
+          const clientsWithIndustryNames = await Promise.all(
+            data.data.map(async (client) => {
+              const industryTypeResponse = await fetch(
+                `http://localhost:4065/api-v1/industryTypes/${client.industryTypeId}`
+              );
+              const industryTypeData = await industryTypeResponse.json();
+              return {
+                ...client,
+                industryTypeName: industryTypeData.data.name,
+              };
+            })
+          );
+  
+          setClients(clientsWithIndustryNames);
+        } catch (error) {
+          console.error('Error fetching data:', error);
+        }
+      };
+  
+      fetchData();
+    }, []);
+  
+    console.log('Opportunity data:', clients);
+
     return (
         <AuthenticatedLayout>
             <div className='flex flex-col-reverse lg:flex-row  lg:items-center justify-between gap-3'  >
@@ -120,22 +171,22 @@ export default function Clients({ title }) {
                         </tr>
                     </thead>
                     <tbody>
-                        {paginatedData?.map((row, index) => {
+                        {clients?.map((row, index) => {
                             return (
                                 <tr key={index} className="bg-white border-b text-gray-900 ">
                                     <td className="py-5 px-6" >{row?.id}</td>
                                     <td className="py-5 px-6" >
                                         <Avatar
-                                            alt={row?.companyName}
-                                            src={row?.image}
+                                            alt={row?.name}
+                                            src={row?.photo}
                                             sx={{ border: "0.5px solid #ABB3BB" }}
                                         />
                                     </td>
                                     <td className="py-5 px-6" >{row?.createdAt}</td>
-                                    <td className="py-5 px-6" >{row?.companyName}</td>
-                                    <td className="py-5 px-6" >{row?.industryType}</td>
+                                    <td className="py-5 px-6" >{row?.name}</td>
+                                    <td className="py-5 px-6" >{row?.industryTypeName}</td>
                                     <td className="py-5 px-6" >{row?.address}</td>
-                                    <td className="py-5 px-6" >{row?.contact}</td>
+                                    <td className="py-5 px-6" >{row?.phone}</td>
                                     <td className="py-5 px-6" >{row?.email}</td>
                                     <td>
                                         <button

@@ -109,6 +109,23 @@ export default function Opportunities({ title }) {
         }, 3000);
     }, [loading])
 
+    const [opportunities, setOpportunities] = useState([]);
+    useEffect(() => {
+        const fetchData = async () => {
+          try {
+            const response = await fetch('http://localhost:4065/api-v1/workspaces');
+            const data = await response.json();
+            setOpportunities(data.data);
+          } catch (error) {
+            console.error('Error fetching data:', error);
+          }
+        };
+    
+        fetchData();
+      }, []);
+
+      console.log("opportunity data : ",opportunities);
+
     function getStatusColor(status) {
         if (status == "start") {
             return "#77C486"
