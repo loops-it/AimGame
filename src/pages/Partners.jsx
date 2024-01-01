@@ -7,20 +7,20 @@ import Avatar from '@mui/material/Avatar';
 import MainSelect from '../components/MainSelect';
 import CreateUpdateModal from '../components/Authenticated/Partner/CreateUpdateModal';
 
-const tempData = [
-    {
-        id: "12312312",
-        name: "Brad",
-        company: "DB2",
-        accountName: "Account 1",
-        designation: "Head of Sales",
-        contact: "77234564",
-        email: "amal@gmail.com",
-        createdAt: "2025-10-20",
-        rate: "2",
-        role: "Sales",
-    },
-]
+// const tempData = [
+//     {
+//         id: "12312312",
+//         name: "Brad",
+//         company: "DB2",
+//         accountName: "Account 1",
+//         designation: "Head of Sales",
+//         contact: "77234564",
+//         email: "amal@gmail.com",
+//         createdAt: "2025-10-20",
+//         rate: "2",
+//         role: "Sales",
+//     },
+// ]
 
 export default function Partners({ title }) {
 
@@ -29,9 +29,22 @@ export default function Partners({ title }) {
     const [loading, setLoading] = useState(false)
     const [show, setShow] = useState(false)
     const [selectedData, setSelectedData] = useState(null)
-
+    const [tempData, setTempData] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 50;
+    useEffect(() => {
+       
+        fetch('http://localhost:4065/api-v1/partners') 
+            .then(response => response.json())
+            .then(result  => {
+                setTempData(result .data);
+                setLoading(false);
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+                setLoading(false);
+            });
+    }, []);
 
     const paginatedData = tempData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
@@ -120,32 +133,21 @@ export default function Partners({ title }) {
                                 ID
                             </th>
                             <th scope="col" className="py-5 px-6 border-b">
-                                Date
-                            </th>
-                            <th scope="col" className="py-5 px-6 border-b">
-                                Company
-                            </th>
-                            <th scope="col" className="py-5 px-6 border-b">
                                 Name
                             </th>
                             <th scope="col" className="py-5 px-6 border-b">
-                                Rate
+                                Client
                             </th>
                             <th scope="col" className="py-5 px-6 border-b">
-                                Account Name
+                                Workspace
                             </th>
+                            {/* <th scope="col" className="py-5 px-6 border-b">
+                                Contacts
+                            </th> */}
                             <th scope="col" className="py-5 px-6 border-b">
-                                Designation
+                                Company
                             </th>
-                            <th scope="col" className="py-5 px-6 border-b">
-                                Role
-                            </th>
-                            <th scope="col" className="py-5 px-6 border-b">
-                                Contact
-                            </th>
-                            <th scope="col" className="py-5 px-6 border-b">
-                                Email
-                            </th>
+                            
                             <th scope="col" className="py-5 px-6 border-b">
 
                             </th>
@@ -155,16 +157,12 @@ export default function Partners({ title }) {
                         {paginatedData?.map((row, index) => {
                             return (
                                 <tr key={index} className="bg-white border-b text-gray-900 ">
-                                    <td className="py-5 px-6" >{row?.id}</td>
-                                    <td className="py-5 px-6" >{row?.createdAt}</td>
-                                    <td className="py-5 px-6" >{row?.company}</td>
+                                    <td className="py-5 px-6" >{row?._id}</td>
                                     <td className="py-5 px-6" >{row?.name}</td>
-                                    <td className="py-5 px-6" >{row?.rate}</td>
-                                    <td className="py-5 px-6" >{row?.accountName}</td>
-                                    <td className="py-5 px-6" >{row?.designation}</td>
-                                    <td className="py-5 px-6" >{row?.role}</td>
-                                    <td className="py-5 px-6" >{row?.contact}</td>
-                                    <td className="py-5 px-6" >{row?.email}</td>
+                                    <td className="py-5 px-6">{row?.clientId ? row.clientId.name : "-"}</td>
+                                    <td className="py-5 px-6" >{row?.workspaceId.name}</td>
+                                    {/* <td className="py-5 px-6" >{row?.contacts}</td> */}
+                                    <td className="py-5 px-6" >{row?.company}</td>
                                     <td>
                                         <button
                                             onClick={() => {
