@@ -57,22 +57,23 @@ export default function Clients({ title }) {
     const [clients, setClients] = useState([]);
     const [industryTypes, setIndustryTypes] = useState([]);
     const [workspaces, setWorkspaces] = useState([]);
+    const [searchValue, setSearchValue] = useState([]);
 
 
     // industry types data
     useEffect(() => {
         const fetchData = async () => {
-          try {
-            const response = await api.get('/api-v1/industryTypes');
-            const data = response.data.data;
-            setIndustryTypes(data);
-          } catch (error) {
-            console.error('Error fetching data:', error);
-          }
+            try {
+                const response = await api.get('/api-v1/industryTypes');
+                const data = response.data.data;
+                setIndustryTypes(data);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
         };
-    
+
         fetchData();
-      }, []);
+    }, []);
     // console.log("industryTypes data : ", industryTypes);
 
 
@@ -80,48 +81,63 @@ export default function Clients({ title }) {
     // workspace data
     useEffect(() => {
         const fetchWorkspaces = async () => {
-          try {
-            const response = await api.get('/api-v1/workspaces');
-            setWorkspaces(response.data.data);
-          } catch (error) {
-            console.error('Error fetching workspaces:', error);
-          }
+            try {
+                const response = await api.get('/api-v1/workspaces');
+                setWorkspaces(response.data.data);
+            } catch (error) {
+                console.error('Error fetching workspaces:', error);
+            }
         };
-    
+
         fetchWorkspaces();
-      }, []);
+    }, []);
     // console.log("workspaces data : ", workspaces);
 
-    
+
 
     // clients data
     useEffect(() => {
         const fetchData = async () => {
-          try {
-            const response = await api.get('/api-v1/clients');
-            const data = response.data.data;
-    
-            const clientsWithIndustryNames = await Promise.all(
-              data.map(async (client) => {
-                const industryTypeResponse = await api.get(`/api-v1/industryTypes/${client.industryTypeId}`);
-                const industryTypeData = industryTypeResponse.data.data;
-    
-                return {
-                  ...client,
-                  industryTypeName: industryTypeData.name,
-                };
-              })
-            );
-    
-            setClients(clientsWithIndustryNames);
-          } catch (error) {
-            console.error('Error fetching data:', error);
-          }
+            try {
+                const response = await api.get('/api-v1/clients');
+                const data = response.data.data;
+
+                const clientsWithIndustryNames = await Promise.all(
+                    data.map(async (client) => {
+                        const industryTypeResponse = await api.get(`/api-v1/industryTypes/${client.industryTypeId}`);
+                        const industryTypeData = industryTypeResponse.data.data;
+
+                        return {
+                            ...client,
+                            industryTypeName: industryTypeData.name,
+                        };
+                    })
+                );
+
+                setClients(clientsWithIndustryNames);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
         };
-    
+
         fetchData();
-      }, []);
-    
+    }, []);
+
+    const fetchSearchResults = async () => {
+        if (searchValue.trim() !== '') {
+            try {
+                const response = await api.get(`/api-v1/clients/${searchValue}`);
+                const data = response.data.data;
+                // setClients(data);
+                console.log('Search results:', data);
+            } catch (error) {
+                console.error('Error fetching data by id:', error);
+            }
+        }
+    };
+
+
+
     // console.log(clients)
     const paginatedData = clients.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
@@ -129,7 +145,18 @@ export default function Clients({ title }) {
         <AuthenticatedLayout>
             <div className='flex flex-col-reverse lg:flex-row  lg:items-center justify-between gap-3'  >
                 <div className='flex lg:items-center gap-3' >
-                    <button onClick={() => setShowSearch(true)} className='flex justify-center items-center text-white bg-app-gray-5 px-5 py-2 w-full lg:w-fit rounded-lg' >Search</button>
+                    <input
+                        type="search"
+                        placeholder='Search'
+                        onChange={(e) => setSearchValue(e.target.value)}
+                    />
+
+                    <button
+                        onClick={fetchSearchResults}
+                        className='flex justify-center items-center text-white bg-app-gray-5 px-5 py-2 w-full lg:w-fit rounded-lg'
+                    >
+                        Search
+                    </button>
                 </div>
                 <button onClick={() => {
                     setShow(true)
