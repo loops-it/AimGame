@@ -9,12 +9,6 @@ import MainMultipleSelect from '../../MainMultipleSelect'
 import MainImageInput from '../../MainImageInput'
 import api from '../../../services/api'
 
-// const industryTypes = [
-//     { id: 1, name: 'Transport' },
-//     { id: 2, name: 'Logistics' },
-//     { id: 3, name: 'ICT' },
-//     { id: 4, name: 'Telecommunication' },
-// ]
 
 const initialState = {
     industryTypeId: null,
@@ -36,48 +30,40 @@ export default function CreateUpdateModal({ show, onClose, data, industryTypes, 
         }
     }, [data])
     // console.log("client : ", client)
-    
+
 
 
     // create client
     async function onCreate() {
         try {
-          const response = await api.post('/api-v1/clients', client);
-      
-          if (response.status === 201) {
-            console.log('Client created successfully');
-            onClose();
-          } else {
-            console.error('Failed to create client:', response.statusText);
-          }
+            const response = await api.post('/api-v1/clients', client);
+
+            if (response.status === 201) {
+                console.log('Client created successfully');
+                onClose();
+            } else {
+                console.error('Failed to create client:', response.statusText);
+            }
         } catch (error) {
-          console.error('Error creating client:', error);
+            console.error('Error creating client:', error);
         }
-      }
-      
+    }
+
 
     async function onUpdate() {
-        console.log("client._id : ", client._id)
-        // try {
-        //     const response = await fetch(`http://localhost:4065/api-v1/clients/${client._id}`, {
-        //         method: 'PUT',
-        //         headers: {
-        //             'Content-Type': 'application/json',
-        //         },
-        //         body: JSON.stringify(client),
-        //     });
-    
-        //     console.log("client updates: ", JSON.stringify(client));
-    
-        //     if (response.ok) {
-        //         console.log('Client updated successfully');
-        //         onClose();
-        //     } else {
-        //         console.error('Failed to update client:', response.statusText);
-        //     }
-        // } catch (error) {
-        //     console.error('Error updating client:', error);
-        // }
+        console.log(client)
+        try {
+            const response = await api.put(`/api-v1/clients/${client._id}`, client);
+
+            if (response.status === 200 || response.status === 201) {
+                console.log('Client updated successfully');
+                onClose();
+            } else {
+                console.error('Failed to update client:', response.statusText);
+            }
+        } catch (error) {
+            console.error('Error updating client:', error);
+        }
     }
 
 
@@ -144,10 +130,10 @@ export default function CreateUpdateModal({ show, onClose, data, industryTypes, 
                             label={"Contact Number"}
                             placeholder={"Enter Contact Number"}
                         />
-                        
+
                     </div>
                     <div className='px-10 py-5' >
-                    {/* <MainInput
+                        {/* <MainInput
                             disabled={loading}
                             value={client?.workspaceId}
                             onChange={text => setClient({ ...client, workspaceId: text })}
@@ -188,12 +174,21 @@ export default function CreateUpdateModal({ show, onClose, data, industryTypes, 
                             className='disabled:bg-app-gray flex items-center gap-3 bg-app-blue-2 rounded-lg w-fit px-10 py-2 text-white' >
                             {data ? "Save" : "Create"}
                         </button> */}
-                        <button
+                        {/* <button
                             onClick={onCreate}
                             disabled={loading}
                             className='disabled:bg-app-gray flex items-center gap-3 bg-app-blue-2 rounded-lg w-fit px-10 py-2 text-white'
                         >
                             Create
+                        </button> */}
+                        <button
+                            onClick={() => {
+                                data ? onUpdate() : onCreate();
+                            }}
+                            disabled={loading}
+                            className='disabled:bg-app-gray flex items-center gap-3 bg-app-blue-2 rounded-lg w-fit px-10 py-2 text-white'
+                        >
+                            {data ? "Update" : "Create"}
                         </button>
 
                     </div>
