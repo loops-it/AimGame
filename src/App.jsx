@@ -53,7 +53,7 @@ export default function App() {
 
           <Route path="/events" element={<Events title={"Aimgame | Events"} />} />
 
-          <Route path="/test/task" element={<Tasks title={"Aimgame"} />} />
+          <Route path="/tasks" element={<Tasks title={"Aimgame"} />} />
 
 
         </Routes>
