@@ -26,6 +26,33 @@ const tempData = [
 
 export default function ClientCard() {
     const [loading, setLoading] = useState(false)
+    const [tempData, setTempData] = useState([]);
+
+    useEffect(() => {
+        const fetchData = async () => {
+          try {
+            const response = await fetch('http://localhost:4065/api-v1/clients', {
+              headers: {
+                Authorization: `Bearer ${localStorage.accessToken}`,
+              },
+            });
+    
+            if (!response.ok) {
+              throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+    
+            const result = await response.json();
+            setTempData(result.data);
+            setLoading(false);
+          } catch (error) {
+            console.error('Error fetching data:', error);
+            setLoading(false);
+          }
+        };
+    
+        fetchData();
+      }, []);
+      
 
     useEffect(() => {
         setTimeout(() => {
@@ -80,15 +107,15 @@ export default function ClientCard() {
                                     <div className="flex items-center gap-2" >
                                         <Avatar
                                             alt="Remy Sharp"
-                                            src={row?.image}
+                                            src={row?.photo}
                                             sx={{ border: "0.5px solid #ABB3BB" }}
                                         />
                                         <div>{row?.companyName}</div>
                                     </div>
                                 </td>
-                                <td className="py-3 px-6" >{row?.industryType}</td>
+                                <td className="py-3 px-6" >{row?.industryTypeId ? row.industryTypeId.name : "-"}</td>
                                 <td className="py-3 px-6" >{row?.email}</td>
-                                <td className="py-3 px-6" >{row?.contact}</td>
+                                <td className="py-3 px-6" >{row?.phone}</td>
                                 <td className="py-3 px-6" >{row?.address}</td>
                             </tr>
                         )

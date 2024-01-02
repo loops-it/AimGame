@@ -14,7 +14,7 @@ export default function Dashboard({ title }) {
                 <OpportunityCard />
                 <TaskCard />
                 <PartnerCard />
-            </div>
+            </div> 
         </AuthenticatedLayout>
     )
 }
