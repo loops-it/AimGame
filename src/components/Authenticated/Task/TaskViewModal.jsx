@@ -28,7 +28,7 @@ export default function TaskViewModal({show, onClose, data}){
         >
             <div className='bg-white shadow-lg rounded-md h-[90%] lg:h-fit w-[95%] lg:w-[70%]'>
                 <div className='bg-[#C5C5C533] h-14 flex justify-between items-center px-10'>
-                    <div className='font-semibold text-app-blue-3 text-2xl'>{data?.title}</div>
+                    <div className='font-semibold text-app-blue-3 text-2xl'>{data?.name}</div>
                     <button onClick={onClose} className='flex justify-center items-center text-app-gray-3'>
                         <XCircleIcon className='w-7 h-7'/>
                     </button>

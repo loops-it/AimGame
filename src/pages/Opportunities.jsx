@@ -9,6 +9,8 @@ import AvatarGroup from '@mui/material/AvatarGroup';
 import CreateUpdateModal from '../components/Authenticated/Opportunity/CreateUpdateModal';
 import SearchModal from '../components/Authenticated/Opportunity/SearchModal';
 import RoleMappingModal from '../components/Authenticated/Opportunity/RoleMappingModal';
+import api from '../services/api'
+
 
 const tempData = [
     {
@@ -97,6 +99,8 @@ export default function Opportunities({ title }) {
 
     const [roleMappingShow, setRoleMappingShow] = useState(false)
 
+    const [opportunities, setOpportunities] = useState([]);
+    const [searchValue, setSearchValue] = useState([]);
 
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 50;
@@ -109,7 +113,7 @@ export default function Opportunities({ title }) {
         }, 3000);
     }, [loading])
 
-    const [opportunities, setOpportunities] = useState([]);
+    
     useEffect(() => {
         const fetchData = async () => {
           try {
@@ -125,6 +129,21 @@ export default function Opportunities({ title }) {
       }, []);
 
       console.log("opportunity data : ",opportunities);
+
+
+      const fetchSearchResults = async () => {
+        if (searchValue.trim() !== '') {
+            try {
+                const response = await api.get(`/api-v1/clients/${searchValue}`);
+                const data = response.data.data;
+                // setClients(data);
+                console.log('Search results:', data);
+            } catch (error) {
+                console.error('Error fetching data by id:', error);
+            }
+        }
+    };
+
 
       const paginatedData = opportunities.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
