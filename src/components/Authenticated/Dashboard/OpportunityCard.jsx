@@ -24,6 +24,32 @@ const tempData = [
 
 export default function OpportunityCard() {
     const [loading, setLoading] = useState(false)
+    const [tempData, setTempData] = useState([]);
+
+    useEffect(() => {
+        const fetchData = async () => {
+          try {
+            const response = await fetch('http://localhost:4065/api-v1/opportunities', {
+              headers: {
+                Authorization: `Bearer ${localStorage.accessToken}`,
+              },
+            });
+    
+            if (!response.ok) {
+              throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+    
+            const result = await response.json();
+            setTempData(result.data);
+            setLoading(false);
+          } catch (error) {
+            console.error('Error fetching data:', error);
+            setLoading(false);
+          }
+        };
+    
+        fetchData();
+      }, []);
 
     useEffect(() => {
         setTimeout(() => {
@@ -75,12 +101,12 @@ export default function OpportunityCard() {
                     {tempData?.map((row, index) => {
                         return (
                             <tr key={index} className="bg-white border-b text-gray-900 ">
-                                <td className="py-3 px-6" >{row?.opportunityName}</td>
-                                <td className="py-3 px-6" >{row?.stage}</td>
+                                <td className="py-3 px-6" >{row?.name}</td>
+                                <td className="py-3 px-6" >{row?.funnelStatusId ? row.funnelStatusId.stage : "-"}</td>
                                 <td className="py-3 px-6" >{row?.probability}</td>
-                                <td className="py-3 px-6" >{row?.funnelStatus}</td>
-                                <td className="py-3 px-6" >{row?.rate}</td>
-                                <td className="py-3 px-6" >{row?.lead}</td>
+                                <td className="py-3 px-6" >{row?.funnelStatusId ? row.funnelStatusId.status : "-"}</td>
+                                <td className="py-3 px-6" >{row?.funnelStatusId ? row.funnelStatusId.rate : "-"}</td>
+                                <td className="py-3 px-6" >{row?.leadId ? row.leadId.name : "-"}</td>
                             </tr>
                         )
                     })}

@@ -16,6 +16,32 @@ const tempData = [
 
 export default function PartnerCard() {
     const [loading, setLoading] = useState(false)
+    const [tempData, setTempData] = useState([]);
+
+    useEffect(() => {
+        const fetchData = async () => {
+          try {
+            const response = await fetch('http://localhost:4065/api-v1/partners', {
+              headers: {
+                Authorization: `Bearer ${localStorage.accessToken}`,
+              },
+            });
+    
+            if (!response.ok) {
+              throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+    
+            const result = await response.json();
+            setTempData(result.data);
+            setLoading(false);
+          } catch (error) {
+            console.error('Error fetching data:', error);
+            setLoading(false);
+          }
+        };
+    
+        fetchData();
+      }, []);
 
     useEffect(() => {
         setTimeout(() => {
@@ -71,8 +97,8 @@ export default function PartnerCard() {
                                 <td className="py-3 px-6" >{row?.company}</td>
                                 <td className="py-3 px-6" >{row?.accountName}</td>
                                 <td className="py-3 px-6" >{row?.designation}</td>
-                                <td className="py-3 px-6" >{row?.contact}</td>
-                                <td className="py-3 px-6" >{row?.email}</td>
+                                <td className="py-3 px-6" >{row?.clientId ? row.clientId.phone : "-"}</td>
+                                <td className="py-3 px-6" >{row?.clientId ? row.clientId.email : "-"}</td>
                             </tr>
                         )
                     })}
