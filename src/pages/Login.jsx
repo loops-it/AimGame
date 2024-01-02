@@ -34,7 +34,7 @@ export default function Login({ title }) {
                 setError(errorData.msg);
             } else {
                 const data = await response.json();
-                localStorage.setItem('token', data.token);
+                localStorage.setItem('accessToken', data.token);
                 navigateTo('/dashboard');
             }
         } catch (error) {

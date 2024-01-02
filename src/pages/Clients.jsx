@@ -7,7 +7,7 @@ import TableProvider from '../components/TableProvider'
 import Divider from '@mui/material/Divider';
 import Avatar from '@mui/material/Avatar';
 import CreateUpdateModal from '../components/Authenticated/Client/CreateUpdateModal';
-
+import api from '../services/api'
 
 const tempData = [
     {

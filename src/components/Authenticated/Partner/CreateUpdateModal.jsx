@@ -32,7 +32,7 @@ console.log(workspaces);
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imhpd2F0aTY2ODdAdXNvcGxheS5jb20iLCJ1c2VySWQiOiI2NTkzOTBmMjZlNDcyNzIyYjYxNjhkNWMiLCJpYXQiOjE3MDQxNzQ1MjQsImV4cCI6MTcwNDE3ODEyNH0.2n1I5kuHQdph-Kr9uUHOYxGzu6HHCceNYthftuvDMkY',
+                    Authorization: `Bearer ${localStorage.accessToken}`,
                 },
                 body: JSON.stringify(partner),
             });

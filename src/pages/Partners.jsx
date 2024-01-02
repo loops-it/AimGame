@@ -17,10 +17,43 @@ export default function Partners({ title }) {
   const itemsPerPage = 50;
   const [workspaces, setWorkspaces] = useState([]);
 
+//   useEffect(() => {
+//     const fetchWorkspaceData = async () => {
+//       try {
+//         const response = await api.get('/api-v1/workspaces');
+//         const data = response.data;
+//         setWorkspaces(data);
+//       } catch (error) {
+//         console.error('Error fetching data:', error);
+//       }
+//     };
+
+//     fetchWorkspaceData();
+//   }, []);
+
+
+//   useEffect(() => {
+//     const fetchPartnersData = async () => {
+//       try {
+//         const response = await api.get('/api-v1/partners');
+//         const data = response.data;
+//         console.log(data);
+//         setTempData(data);
+//       } catch (error) {
+//         console.error('Error fetching data:', error);
+//       }
+//     };
+
+//     fetchPartnersData();
+//   }, []);
+
   useEffect(() => {
     const fetchWorkspaceData = async () => {
       try {
         const response = await fetch('http://localhost:4065/api-v1/workspaces', {
+          headers: {
+            Authorization: `Bearer ${localStorage.accessToken}`, // Replace with your actual token
+          },
         });
 
         if (!response.ok) {
@@ -42,6 +75,9 @@ export default function Partners({ title }) {
     const fetchPartnersData = async () => {
       try {
         const response = await fetch('http://localhost:4065/api-v1/partners', {
+          headers: {
+            Authorization: `Bearer ${localStorage.accessToken}`,
+          },
         });
 
         if (!response.ok) {
