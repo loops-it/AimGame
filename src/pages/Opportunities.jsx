@@ -101,7 +101,7 @@ export default function Opportunities({ title }) {
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 50;
 
-    const paginatedData = tempData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+    
 
     useEffect(() => {
         setTimeout(() => {
@@ -113,7 +113,7 @@ export default function Opportunities({ title }) {
     useEffect(() => {
         const fetchData = async () => {
           try {
-            const response = await fetch('http://localhost:4065/api-v1/workspaces');
+            const response = await fetch('http://localhost:4065/api-v1/opportunities');
             const data = await response.json();
             setOpportunities(data.data);
           } catch (error) {
@@ -125,6 +125,8 @@ export default function Opportunities({ title }) {
       }, []);
 
       console.log("opportunity data : ",opportunities);
+
+      const paginatedData = opportunities.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
     function getStatusColor(status) {
         if (status == "start") {
@@ -181,7 +183,7 @@ export default function Opportunities({ title }) {
                     setCurrentPage={page => setCurrentPage(page)}
                     itemsPerPage={itemsPerPage}
                     pagination={true}
-                    data={tempData}
+                    data={opportunities}
                     loading={loading}
                     emptyMessage="No Opportunity Found"
                 >
@@ -229,13 +231,13 @@ export default function Opportunities({ title }) {
                         {paginatedData?.map((row, index) => {
                             return (
                                 <tr key={index} className="bg-white border-b text-gray-900 ">
-                                    <td className="py-5 px-6" >{row?.id}</td>
+                                    <td className="py-5 px-6" >{row?._id}</td>
                                     <td className="py-5 px-6" >{row?.startDate}</td>
                                     <td className="py-5 px-6" >{row?.endDate}</td>
-                                    <td className="py-5 px-6" >{row?.opportunityName}</td>
-                                    <td className="py-5 px-6" >{row?.stage}</td>
+                                    <td className="py-5 px-6" >{row?.name}</td>
+                                    <td className="py-5 px-6" >{row?.funnelStatusId ? row.funnelStatusId.stage : "-"}</td>
                                     <td className="py-5 px-6" >{row?.probability}</td>
-                                    <td className="py-5 px-6" >{row?.funnelStatus}</td>
+                                    <td className="py-5 px-6" >{row?.funnelStatusId ? row.funnelStatusId.status : "-"}</td>
                                     <td className="py-5 px-6" >
                                         <Chip
                                             sx={{ borderColor: getStatusColor(row?.status), color: getStatusColor(row?.status), fontWeight: "700", textTransform: "uppercase" }}
@@ -258,8 +260,8 @@ export default function Opportunities({ title }) {
                                             </AvatarGroup>
                                         </div>
                                     </td>
-                                    <td className="py-5 px-6" >{row?.rate}</td>
-                                    <td className="py-5 px-6" >{row?.lead}</td>
+                                    <td className="py-5 px-6" >{row?.funnelStatusId ? row.funnelStatusId.rate : "-"}</td>
+                                    <td className="py-5 px-6" >{row?.leadId ? row.leadId.name : "-"}</td>
                                     <td>
                                         <button
                                             onClick={() => {
