@@ -7,7 +7,7 @@ import TableProvider from '../components/TableProvider'
 import Divider from '@mui/material/Divider';
 import Avatar from '@mui/material/Avatar';
 import CreateUpdateModal from '../components/Authenticated/Client/CreateUpdateModal';
-
+import api from '../services/api'
 
 const tempData = [
     {
@@ -59,66 +59,70 @@ export default function Clients({ title }) {
     const [workspaces, setWorkspaces] = useState([]);
 
 
-    // industry types
+    // industry types data
     useEffect(() => {
         const fetchData = async () => {
-            try {
-                const response = await fetch('http://localhost:4065/api-v1/industryTypes');
-                const data = await response.json();
-                setIndustryTypes(data.data);
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            }
+          try {
+            const response = await api.get('/api-v1/industryTypes');
+            const data = response.data.data;
+            setIndustryTypes(data);
+          } catch (error) {
+            console.error('Error fetching data:', error);
+          }
         };
-
+    
         fetchData();
-    }, []);
+      }, []);
     // console.log("industryTypes data : ", industryTypes);
 
-    // workspaces
+
+
+    // workspace data
+    useEffect(() => {
+        const fetchWorkspaces = async () => {
+          try {
+            const response = await api.get('/api-v1/workspaces');
+            setWorkspaces(response.data.data);
+          } catch (error) {
+            console.error('Error fetching workspaces:', error);
+          }
+        };
+    
+        fetchWorkspaces();
+      }, []);
+    // console.log("workspaces data : ", workspaces);
+
+    
+
+    // clients data
     useEffect(() => {
         const fetchData = async () => {
-            try {
-                const response = await fetch('http://localhost:4065/api-v1/workspaces');
-                const data = await response.json();
-                setWorkspaces(data.data);
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            }
+          try {
+            const response = await api.get('/api-v1/clients');
+            const data = response.data.data;
+    
+            const clientsWithIndustryNames = await Promise.all(
+              data.map(async (client) => {
+                const industryTypeResponse = await api.get(`/api-v1/industryTypes/${client.industryTypeId}`);
+                const industryTypeData = industryTypeResponse.data.data;
+    
+                return {
+                  ...client,
+                  industryTypeName: industryTypeData.name,
+                };
+              })
+            );
+    
+            setClients(clientsWithIndustryNames);
+          } catch (error) {
+            console.error('Error fetching data:', error);
+          }
         };
-
+    
         fetchData();
-    }, []);
-    console.log("workspaces data : ", workspaces);
-
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await fetch('http://localhost:4065/api-v1/clients');
-                const data = await response.json();
-
-                const clientsWithIndustryNames = await Promise.all(
-                    data.data.map(async (client) => {
-                        const industryTypeResponse = await fetch(
-                            `http://localhost:4065/api-v1/industryTypes/${client.industryTypeId}`
-                        );
-                        const industryTypeData = await industryTypeResponse.json();
-                        return {
-                            ...client,
-                            industryTypeName: industryTypeData.data.name,
-                        };
-                    })
-                );
-
-                setClients(clientsWithIndustryNames);
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            }
-        };
-
-        fetchData();
-    }, []);
-    console.log(clients)
+      }, []);
+    
+    // console.log(clients)
     const paginatedData = clients.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
     return (

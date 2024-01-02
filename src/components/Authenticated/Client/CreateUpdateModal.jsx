@@ -7,6 +7,7 @@ import MainInput from '../../MainInput'
 import MainSelect from '../../MainSelect'
 import MainMultipleSelect from '../../MainMultipleSelect'
 import MainImageInput from '../../MainImageInput'
+import api from '../../../services/api'
 
 // const industryTypes = [
 //     { id: 1, name: 'Transport' },
@@ -34,32 +35,49 @@ export default function CreateUpdateModal({ show, onClose, data, industryTypes, 
             setClient(initialState)
         }
     }, [data])
+    // console.log("client : ", client)
+    
 
+
+    // create client
     async function onCreate() {
         try {
-            const response = await fetch('http://localhost:4065/api-v1/clients', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(client),
-            });
-            console.log("Request Payload: ", JSON.stringify(client));
-            if (response.ok) {
-                console.log('Client created successfully');
-                onClose();
-            } else {
-                console.error('Failed to create client:', response.statusText);
-            }
+          const response = await api.post('/api-v1/clients', client);
+      
+          if (response.status === 201) {
+            console.log('Client created successfully');
+            onClose();
+          } else {
+            console.error('Failed to create client:', response.statusText);
+          }
         } catch (error) {
-            console.error('Error creating client:', error);
+          console.error('Error creating client:', error);
         }
-    }
-
+      }
+      
 
     async function onUpdate() {
-        console.log("client : ", client)
-        onClose()
+        console.log("client._id : ", client._id)
+        // try {
+        //     const response = await fetch(`http://localhost:4065/api-v1/clients/${client._id}`, {
+        //         method: 'PUT',
+        //         headers: {
+        //             'Content-Type': 'application/json',
+        //         },
+        //         body: JSON.stringify(client),
+        //     });
+    
+        //     console.log("client updates: ", JSON.stringify(client));
+    
+        //     if (response.ok) {
+        //         console.log('Client updated successfully');
+        //         onClose();
+        //     } else {
+        //         console.error('Failed to update client:', response.statusText);
+        //     }
+        // } catch (error) {
+        //     console.error('Error updating client:', error);
+        // }
     }
 
 
@@ -95,7 +113,7 @@ export default function CreateUpdateModal({ show, onClose, data, industryTypes, 
                     <div className='grid gap-5 grid-cols-1 lg:grid-cols-2 px-10 pt-10' >
                         <MainInput
                             disabled={loading}
-                            value={client?.companyName}
+                            value={client?.name}
                             onChange={text => setClient({ ...client, name: text })}
                             label={"Company Name"}
                             placeholder={"Enter Company Name"}
@@ -121,7 +139,7 @@ export default function CreateUpdateModal({ show, onClose, data, industryTypes, 
                         />
                         <MainInput
                             disabled={loading}
-                            value={client?.contact}
+                            value={client?.phone}
                             onChange={text => setClient({ ...client, phone: text })}
                             label={"Contact Number"}
                             placeholder={"Enter Contact Number"}

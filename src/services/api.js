@@ -6,6 +6,7 @@ export const api = axios.create({
     baseURL: BASE_API_URL,
 });
 
+
 api.interceptors.request.use(
     async function (config) {
         const token = localStorage.accessToken
@@ -31,8 +32,7 @@ api.interceptors.response.use(
             localStorage.clear()
             window.location.href = "/"
         }
-        if (error?.response?.status === 400) {
-        }
+        if (error?.response?.status === 400) { /* empty */ }
         return Promise.reject(error.response.data.message);
     }
 );
