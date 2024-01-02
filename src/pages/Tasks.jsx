@@ -4,6 +4,9 @@ import MainInput from '../components/MainInput'
 import { MagnifyingGlassIcon,PlusIcon } from '@heroicons/react/24/solid'
 import TaskCard from "../components/Authenticated/Task/TaskCard.jsx";
 import TaskViewModal from "../components/Authenticated/Task/TaskViewModal.jsx";
+import { useEffect } from 'react';
+import api from '../services/api'
+
 
 
 const tempData = [
@@ -33,6 +36,21 @@ export default function Tasks() {
 
     const [show, setShow] = useState(false);
     const [selectedData, setSelectedData] = useState(null);
+
+    // tasks data
+    useEffect(() => {
+        const fetchWorkspaces = async () => {
+            try {
+                const response = await api.get('/api-v1/workspaces');
+                setSelectedData(response.data.data);
+            } catch (error) {
+                console.error('Error fetching workspaces:', error);
+            }
+        };
+
+        fetchWorkspaces();
+    }, []);
+    console.log("workspaces data : ", selectedData);
 
     return (
         <AuthenticatedLayout>
