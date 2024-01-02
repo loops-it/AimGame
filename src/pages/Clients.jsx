@@ -8,7 +8,7 @@ import Divider from '@mui/material/Divider';
 import Avatar from '@mui/material/Avatar';
 import CreateUpdateModal from '../components/Authenticated/Client/CreateUpdateModal';
 
-
+ 
 const tempData = [
     {
         id: "2123123",

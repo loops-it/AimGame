@@ -13,10 +13,10 @@ const rates = [
 
 const initialState = {}
 
-export default function CreateUpdateModal({ show, onClose, data }) {
+export default function CreateUpdateModal({ show, onClose, data, workspaces }) {
     const [partner, setPartner] = useState(initialState)
     const [loading, setLoading] = useState(false)
-
+console.log(workspaces);
     useEffect(() => {
         if (data) {
             setPartner(data)
@@ -27,7 +27,25 @@ export default function CreateUpdateModal({ show, onClose, data }) {
     }, [data])
 
     async function onCreate() {
-        onClose()
+        try {
+            const response = await fetch('http://localhost:4065/api-v1/partners', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imhpd2F0aTY2ODdAdXNvcGxheS5jb20iLCJ1c2VySWQiOiI2NTkzOTBmMjZlNDcyNzIyYjYxNjhkNWMiLCJpYXQiOjE3MDQxNzQ1MjQsImV4cCI6MTcwNDE3ODEyNH0.2n1I5kuHQdph-Kr9uUHOYxGzu6HHCceNYthftuvDMkY',
+                },
+                body: JSON.stringify(partner),
+            });
+            console.log("Request Payload: ", JSON.stringify(partner));
+            if (response.ok) {
+                console.log('Partner created successfully');
+                onClose();
+            } else {
+                console.error('Failed to create client:', response.statusText);
+            }
+        } catch (error) {
+            console.error('Error creating client:', error);
+        }
     }
 
     async function onUpdate() {
@@ -63,29 +81,32 @@ export default function CreateUpdateModal({ show, onClose, data }) {
                             label={"Partner Name"}
                             placeholder={"Enter Partner Name"}
                         />
-                        <MainInput
+                        {/* <MainInput
                             disabled={loading}
                             value={partner?.accountName}
                             onChange={text => setPartner({ ...partner, accountName: text })}
                             label={"Account Name"}
                             placeholder={"Enter Account Name"}
-                        />
+                        /> */}
                         <MainSelect
+                            disabled={loading}
+                            value={workspaces?.find(row => row?.name === partner?.workspaceId)}
+                            onChange={value => setPartner({
+                                ...partner,
+                                workspaceId: value?._id || ''
+                            })}
+                            label={"Workspaces"}
+                            placeholder={"Please Select workspaces"}
+                            options={workspaces}
+                        />
+                        {/* <MainSelect
                             disabled={loading}
                             value={rates?.find(row => row?.name == partner?.rate)}
                             onChange={value => setPartner({ ...partner, rate: value?.name })}
                             label={"Rate"}
                             placeholder={"Please Select Rate"}
                             options={rates}
-                        />
-                        <MainSelect
-                            disabled={loading}
-                            value={rates?.find(row => row?.name == partner?.rate)}
-                            onChange={value => setPartner({ ...partner, rate: value?.name })}
-                            label={"Rate"}
-                            placeholder={"Please Select Rate"}
-                            options={rates}
-                        />
+                        /> */}
                     </div>
                     <div className='flex justify-center items-center gap-5 mb-5' >
                         <button
@@ -95,9 +116,7 @@ export default function CreateUpdateModal({ show, onClose, data }) {
                             Cancel
                         </button>
                         <button
-                            onClick={() => {
-                                data ? onCreate() : onUpdate()
-                            }}
+                            onClick={onCreate}
                             disabled={loading}
                             className='disabled:bg-app-gray flex items-center gap-3 bg-app-blue-2 rounded-lg w-fit px-10 py-2 text-white' >
                             {data ? "Save" : "Create"}
@@ -106,6 +125,6 @@ export default function CreateUpdateModal({ show, onClose, data }) {
                 </div>
 
             </div>
-        </Transition>
+        </Transition> 
     )
 }

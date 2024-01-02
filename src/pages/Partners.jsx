@@ -1,58 +1,72 @@
-import React, { useState, useEffect } from 'react'
-import AuthenticatedLayout from '../layouts/AuthenticatedLayout'
-import { PlusIcon, ArrowPathIcon, EllipsisVerticalIcon, PencilSquareIcon } from '@heroicons/react/24/solid'
-import TableProvider from '../components/TableProvider'
+import React, { useState, useEffect } from 'react';
+import AuthenticatedLayout from '../layouts/AuthenticatedLayout';
+import { PlusIcon, ArrowPathIcon, EllipsisVerticalIcon, PencilSquareIcon } from '@heroicons/react/24/solid';
+import TableProvider from '../components/TableProvider';
 import Divider from '@mui/material/Divider';
-import Avatar from '@mui/material/Avatar';
 import MainSelect from '../components/MainSelect';
 import CreateUpdateModal from '../components/Authenticated/Partner/CreateUpdateModal';
 
-// const tempData = [
-//     {
-//         id: "12312312",
-//         name: "Brad",
-//         company: "DB2",
-//         accountName: "Account 1",
-//         designation: "Head of Sales",
-//         contact: "77234564",
-//         email: "amal@gmail.com",
-//         createdAt: "2025-10-20",
-//         rate: "2",
-//         role: "Sales",
-//     },
-// ]
-
 export default function Partners({ title }) {
+  document.title = title;
 
-    document.title = title
+  const [loading, setLoading] = useState(false);
+  const [show, setShow] = useState(false);
+  const [selectedData, setSelectedData] = useState(null);
+  const [tempData, setTempData] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 50;
+  const [workspaces, setWorkspaces] = useState([]);
 
-    const [loading, setLoading] = useState(false)
-    const [show, setShow] = useState(false)
-    const [selectedData, setSelectedData] = useState(null)
-    const [tempData, setTempData] = useState([]);
-    const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 50;
-    useEffect(() => {
-       
-        fetch('http://localhost:4065/api-v1/partners') 
-            .then(response => response.json())
-            .then(result  => {
-                setTempData(result .data);
-                setLoading(false);
-            })
-            .catch(error => {
-                console.error('Error fetching data:', error);
-                setLoading(false);
-            });
-    }, []);
+  useEffect(() => {
+    const fetchWorkspaceData = async () => {
+      try {
+        const response = await fetch('http://localhost:4065/api-v1/workspaces', {
+        });
 
-    const paginatedData = tempData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
 
-    useEffect(() => {
-        setTimeout(() => {
-            setLoading(false)
-        }, 3000);
-    }, [loading])
+        const result = await response.json();
+        setWorkspaces(result.data);
+        console.log(result.data);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchWorkspaceData();
+  }, []);
+
+  useEffect(() => {
+    const fetchPartnersData = async () => {
+      try {
+        const response = await fetch('http://localhost:4065/api-v1/partners', {
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const result = await response.json();
+        setTempData(result.data);
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        setLoading(false);
+      }
+    };
+
+    fetchPartnersData();
+  }, []);
+
+  const paginatedData = tempData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setLoading(false);
+    }, 3000);
+  }, [loading]);
 
     return (
         <AuthenticatedLayout>
@@ -181,6 +195,7 @@ export default function Partners({ title }) {
             </div>
             <CreateUpdateModal
                 data={selectedData}
+                workspaces={workspaces}
                 show={show}
                 onClose={() => setShow(false)}
             />
