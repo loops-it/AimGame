@@ -117,7 +117,7 @@ export default function Clients({ title }) {
             try {
                 const response = await api.get(`/api-v1/clients/${searchValue}`);
                 const data = response.data.data;
-                // setClients(data);
+                setClients(data);
                 console.log('Search results:', data);
             } catch (error) {
                 console.error('Error fetching data by id:', error);
