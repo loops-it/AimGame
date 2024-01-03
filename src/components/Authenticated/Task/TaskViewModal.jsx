@@ -36,7 +36,7 @@ export default function TaskViewModal({show, onClose, data}){
                 <div className='max-h-full grid lg:grid-cols-2 h-[80vh] lg:h-fit overflow-scroll no-scrollbar px-10'>
                     <div className={'pr-5'} >
                         <div className={'font-semibold text-app-blue-3 mt-10'}>Overview</div>
-                        <div className={'text-xs text-[#707070]'}>{data?.description}</div>
+                        <div className={'text-xs text-[#707070]'}>{data?.note}</div>
                         <div className={'bg-[#F8F8F8] mt-10'}>
                             <div className={'flex items-center justify-between px-10 border-b py-5'}>
                                 <div>Status</div>
