@@ -114,20 +114,33 @@ export default function Opportunities({ title }) {
     }, [loading])
 
     
-    useEffect(() => {
-        const fetchData = async () => {
-          try {
-            const response = await fetch('http://localhost:4065/api-v1/opportunities');
-            const data = await response.json();
-            setOpportunities(data.data);
-          } catch (error) {
-            console.error('Error fetching data:', error);
-          }
-        };
+    // useEffect(() => {
+    //     const fetchData = async () => {
+    //       try {
+    //         const response = await fetch('http://localhost:4065/api-v1/opportunities');
+    //         const data = await response.json();
+    //         setOpportunities(data.data);
+    //       } catch (error) {
+    //         console.error('Error fetching data:', error);
+    //       }
+    //     };
     
-        fetchData();
-      }, []);
+    //     fetchData();
+    //   }, []);
 
+      useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await api.get('/api-v1/opportunities');
+                const data = response.data.data;
+                setOpportunities(data);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        };
+
+        fetchData();
+    }, []);
       console.log("opportunity data : ",opportunities);
 
 
