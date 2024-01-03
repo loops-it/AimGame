@@ -37,6 +37,7 @@ export default function Tasks() {
     const [show, setShow] = useState(false);
     const [selectedData, setSelectedData] = useState(null);
     const [tempData, setTempData] = useState(null);
+    const [searchValue, setSearchValue] = useState([]);
 
     // tasks data
     useEffect(() => {
@@ -53,6 +54,19 @@ export default function Tasks() {
     }, []);
     console.log("tasks data : ", selectedData);
 
+
+    const fetchSearchResults = async () => {
+        if (searchValue.trim() !== '') {
+            try {
+                const response = await api.get(`/api-v1/tasks/${searchValue}`);
+                const data = response.data.data;
+                console.log('Search results:', data);
+            } catch (error) {
+                console.error('Error fetching data by id:', error);
+            }
+        }
+    };
+
     return (
         <AuthenticatedLayout>
             <div className='flex justify-between gap-5 items-center' >
@@ -63,10 +77,17 @@ export default function Tasks() {
                     <div className='h-1 w-[70%] bg-app-yellow' ></div>
                 </div>
                 <div className='w-[30%] relative flex items-center' >
-                    <MainInput
+                    {/* <MainInput
                         placeholder={"Search Task"}
+                        
+                    /> */}
+                    <input
+                        type="search"
+                        placeholder='Search'
+                        onChange={(e) => setSearchValue(e.target.value)}
+                        className={`w-full border border-app-gray h-[50px] px-4 rounded-lg text-sm lg:text-base`}
                     />
-                    <MagnifyingGlassIcon className='text-[#A6A9B9] w-5 h-5 absolute right-5' />
+                    <MagnifyingGlassIcon onClick={fetchSearchResults} className='text-[#A6A9B9] w-5 h-5 absolute right-5' />
                 </div>
             </div>
             <div className='bg-white shadow-lg w-full px-10 py-10 mt-10'>
