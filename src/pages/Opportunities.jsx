@@ -143,7 +143,7 @@ export default function Opportunities({ title }) {
     }, []);
       console.log("opportunity data : ",opportunities);
 
-
+// search
       const fetchSearchResults = async () => {
         if (searchValue.trim() !== '') {
             try {
