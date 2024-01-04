@@ -1,36 +1,39 @@
-/* eslint-disable react/prop-types */
 import { Fragment, useState } from 'react'
 import { Combobox, Transition } from '@headlessui/react'
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
-import { Chip } from '@mui/material'
 
-export default function MainMultipleSelect({ options, label, placeholder, onDeleteItem, value = [], onChange, disabled }) {
-    const [query, setQuery] = useState('');
+export default function MainRatesSelect({ options, label, placeholder, value, onChange, disabled, variant }) {
+    const [query, setQuery] = useState('')
 
-    const filteredOptions = query === ''
-        ? options
-        : options.filter((option) =>
-            option.name.toLowerCase().replace(/\s+/g, '').includes(query.toLowerCase().replace(/\s+/g, ''))
-        );
+    const filteredOptions =
+        query === ''
+            ? options
+            : options.filter((option) =>
+                option.rate
+                    .toLowerCase()
+                    .replace(/\s+/g, '')
+                    .includes(query.toLowerCase().replace(/\s+/g, ''))
+            )
 
-    const handleOnChange = (selectedItems) => {
-        onChange(selectedItems);
-    };
+    const getHeight = () => {
+        if(variant == "small"){
+            return "h-[35px]"
+        }
+        if(variant == "medium"){
+            return "h-[40px]"
+        }
+        return "h-[48px]"
+    }
 
     return (
-        <div className="">
+        <div className="relative">
             <label className='text-app-blue-2 font-normal text-sm lg:text-base' >{label}</label>
-            <Combobox
-                disabled={disabled}
-                value={value}
-                onChange={(selectedItems) => handleOnChange(selectedItems)}
-                multiple
-            >
+            <Combobox disabled={disabled} value={value} onChange={onChange}>
                 <div className="relative mt-2">
-                    <div className={`relative w-full cursor-default border border-app-gray rounded-lg ${disabled ? "bg-[#FAFAFA]" : "bg-white"} text-lef sm:text-sm`}>
+                    <div className={`relative w-full cursor-default border border-app-gray overflow-hidden rounded-lg ${disabled ? "bg-[#FAFAFA]" : "bg-white"}  text-lef sm:text-sm`}>
                         <Combobox.Input
                             placeholder={placeholder}
-                            className="w-full border-none min-h-[48px] outline-none pl-3 pr-10 text-sm lg:text-base leading-5 text-gray-900 bg-transparent"
+                            className={`w-full border-none ${getHeight()} outline-none pl-3 pr-10 text-sm lg:text-base leading-5 text-gray-900 bg-transparent`}
                             displayValue={(option) => option.name}
                             onChange={(event) => setQuery(event.target.value)}
                         />
@@ -41,21 +44,6 @@ export default function MainMultipleSelect({ options, label, placeholder, onDele
                             />
                         </Combobox.Button>
                     </div>
-                    {value.length > 0 && (
-                        <div className='flex flex-wrap gap-1 my-3'>
-                            {value.map((option, index) => {
-                                // console.log("chip : ", option)
-                                return(
-                                
-                                    <Chip
-                                        key={option._id}
-                                        label={option._id}
-                                        onDelete={() => onDeleteItem(index)}
-                                    />
-                                )
-                            })}
-                        </div>
-                    )}
                     <Transition
                         as={Fragment}
                         leave="transition ease-in duration-100"
@@ -71,12 +59,12 @@ export default function MainMultipleSelect({ options, label, placeholder, onDele
                             ) : (
                                 filteredOptions.map((option) => (
                                     <Combobox.Option
-                                        key={option._id}
-                                        value={option._id}
+                                        key={option.rate}
                                         className={({ active }) =>
                                             `relative cursor-default select-none py-2 pl-10 pr-4 ${active ? 'bg-app-blue text-white' : 'text-gray-900'
                                             }`
                                         }
+                                        value={option}
                                     >
                                         {({ selected, active }) => (
                                             <>
@@ -84,7 +72,7 @@ export default function MainMultipleSelect({ options, label, placeholder, onDele
                                                     className={`block truncate ${selected ? 'font-medium' : 'font-normal'
                                                         }`}
                                                 >
-                                                    {option.name}
+                                                    {option.rate}
                                                 </span>
                                                 {selected ? (
                                                     <span
@@ -104,5 +92,5 @@ export default function MainMultipleSelect({ options, label, placeholder, onDele
                 </div>
             </Combobox>
         </div>
-    );
+    )
 }

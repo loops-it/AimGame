@@ -101,20 +101,7 @@ export default function Clients({ title }) {
             try {
                 const response = await api.get('/api-v1/clients');
                 const data = response.data.data;
-
-                const clientsWithIndustryNames = await Promise.all(
-                    data.map(async (client) => {
-                        const industryTypeResponse = await api.get(`/api-v1/industryTypes/${client.industryTypeId}`);
-                        const industryTypeData = industryTypeResponse.data.data;
-
-                        return {
-                            ...client,
-                            industryTypeName: industryTypeData.name,
-                        };
-                    })
-                );
-
-                setClients(clientsWithIndustryNames);
+                setClients(data);
             } catch (error) {
                 console.error('Error fetching data:', error);
             }
@@ -122,13 +109,15 @@ export default function Clients({ title }) {
 
         fetchData();
     }, []);
+    console.log("clients : ", clients)
+
 
     const fetchSearchResults = async () => {
         if (searchValue.trim() !== '') {
             try {
                 const response = await api.get(`/api-v1/clients/${searchValue}`);
                 const data = response.data.data;
-                // setClients(data);
+                // setClients(data.data);
                 console.log('Search results:', data);
             } catch (error) {
                 console.error('Error fetching data by id:', error);
@@ -236,7 +225,7 @@ export default function Clients({ title }) {
                                     </td>
                                     <td className="py-5 px-6" >{formattedDate}</td>
                                     <td className="py-5 px-6" >{row?.name}</td>
-                                    <td className="py-5 px-6" >{row?.industryTypeName}</td>
+                                    <td className="py-5 px-6" >{row?.industryTypeId ? row.industryTypeId.name : "-"}</td>
                                     <td className="py-5 px-6" >{row?.address}</td>
                                     <td className="py-5 px-6" >{row?.phone}</td>
                                     <td className="py-5 px-6" >{row?.email}</td>

@@ -1,9 +1,25 @@
-import React, { useEffect, useState } from 'react'
+import React, {useState } from 'react'
 import { Transition } from '@headlessui/react'
 import { XCircleIcon } from '@heroicons/react/24/outline'
-import MainInput from '../../MainInput'
+// import MainInput from '../../MainInput'
+import api from '../../../services/api'
 
 export default function SearchModal({ show, onClose, list }) {
+
+    const [searchValue, setSearchValue] = useState([]);
+
+    // search
+    const fetchSearchResults = async () => {
+        if (searchValue.trim() !== '') {
+            try {
+                const response = await api.get(`/api-v1/opportunities/${searchValue}`);
+                const data = response.data.data;
+                console.log('Search results:', data);
+            } catch (error) {
+                console.error('Error fetching data by id:', error);
+            }
+        }
+    };
     return (
         <Transition
             show={show}
@@ -22,9 +38,24 @@ export default function SearchModal({ show, onClose, list }) {
                         <XCircleIcon className='w-7 h-7' />
                     </button>
                 </div>
-                <MainInput
+                {/* <MainInput
                     placeholder={"Search Here"}
-                />
+                /> */}
+                <div className='flex flex-row p-3 align-middle justify-center'>
+                <input
+                        type="search"
+                        placeholder='Search'
+                        className={`w-full border border-app-gray h-[50px] px-4 rounded-lg text-sm lg:text-base`}
+                        onChange={(e) => setSearchValue(e.target.value)}
+                    />
+
+                    <button
+                        onClick={fetchSearchResults}
+                        className='flex justify-center items-center text-white bg-app-gray-5 px-5 py-2 w-full lg:w-fit rounded-lg'
+                    >
+                        Search
+                    </button>
+                </div>
             </div>
         </Transition>
     )

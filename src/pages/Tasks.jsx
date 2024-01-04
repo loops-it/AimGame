@@ -1,38 +1,71 @@
-import React, {useState} from 'react'
+import React, { useState } from 'react'
 import AuthenticatedLayout from '../layouts/AuthenticatedLayout'
 import MainInput from '../components/MainInput'
-import { MagnifyingGlassIcon,PlusIcon } from '@heroicons/react/24/solid'
+import { MagnifyingGlassIcon, PlusIcon } from '@heroicons/react/24/solid'
 import TaskCard from "../components/Authenticated/Task/TaskCard.jsx";
 import TaskViewModal from "../components/Authenticated/Task/TaskViewModal.jsx";
+import { useEffect } from 'react';
+import api from '../services/api'
 
 
-const tempData = [
-    {
-        title: "Server Room Upgrade",
-        description: "To get the most value from a server room upgrade, it’s important to develop a plan of action. The first step is to identify any deficiencies in the current infrastructure.",
-        status: "inProgress",
-        priority: "high",
-        assignee: "Test User",
-        date: "05/21/2023",
-        attachments: [],
-        comments: [],
-    },
-    {
-        title: "Server Room Upgrade",
-        description: "To get the most value from a server room upgrade, it’s important to develop a plan of action. The first step is to identify any deficiencies in the current infrastructure.",
-        status: "inProgress",
-        priority: "high",
-        assignee: "Test User",
-        date: "05/21/2023",
-        attachments: [],
-        comments: [],
-    }
-]
+
+// const tempData = [
+//     {
+//         title: "Server Room Upgrade",
+//         description: "To get the most value from a server room upgrade, it’s important to develop a plan of action. The first step is to identify any deficiencies in the current infrastructure.",
+//         status: "inProgress",
+//         priority: "high",
+//         assignee: "Test User",
+//         date: "05/21/2023",
+//         attachments: [],
+//         comments: [],
+//     },
+//     {
+//         title: "Server Room Upgrade",
+//         description: "To get the most value from a server room upgrade, it’s important to develop a plan of action. The first step is to identify any deficiencies in the current infrastructure.",
+//         status: "inProgress",
+//         priority: "high",
+//         assignee: "Test User",
+//         date: "05/21/2023",
+//         attachments: [],
+//         comments: [],
+//     }
+// ]
 
 export default function Tasks() {
 
     const [show, setShow] = useState(false);
     const [selectedData, setSelectedData] = useState(null);
+    const [tempData, setTempData] = useState(null);
+    const [searchValue, setSearchValue] = useState([]);
+
+    // tasks data
+    useEffect(() => {
+        const fetchWorkspaces = async () => {
+            try {
+                const response = await api.get('/api-v1/tasks');
+                setTempData(response.data.data);
+            } catch (error) {
+                console.error('Error fetching workspaces:', error);
+            }
+        };
+
+        fetchWorkspaces();
+    }, []);
+    console.log("tasks data : ", selectedData);
+
+
+    const fetchSearchResults = async () => {
+        if (searchValue.trim() !== '') {
+            try {
+                const response = await api.get(`/api-v1/tasks/${searchValue}`);
+                const data = response.data.data;
+                console.log('Search results:', data);
+            } catch (error) {
+                console.error('Error fetching data by id:', error);
+            }
+        }
+    };
 
     return (
         <AuthenticatedLayout>
@@ -44,10 +77,17 @@ export default function Tasks() {
                     <div className='h-1 w-[70%] bg-app-yellow' ></div>
                 </div>
                 <div className='w-[30%] relative flex items-center' >
-                    <MainInput
+                    {/* <MainInput
                         placeholder={"Search Task"}
+                        
+                    /> */}
+                    <input
+                        type="search"
+                        placeholder='Search'
+                        onChange={(e) => setSearchValue(e.target.value)}
+                        className={`w-full border border-app-gray h-[50px] px-4 rounded-lg text-sm lg:text-base`}
                     />
-                    <MagnifyingGlassIcon className='text-[#A6A9B9] w-5 h-5 absolute right-5' />
+                    <MagnifyingGlassIcon onClick={fetchSearchResults} className='text-[#A6A9B9] w-5 h-5 absolute right-5' />
                 </div>
             </div>
             <div className='bg-white shadow-lg w-full px-10 py-10 mt-10'>
@@ -63,17 +103,19 @@ export default function Tasks() {
                                 <div>Dec 05 2023</div>
                             </div>
                             <div className={'flex flex-col gap-5'}>
-                                {tempData?.map((row, index) => {
-                                    return (
+                                {tempData
+                                    ?.filter((row) => row.status === "Pending")
+                                    .map((row, index) => (
                                         <TaskCard
                                             key={index}
+                                            name={row.name}
+                                            date={row.date}
                                             onClick={() => {
-                                                setSelectedData(row)
-                                                setShow(true)
+                                                setSelectedData(row);
+                                                setShow(true);
                                             }}
                                         />
-                                    )
-                                })}
+                                    ))}
                             </div>
                         </div>
                     </div>
@@ -88,17 +130,19 @@ export default function Tasks() {
                                 <div>Dec 05 2023</div>
                             </div>
                             <div className={'flex flex-col gap-5'}>
-                                {tempData?.map((row, index) => {
-                                    return (
+                            {tempData
+                                    ?.filter((row) => row.status === "InProgress")
+                                    .map((row, index) => (
                                         <TaskCard
                                             key={index}
+                                            name={row.name}
+                                            date={row.date}
                                             onClick={() => {
-                                                setSelectedData(row)
-                                                setShow(true)
+                                                setSelectedData(row);
+                                                setShow(true);
                                             }}
                                         />
-                                    )
-                                })}
+                                    ))}
                             </div>
                         </div>
                     </div>
@@ -113,24 +157,26 @@ export default function Tasks() {
                                 <div>Dec 05 2023</div>
                             </div>
                             <div className={'flex flex-col gap-5'}>
-                                {tempData?.map((row, index) => {
-                                    return (
+                            {tempData
+                                    ?.filter((row) => row.status === "Completed")
+                                    .map((row, index) => (
                                         <TaskCard
                                             key={index}
+                                            name={row.name}
+                                            date={row.date}
                                             onClick={() => {
-                                                setSelectedData(row)
-                                                setShow(true)
+                                                setSelectedData(row);
+                                                setShow(true);
                                             }}
                                         />
-                                    )
-                                })}
+                                    ))}
                             </div>
                         </div>
                     </div>
                 </div>
-                <button onClick={() => {}}
-                        className='flex items-center mt-10 gap-3 justify-center bg-app-blue-2 rounded-lg w-full lg:w-fit px-6 py-2 text-white'>
-                    <PlusIcon className='w-6 h-6 text-white'/>
+                <button onClick={() => { }}
+                    className='flex items-center mt-10 gap-3 justify-center bg-app-blue-2 rounded-lg w-full lg:w-fit px-6 py-2 text-white'>
+                    <PlusIcon className='w-6 h-6 text-white' />
                     <div>New Task</div>
                 </button>
             </div>
@@ -138,7 +184,7 @@ export default function Tasks() {
                 data={selectedData}
                 show={show}
                 onClose={() => setShow(false)}
-                />
+            />
         </AuthenticatedLayout>
     )
 }

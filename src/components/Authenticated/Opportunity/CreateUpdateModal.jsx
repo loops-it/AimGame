@@ -1,3 +1,6 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-unsafe-optional-chaining */
+/* eslint-disable react/prop-types */
 import React, { useEffect, useState } from 'react'
 import { Transition } from '@headlessui/react'
 import { XCircleIcon } from '@heroicons/react/24/outline'
@@ -5,6 +8,9 @@ import MainInput from '../../MainInput'
 import MainSelect from '../../MainSelect'
 import MainMultipleSelect from '../../MainMultipleSelect'
 import { PlusIcon } from '@heroicons/react/24/solid'
+import api from '../../../services/api'
+import MainStageSelect from '../../StageDataSelect'
+import MainRatesSelect from '../../RatesDataSelect'
 
 const designations = [
     { id: 1, name: 'Head of Sales' },
@@ -13,23 +19,23 @@ const designations = [
     { id: 3, name: 'Chief Executive officer' },
 ]
 
-const stages = [
-    { id: 1, name: 'Suspect' },
-    { id: 2, name: 'Success' },
-]
+// const stages = [
+//     { id: 1, name: 'Suspect' },
+//     { id: 2, name: 'Success' },
+// ]
 
-const rates = [
-    { id: 1, name: 'Low' },
-    { id: 2, name: 'Medium' },
-    { id: 2, name: 'High' },
-]
+// const rates = [
+//     { id: 1, name: 'Low' },
+//     { id: 2, name: 'Medium' },
+//     { id: 2, name: 'High' },
+// ]
 
 
-const funnelState = [
-    { id: 1, name: '1' },
-    { id: 2, name: '2' },
-    { id: 2, name: '3' },
-]
+// const funnelState = [
+//     { id: 1, name: '1' },
+//     { id: 2, name: '2' },
+//     { id: 2, name: '3' },
+// ]
 
 const opMappingRoles = [
     { name: "Test1" },
@@ -39,7 +45,7 @@ const opMappingRoles = [
     { name: "Test5" },
 ]
 
-const teamData = [
+const teamSData = [
     {
         name: "James",
         image: "https://mui.com/static/images/avatar/1.jpg"
@@ -80,22 +86,39 @@ const initialState = {
     mappingRoles: [],
 }
 
-export default function CreateUpdateModal({ show, onClose, data, onOpMappingAddClick }) {
+export default function CreateUpdateModal({ show, onClose, opportunityData, onOpMappingAddClick, leadData, stageData, teamData, workspaces, clients }) {
 
     const [opportunity, setOpportunity] = useState(initialState)
     const [loading, setLoading] = useState(false)
 
+    // console.log("data : ", opportunityData)
+    // console.log("stageData : ", stageData)
+    // console.log("leadData : ", leadData)
+    console.log("teamData : ", teamData)
+
     useEffect(() => {
-        if (data) {
-            setOpportunity(data)
+        if (opportunityData) {
+            setOpportunity(opportunityData)
         }
-        if (!data) {
+        if (!opportunityData) {
             setOpportunity(initialState)
         }
-    }, [data])
+    }, [opportunityData])
 
     async function onCreate() {
-        onClose()
+        try {
+            console.log("opportunity : ", opportunity)
+            const response = await api.post('/api-v1/opportunities', opportunity);
+
+            if (response.status === 201) {
+                console.log('Opportunity created successfully');
+                onClose();
+            } else {
+                console.error('Failed to create opportunity:', response.statusText);
+            }
+        } catch (error) {
+            console.error('Error creating opportunity:', error);
+        }
     }
 
     async function onUpdate() {
@@ -115,8 +138,8 @@ export default function CreateUpdateModal({ show, onClose, data, onOpMappingAddC
         >
             <div className='bg-white shadow-lg rounded-md h-[90%] lg:h-fit w-[95%] lg:w-[70%]' >
                 <div className='bg-[#C5C5C533] h-14 flex justify-between items-center px-10' >
-                    <div className='font-semibold' >{data ?
-                        <span>View Opportunity - <span className='text-app-blue-4' >{data?.opportunityName}</span></span>
+                    <div className='font-semibold' >{opportunityData ?
+                        <span>View Opportunity - <span className='text-app-blue-4' >{opportunityData?.name}</span></span>
                         : "Create New Opportunity"}</div>
                     <button disabled={loading} onClick={onClose} className='flex justify-center items-center text-app-gray-3' >
                         <XCircleIcon className='w-7 h-7' />
@@ -124,61 +147,104 @@ export default function CreateUpdateModal({ show, onClose, data, onOpMappingAddC
                 </div>
                 <div className='max-h-[80vh] h-[80vh] lg:h-fit overflow-scroll no-scrollbar' >
                     <div className='grid gap-5 grid-cols-1 lg:grid-cols-2 px-10 pt-10' >
+                    <MainInput
+                            disabled={loading}
+                            value={opportunity?.referenceNumber}
+                            onChange={text => setOpportunity({ ...opportunity, referenceNumber: text })}
+                            label={"Reference number"}
+                            placeholder={"Reference number"}
+                        />
                         <MainInput
                             disabled={loading}
-                            value={opportunity?.opportunityName}
-                            onChange={text => setOpportunity({ ...opportunity, opportunityName: text })}
+                            value={opportunity?.name}
+                            onChange={text => setOpportunity({ ...opportunity, name: text })}
                             label={"Opportunity Name"}
                             placeholder={"Enter Opportunity Name"}
                         />
                         <MainSelect
                             disabled={loading}
-                            value={teamData?.find(row => row?.name == opportunity?.lead)}
-                            onChange={value => setOpportunity({ ...opportunity, lead: value?.name })}
-                            label={"Opportunity Lead"}
-                            placeholder={"Please Select Opportunity Lead"}
-                            options={teamData}
+                            value={workspaces?.find(row => row?.name == opportunity?.name)}
+                            onChange={value => setOpportunity({
+                                ...opportunity,
+                                workspaceId: value?._id || ''
+                            })}
+                            label={"Workspace"}
+                            placeholder={"Please Select Workspace"}
+                            options={workspaces}
                         />
-                        <MainSelect
+                        <MainStageSelect
+                            disabled={loading}
+                            value={stageData?.find(row => row?.stage == opportunity?.stage)}
+                            onChange={value => setOpportunity({
+                                ...opportunity,
+                                funnelStatusId: value?._id || ''
+                            })}
+                            label={"Funnel Status"}
+                            placeholder={"Please Select Funnel Status"}
+                            options={stageData}
+                        />
+                        {/* <MainSelect
                             disabled={loading}
                             value={designations?.find(row => row?.name == opportunity?.designation)}
                             onChange={value => setOpportunity({ ...opportunity, designation: value?.name })}
                             label={"Designation"}
                             placeholder={"Please Select Designation"}
                             options={designations}
-                        />
-                        <MainInput
+                        /> */}
+                        {/* <MainInput
                             disabled={loading}
                             value={parseFloat(opportunity?.probability)}
                             min={0}
                             max={100}
                             type={"number"}
                             label={"Probability(%)"}
+                        /> */}
+                        <MainSelect
+                            disabled={loading}
+                            value={clients?.find(row => row?.name == opportunity?.name)}
+                            onChange={value => setOpportunity({
+                                ...opportunity,
+                                clientId: value?._id || ''
+                            })}
+                            label={"Client"}
+                            placeholder={"Please Select Client"}
+                            options={clients}
                         />
                         <MainSelect
                             disabled={loading}
-                            value={stages?.find(row => row?.name == opportunity?.stage)}
-                            onChange={value => setOpportunity({ ...opportunity, stage: value?.name })}
+                            value={leadData?.find(row => row?.name == opportunity?.name)}
+                            onChange={value => setOpportunity({
+                                ...opportunity,
+                                leadId: value?._id || ''
+                            })}
+                            label={"Opportunity Lead"}
+                            placeholder={"Please Select Opportunity Lead"}
+                            options={leadData}
+                        />
+                        {/* <MainStageSelect
+                            disabled={loading}
+                            value={stageData?.find(row => row?.stage == opportunity?.stage)}
+                            onChange={value => setOpportunity({ ...opportunity, stage: value?.stage })}
                             label={"Stage"}
                             placeholder={"Please Select Stage"}
-                            options={stages}
+                            options={stageData}
                         />
-                        <MainSelect
+                        <MainRatesSelect
                             disabled={loading}
-                            value={rates?.find(row => row?.name == opportunity?.rate)}
-                            onChange={value => setOpportunity({ ...opportunity, rate: value?.name })}
+                            value={stageData?.find(row => row?.rate == opportunity?.rate)}
+                            onChange={value => setOpportunity({ ...opportunity, rate: value?.rate })}
                             label={"Rate"}
                             placeholder={"Please Select Rate"}
-                            options={rates}
-                        />
-                        {data &&
+                            options={stageData}
+                        /> */}
+                        {opportunityData &&
                             <MainSelect
                                 disabled={loading}
-                                value={funnelState?.find(row => row?.name == opportunity?.funnelStatus)}
+                                value={stageData?.find(row => row?.name == opportunity?.funnelStatus)}
                                 onChange={value => setOpportunity({ ...opportunity, funnelStatus: value?.name })}
                                 label={"Funnel Status"}
                                 placeholder={""}
-                                options={funnelState}
+                                options={stageData}
                             />
                         }
                     </div>
@@ -186,7 +252,10 @@ export default function CreateUpdateModal({ show, onClose, data, onOpMappingAddC
                         <MainMultipleSelect
                             disabled={loading}
                             value={opportunity?.team}
-                            onChange={value => setOpportunity({ ...opportunity, team: value?.name })}
+                            onChange={value => {
+                                setOpportunity({ ...opportunity, team: value })
+                                console.log(opportunity)
+                            }}
                             onDeleteItem={index => {
                                 let tempData = [...opportunity?.team]
                                 tempData.splice(index, 1)
@@ -196,7 +265,7 @@ export default function CreateUpdateModal({ show, onClose, data, onOpMappingAddC
                             placeholder={"Please Select Team Members"}
                             options={teamData}
                         />
-                        {data &&
+                        {opportunityData &&
                             <div>
                                 <MainMultipleSelect
                                     disabled={loading}
@@ -225,7 +294,7 @@ export default function CreateUpdateModal({ show, onClose, data, onOpMappingAddC
                                 </div>
                             </div>
                         }
-                        {data &&
+                        {opportunityData &&
                             <div>
                                 <MainMultipleSelect
                                     disabled={loading}
@@ -254,7 +323,7 @@ export default function CreateUpdateModal({ show, onClose, data, onOpMappingAddC
                                 </div>
                             </div>
                         }
-                        {data &&
+                        {opportunityData &&
                             <div>
                                 <MainMultipleSelect
                                     disabled={loading}
@@ -283,7 +352,7 @@ export default function CreateUpdateModal({ show, onClose, data, onOpMappingAddC
                                 </div>
                             </div>
                         }
-                        {data &&
+                        {opportunityData &&
                             <div>
                                 <MainMultipleSelect
                                     disabled={loading}
@@ -312,7 +381,7 @@ export default function CreateUpdateModal({ show, onClose, data, onOpMappingAddC
                                 </div>
                             </div>
                         }
-                        {data &&
+                        {opportunityData &&
                             <div>
                                 <MainMultipleSelect
                                     disabled={loading}
@@ -341,7 +410,7 @@ export default function CreateUpdateModal({ show, onClose, data, onOpMappingAddC
                                 </div>
                             </div>
                         }
-                        {data &&
+                        {opportunityData &&
                             <div>
                                 <MainMultipleSelect
                                     disabled={loading}
@@ -378,13 +447,19 @@ export default function CreateUpdateModal({ show, onClose, data, onOpMappingAddC
                             className='disabled:bg-app-gray disabled:border-app-gray disabled:text-white flex items-center gap-3 border text-app-blue-2 border-app-blue-2 rounded-lg w-fit px-10 py-2' >
                             Cancel
                         </button>
-                        <button
+                        {/* <button
                             onClick={() => {
-                                data ? onCreate() : onUpdate()
+                                opportunityData ? onCreate() : onUpdate()
                             }}
                             disabled={loading}
                             className='disabled:bg-app-gray flex items-center gap-3 bg-app-blue-2 rounded-lg w-fit px-10 py-2 text-white' >
-                            {data ? "Save" : "Create"}
+                            {opportunityData ? "Save" : "Create"}
+                        </button> */}
+                        <button
+                            onClick={onCreate}
+                            disabled={loading}
+                            className='disabled:bg-app-gray flex items-center gap-3 bg-app-blue-2 rounded-lg w-fit px-10 py-2 text-white' >
+                                Create
                         </button>
                     </div>
                 </div>
