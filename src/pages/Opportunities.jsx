@@ -225,19 +225,16 @@ export default function Opportunities({ title }) {
                                 ID
                             </th>
                             <th scope="col" className="py-5 px-6 border-b">
-                                Start Date
-                            </th>
-                            <th scope="col" className="py-5 px-6 border-b">
-                                End Date
-                            </th>
-                            <th scope="col" className="py-5 px-6 border-b">
                                 Opportunity Name
                             </th>
                             <th scope="col" className="py-5 px-6 border-b">
-                                Stage
+                                Opportunity Lead
                             </th>
                             <th scope="col" className="py-5 px-6 border-b">
-                                Probability
+                                Designations
+                            </th>
+                            <th scope="col" className="py-5 px-6 border-b">
+                                Team Members
                             </th>
                             <th scope="col" className="py-5 px-6 border-b">
                                 Funnel Status
@@ -246,14 +243,17 @@ export default function Opportunities({ title }) {
                                 Status
                             </th>
                             <th scope="col" className="py-5 px-6 border-b">
-                                Team
+                                Rate
                             </th>
                             <th scope="col" className="py-5 px-6 border-b">
+                                Client
+                            </th>
+                            {/* <th scope="col" className="py-5 px-6 border-b">
                                 Rate
                             </th>
                             <th scope="col" className="py-5 px-6 border-b">
                                 Lead
-                            </th>
+                            </th> */}
                             <th scope="col" className="py-5 px-6 border-b">
 
                             </th>
@@ -264,20 +264,9 @@ export default function Opportunities({ title }) {
                             return (
                                 <tr key={index} className="bg-white border-b text-gray-900 ">
                                     <td className="py-5 px-6" >{row?._id}</td>
-                                    <td className="py-5 px-6" >{row?.startDate}</td>
-                                    <td className="py-5 px-6" >{row?.endDate}</td>
                                     <td className="py-5 px-6" >{row?.name}</td>
-                                    <td className="py-5 px-6" >{row?.funnelStatusId ? row.funnelStatusId.stage : "-"}</td>
-                                    <td className="py-5 px-6" >{row?.probability}</td>
-                                    <td className="py-5 px-6" >{row?.funnelStatusId ? row.funnelStatusId.status : "-"}</td>
-                                    <td className="py-5 px-6" >
-                                        <Chip
-                                            sx={{ borderColor: getStatusColor(row?.status), color: getStatusColor(row?.status), fontWeight: "700", textTransform: "uppercase" }}
-                                            icon={<ArrowUpRightIcon style={{ color: getStatusColor(row?.status) }} className='w-5 h-5' />}
-                                            label={row?.status}
-                                            variant="outlined"
-                                        />
-                                    </td>
+                                    <td className="py-5 px-6" >{row?.leadId ? row.leadId.name : "-"}</td>
+                                    <td className="py-5 px-6" >{row?.name}</td>
                                     <td className="py-5 px-6" >
                                         <div>
                                             <AvatarGroup
@@ -292,8 +281,21 @@ export default function Opportunities({ title }) {
                                             </AvatarGroup>
                                         </div>
                                     </td>
-                                    <td className="py-5 px-6" >{row?.funnelStatusId ? row.funnelStatusId.rate : "-"}</td>
-                                    <td className="py-5 px-6" >{row?.leadId ? row.leadId.name : "-"}</td>
+                                    <td className="py-5 px-6" >{row?.funnelStatusId ? row.funnelStatusId.stage : "-"}</td>
+                                    <td className="py-5 px-6" >
+                                        <Chip
+                                            sx={{ borderColor: getStatusColor(row?.funnelStatusId ? row.funnelStatusId.status : "-"), color: getStatusColor(row?.funnelStatusId ? row.funnelStatusId.status : "-"), fontWeight: "700", textTransform: "uppercase" }}
+                                            icon={<ArrowUpRightIcon style={{ color: getStatusColor(row?.funnelStatusId ? row.funnelStatusId.status : "-") }} className='w-5 h-5' />}
+                                            label={row?.funnelStatusId ? row.funnelStatusId.status : "-"}
+                                            variant="outlined"
+                                        />
+                                    </td>
+                                    {/* <td className="py-5 px-6" >{row?.probability}</td> */}
+                                    <td className="py-5 px-6" >{row?.funnelStatusId ? row.funnelStatusId.status : "-"}</td>
+                                    
+                                    
+                                    <td className="py-5 px-6" >{row?.clientId ? row.clientId.name : "-"}</td>
+                                    {/* <td className="py-5 px-6" >{row?.leadId ? row.leadId.name : "-"}</td> */}
                                     <td>
                                         <button
                                             onClick={() => {
