@@ -100,7 +100,6 @@ export default function Opportunities({ title }) {
     const [roleMappingShow, setRoleMappingShow] = useState(false)
 
     const [opportunities, setOpportunities] = useState([]);
-    const [searchValue, setSearchValue] = useState([]);
 
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 50;
@@ -113,20 +112,6 @@ export default function Opportunities({ title }) {
         }, 3000);
     }, [loading])
 
-    
-    // useEffect(() => {
-    //     const fetchData = async () => {
-    //       try {
-    //         const response = await fetch('http://localhost:4065/api-v1/opportunities');
-    //         const data = await response.json();
-    //         setOpportunities(data.data);
-    //       } catch (error) {
-    //         console.error('Error fetching data:', error);
-    //       }
-    //     };
-    
-    //     fetchData();
-    //   }, []);
 
       useEffect(() => {
         const fetchData = async () => {
@@ -141,21 +126,7 @@ export default function Opportunities({ title }) {
 
         fetchData();
     }, []);
-      console.log("opportunity data : ",opportunities);
-
-// search
-      const fetchSearchResults = async () => {
-        if (searchValue.trim() !== '') {
-            try {
-                const response = await api.get(`/api-v1/clients/${searchValue}`);
-                const data = response.data.data;
-                // setClients(data);
-                console.log('Search results:', data);
-            } catch (error) {
-                console.error('Error fetching data by id:', error);
-            }
-        }
-    };
+    //   console.log("opportunity data : ",opportunities);
 
 
       const paginatedData = opportunities.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
@@ -320,7 +291,7 @@ export default function Opportunities({ title }) {
             />
 
             <SearchModal
-                list={tempData}
+                list={opportunities}
                 show={showSearch}
                 onClose={() => setShowSearch(false)}
             />
