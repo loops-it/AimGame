@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable react/prop-types */
 import React, { useEffect, useState } from 'react'
 import { Transition } from '@headlessui/react'
@@ -84,13 +86,13 @@ const initialState = {
     mappingRoles: [],
 }
 
-export default function CreateUpdateModal({ show, onClose, opportunityData, onOpMappingAddClick, leadData, stageData, teamData }) {
+export default function CreateUpdateModal({ show, onClose, opportunityData, onOpMappingAddClick, leadData, stageData, teamData, workspaces, clients }) {
 
     const [opportunity, setOpportunity] = useState(initialState)
     const [loading, setLoading] = useState(false)
 
-    console.log("data : ", opportunityData)
-    console.log("stageData : ", stageData)
+    // console.log("data : ", opportunityData)
+    // console.log("stageData : ", stageData)
     // console.log("leadData : ", leadData)
     // console.log("teamData : ", teamData)
 
@@ -105,6 +107,7 @@ export default function CreateUpdateModal({ show, onClose, opportunityData, onOp
 
     async function onCreate() {
         try {
+            console.log("opportunity : ", opportunity)
             const response = await api.post('/api-v1/opportunities', opportunity);
 
             if (response.status === 201) {
@@ -144,6 +147,13 @@ export default function CreateUpdateModal({ show, onClose, opportunityData, onOp
                 </div>
                 <div className='max-h-[80vh] h-[80vh] lg:h-fit overflow-scroll no-scrollbar' >
                     <div className='grid gap-5 grid-cols-1 lg:grid-cols-2 px-10 pt-10' >
+                    <MainInput
+                            disabled={loading}
+                            value={opportunity?.referenceNumber}
+                            onChange={text => setOpportunity({ ...opportunity, referenceNumber: text })}
+                            label={"Reference number"}
+                            placeholder={"Reference number"}
+                        />
                         <MainInput
                             disabled={loading}
                             value={opportunity?.name}
@@ -153,29 +163,65 @@ export default function CreateUpdateModal({ show, onClose, opportunityData, onOp
                         />
                         <MainSelect
                             disabled={loading}
-                            value={teamData?.find(row => row?.name == opportunity?.name)}
-                            onChange={value => setOpportunity({ ...opportunity, lead: value?.name })}
-                            label={"Opportunity Lead"}
-                            placeholder={"Please Select Opportunity Lead"}
-                            options={teamData}
+                            value={workspaces?.find(row => row?.name == opportunity?.name)}
+                            onChange={value => setOpportunity({
+                                ...opportunity,
+                                workspaceId: value?._id || ''
+                            })}
+                            label={"Workspace"}
+                            placeholder={"Please Select Workspace"}
+                            options={workspaces}
                         />
-                        <MainSelect
+                        <MainStageSelect
+                            disabled={loading}
+                            value={stageData?.find(row => row?.stage == opportunity?.stage)}
+                            onChange={value => setOpportunity({
+                                ...opportunity,
+                                funnelStatusId: value?._id || ''
+                            })}
+                            label={"Funnel Status"}
+                            placeholder={"Please Select Funnel Status"}
+                            options={stageData}
+                        />
+                        {/* <MainSelect
                             disabled={loading}
                             value={designations?.find(row => row?.name == opportunity?.designation)}
                             onChange={value => setOpportunity({ ...opportunity, designation: value?.name })}
                             label={"Designation"}
                             placeholder={"Please Select Designation"}
                             options={designations}
-                        />
-                        <MainInput
+                        /> */}
+                        {/* <MainInput
                             disabled={loading}
                             value={parseFloat(opportunity?.probability)}
                             min={0}
                             max={100}
                             type={"number"}
                             label={"Probability(%)"}
+                        /> */}
+                        <MainSelect
+                            disabled={loading}
+                            value={clients?.find(row => row?.name == opportunity?.name)}
+                            onChange={value => setOpportunity({
+                                ...opportunity,
+                                clientId: value?._id || ''
+                            })}
+                            label={"Client"}
+                            placeholder={"Please Select Client"}
+                            options={clients}
                         />
-                        <MainStageSelect
+                        <MainSelect
+                            disabled={loading}
+                            value={leadData?.find(row => row?.name == opportunity?.name)}
+                            onChange={value => setOpportunity({
+                                ...opportunity,
+                                leadId: value?._id || ''
+                            })}
+                            label={"Opportunity Lead"}
+                            placeholder={"Please Select Opportunity Lead"}
+                            options={leadData}
+                        />
+                        {/* <MainStageSelect
                             disabled={loading}
                             value={stageData?.find(row => row?.stage == opportunity?.stage)}
                             onChange={value => setOpportunity({ ...opportunity, stage: value?.stage })}
@@ -190,7 +236,7 @@ export default function CreateUpdateModal({ show, onClose, opportunityData, onOp
                             label={"Rate"}
                             placeholder={"Please Select Rate"}
                             options={stageData}
-                        />
+                        /> */}
                         {opportunityData &&
                             <MainSelect
                                 disabled={loading}
@@ -398,13 +444,19 @@ export default function CreateUpdateModal({ show, onClose, opportunityData, onOp
                             className='disabled:bg-app-gray disabled:border-app-gray disabled:text-white flex items-center gap-3 border text-app-blue-2 border-app-blue-2 rounded-lg w-fit px-10 py-2' >
                             Cancel
                         </button>
-                        <button
+                        {/* <button
                             onClick={() => {
                                 opportunityData ? onCreate() : onUpdate()
                             }}
                             disabled={loading}
                             className='disabled:bg-app-gray flex items-center gap-3 bg-app-blue-2 rounded-lg w-fit px-10 py-2 text-white' >
                             {opportunityData ? "Save" : "Create"}
+                        </button> */}
+                        <button
+                            onClick={onCreate}
+                            disabled={loading}
+                            className='disabled:bg-app-gray flex items-center gap-3 bg-app-blue-2 rounded-lg w-fit px-10 py-2 text-white' >
+                                Create
                         </button>
                     </div>
                 </div>
