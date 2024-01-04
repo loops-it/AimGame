@@ -12,82 +12,82 @@ import RoleMappingModal from '../components/Authenticated/Opportunity/RoleMappin
 import api from '../services/api'
 
 
-const tempData = [
-    {
-        id: "123123",
-        startDate: "2025/10/20",
-        endDate: "2025/10/25",
-        opportunityName: "Sale of office supplies",
-        stage: "Suspect",
-        probability: "10",
-        funnelStatus: "No Task",
-        status: "start",
-        designation: "Head of Sales",
-        team: [
-            {
-                name: "James",
-                image: "https://mui.com/static/images/avatar/1.jpg"
-            },
-            {
-                name: "Harry",
-                image: "https://mui.com/static/images/avatar/2.jpg"
-            },
-            {
-                name: "Chester",
-                image: "https://mui.com/static/images/avatar/3.jpg"
-            }
-        ],
-        mappingRoles: [
-            { name: "Test1" },
-            { name: "Test2" },
-        ],
-        rate: "Low",
-        lead: "James",
-    },
-    {
-        id: "123123",
-        startDate: "2025/10/20",
-        endDate: "2025/10/25",
-        opportunityName: "Sale of office supplies",
-        stage: "Suspect",
-        probability: "10",
-        funnelStatus: "No Task",
-        status: "continue",
-        designation: "Chief Executive officer",
-        team: [
-            {
-                name: "James",
-                image: "https://mui.com/static/images/avatar/4.jpg"
-            },
-            {
-                name: "Harry",
-                image: "https://mui.com/static/images/avatar/5.jpg"
-            },
-            {
-                name: "Chester",
-                image: "https://mui.com/static/images/avatar/6.jpg"
-            },
-            {
-                name: "James1",
-                image: "https://mui.com/static/images/avatar/1.jpg"
-            },
-            {
-                name: "James2",
-                image: "https://mui.com/static/images/avatar/2.jpg"
-            },
-            {
-                name: "James3",
-                image: "https://mui.com/static/images/avatar/3.jpg"
-            },
-            {
-                name: "James4",
-                image: "https://mui.com/static/images/avatar/4.jpg"
-            },
-        ],
-        rate: "Low",
-        lead: "James",
-    },
-]
+// const tempData = [
+//     {
+//         id: "123123",
+//         startDate: "2025/10/20",
+//         endDate: "2025/10/25",
+//         opportunityName: "Sale of office supplies",
+//         stage: "Suspect",
+//         probability: "10",
+//         funnelStatus: "No Task",
+//         status: "start",
+//         designation: "Head of Sales",
+//         team: [
+//             {
+//                 name: "James",
+//                 image: "https://mui.com/static/images/avatar/1.jpg"
+//             },
+//             {
+//                 name: "Harry",
+//                 image: "https://mui.com/static/images/avatar/2.jpg"
+//             },
+//             {
+//                 name: "Chester",
+//                 image: "https://mui.com/static/images/avatar/3.jpg"
+//             }
+//         ],
+//         mappingRoles: [
+//             { name: "Test1" },
+//             { name: "Test2" },
+//         ],
+//         rate: "Low",
+//         lead: "James",
+//     },
+//     {
+//         id: "123123",
+//         startDate: "2025/10/20",
+//         endDate: "2025/10/25",
+//         opportunityName: "Sale of office supplies",
+//         stage: "Suspect",
+//         probability: "10",
+//         funnelStatus: "No Task",
+//         status: "continue",
+//         designation: "Chief Executive officer",
+//         team: [
+//             {
+//                 name: "James",
+//                 image: "https://mui.com/static/images/avatar/4.jpg"
+//             },
+//             {
+//                 name: "Harry",
+//                 image: "https://mui.com/static/images/avatar/5.jpg"
+//             },
+//             {
+//                 name: "Chester",
+//                 image: "https://mui.com/static/images/avatar/6.jpg"
+//             },
+//             {
+//                 name: "James1",
+//                 image: "https://mui.com/static/images/avatar/1.jpg"
+//             },
+//             {
+//                 name: "James2",
+//                 image: "https://mui.com/static/images/avatar/2.jpg"
+//             },
+//             {
+//                 name: "James3",
+//                 image: "https://mui.com/static/images/avatar/3.jpg"
+//             },
+//             {
+//                 name: "James4",
+//                 image: "https://mui.com/static/images/avatar/4.jpg"
+//             },
+//         ],
+//         rate: "Low",
+//         lead: "James",
+//     },
+// ]
 
 export default function Opportunities({ title }) {
     document.title = title
@@ -100,11 +100,14 @@ export default function Opportunities({ title }) {
     const [roleMappingShow, setRoleMappingShow] = useState(false)
 
     const [opportunities, setOpportunities] = useState([]);
+    const [opLead, setOpLead] = useState([]);
+    const [stage, setStage] = useState([]);
+    const [team, setTeam] = useState([]);
 
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 50;
 
-    
+
 
     useEffect(() => {
         setTimeout(() => {
@@ -112,8 +115,8 @@ export default function Opportunities({ title }) {
         }, 3000);
     }, [loading])
 
-
-      useEffect(() => {
+    // opportunity data
+    useEffect(() => {
         const fetchData = async () => {
             try {
                 const response = await api.get('/api-v1/opportunities');
@@ -126,10 +129,55 @@ export default function Opportunities({ title }) {
 
         fetchData();
     }, []);
-    //   console.log("opportunity data : ",opportunities);
+
+    // lead data
+    useEffect(() => {
+        const fetchLeadData = async () => {
+            try {
+                const response = await api.get('/api-v1/users');
+                const data = response.data.data;
+                setOpLead(data);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        };
+
+        fetchLeadData();
+    }, []);
 
 
-      const paginatedData = opportunities.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+    // stage data
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await api.get('/api-v1/funnelStatuses');
+                const data = response.data.data;
+                setStage(data);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        };
+
+        fetchData();
+    }, []);
+
+    // team data
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await api.get('/api-v1/users');
+                const data = response.data.data;
+                setTeam(data);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        };
+
+        fetchData();
+    }, []);
+    console.log("opportunity data : ", opportunities);
+
+    const paginatedData = opportunities.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
     function getStatusColor(status) {
         if (status == "start") {
@@ -262,9 +310,9 @@ export default function Opportunities({ title }) {
                                         />
                                     </td>
                                     {/* <td className="py-5 px-6" >{row?.probability}</td> */}
-                                    <td className="py-5 px-6" >{row?.funnelStatusId ? row.funnelStatusId.status : "-"}</td>
-                                    
-                                    
+                                    <td className="py-5 px-6" >{row?.funnelStatusId ? row.funnelStatusId.rate : "-"}</td>
+
+
                                     <td className="py-5 px-6" >{row?.clientId ? row.clientId.name : "-"}</td>
                                     {/* <td className="py-5 px-6" >{row?.leadId ? row.leadId.name : "-"}</td> */}
                                     <td>
@@ -284,8 +332,11 @@ export default function Opportunities({ title }) {
                 </TableProvider>
             </div>
             <CreateUpdateModal
-                data={selectedData}
+                opportunityData={selectedData}
                 show={show}
+                teamData={team}
+                stageData={stage}
+                leadData={opLead}
                 onClose={() => setShow(false)}
                 onOpMappingAddClick={() => setRoleMappingShow(true)}
             />
