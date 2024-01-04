@@ -1,24 +1,31 @@
+/* eslint-disable react/prop-types */
 import { Fragment, useState } from 'react'
 import { Combobox, Transition } from '@headlessui/react'
-import { CheckIcon, ChevronUpDownIcon, XCircleIcon } from '@heroicons/react/20/solid'
+import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
 import { Chip } from '@mui/material'
 
-export default function MainMultipleSelect({ options, label, placeholder, onDeleteItem, value, onChange, disabled }) {
-    const [query, setQuery] = useState('')
+export default function MainMultipleSelect({ options, label, placeholder, onDeleteItem, value = [], onChange, disabled }) {
+    const [query, setQuery] = useState('');
 
-    const filteredOptions =
-        query === ''
-            ? options
-            : options.filter((option) =>
-                option.name
-                    .toLowerCase()
-                    .replace(/\s+/g, '')
-                    .includes(query.toLowerCase().replace(/\s+/g, ''))
-            )
+    const filteredOptions = query === ''
+        ? options
+        : options.filter((option) =>
+            option.name.toLowerCase().replace(/\s+/g, '').includes(query.toLowerCase().replace(/\s+/g, ''))
+        );
+
+    const handleOnChange = (selectedItems) => {
+        onChange(selectedItems);
+    };
+
     return (
         <div className="">
             <label className='text-app-blue-2 font-normal text-sm lg:text-base' >{label}</label>
-            <Combobox disabled={disabled} value={value} onChange={onChange} multiple>
+            <Combobox
+                disabled={disabled}
+                value={value}
+                onChange={(selectedItems) => handleOnChange(selectedItems)}
+                multiple
+            >
                 <div className="relative mt-2">
                     <div className={`relative w-full cursor-default border border-app-gray rounded-lg ${disabled ? "bg-[#FAFAFA]" : "bg-white"} text-lef sm:text-sm`}>
                         <Combobox.Input
@@ -35,14 +42,18 @@ export default function MainMultipleSelect({ options, label, placeholder, onDele
                         </Combobox.Button>
                     </div>
                     {value.length > 0 && (
-                        <div className='flex flex-wrap gap-1 my-3' >
-                            {value.map((option, index) => (
-                                <Chip
-                                    key={option.name}
-                                    label={option.name}
-                                    onDelete={() => onDeleteItem(index)}
-                                />
-                            ))}
+                        <div className='flex flex-wrap gap-1 my-3'>
+                            {value.map((option, index) => {
+                                // console.log("chip : ", option)
+                                return(
+                                
+                                    <Chip
+                                        key={option._id}
+                                        label={option._id}
+                                        onDelete={() => onDeleteItem(index)}
+                                    />
+                                )
+                            })}
                         </div>
                     )}
                     <Transition
@@ -60,12 +71,12 @@ export default function MainMultipleSelect({ options, label, placeholder, onDele
                             ) : (
                                 filteredOptions.map((option) => (
                                     <Combobox.Option
-                                        key={option.name}
+                                        key={option._id}
+                                        value={option._id}
                                         className={({ active }) =>
                                             `relative cursor-default select-none py-2 pl-10 pr-4 ${active ? 'bg-app-blue text-white' : 'text-gray-900'
                                             }`
                                         }
-                                        value={option}
                                     >
                                         {({ selected, active }) => (
                                             <>
@@ -93,5 +104,5 @@ export default function MainMultipleSelect({ options, label, placeholder, onDele
                 </div>
             </Combobox>
         </div>
-    )
+    );
 }

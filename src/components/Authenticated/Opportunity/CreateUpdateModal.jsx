@@ -45,40 +45,40 @@ const opMappingRoles = [
     { name: "Test5" },
 ]
 
-// const teamData = [
-//     {
-//         name: "James",
-//         image: "https://mui.com/static/images/avatar/1.jpg"
-//     },
-//     {
-//         name: "Harry",
-//         image: "https://mui.com/static/images/avatar/2.jpg"
-//     },
-//     {
-//         name: "Chester",
-//         image: "https://mui.com/static/images/avatar/3.jpg"
-//     },
-//     {
-//         name: "Chester1",
-//         image: "https://mui.com/static/images/avatar/3.jpg"
-//     },
-//     {
-//         name: "Chester2",
-//         image: "https://mui.com/static/images/avatar/3.jpg"
-//     },
-//     {
-//         name: "Chester3",
-//         image: "https://mui.com/static/images/avatar/3.jpg"
-//     },
-//     {
-//         name: "Chester4",
-//         image: "https://mui.com/static/images/avatar/3.jpg"
-//     },
-//     {
-//         name: "Chester5",
-//         image: "https://mui.com/static/images/avatar/3.jpg"
-//     }
-// ]
+const teamSData = [
+    {
+        name: "James",
+        image: "https://mui.com/static/images/avatar/1.jpg"
+    },
+    {
+        name: "Harry",
+        image: "https://mui.com/static/images/avatar/2.jpg"
+    },
+    {
+        name: "Chester",
+        image: "https://mui.com/static/images/avatar/3.jpg"
+    },
+    {
+        name: "Chester1",
+        image: "https://mui.com/static/images/avatar/3.jpg"
+    },
+    {
+        name: "Chester2",
+        image: "https://mui.com/static/images/avatar/3.jpg"
+    },
+    {
+        name: "Chester3",
+        image: "https://mui.com/static/images/avatar/3.jpg"
+    },
+    {
+        name: "Chester4",
+        image: "https://mui.com/static/images/avatar/3.jpg"
+    },
+    {
+        name: "Chester5",
+        image: "https://mui.com/static/images/avatar/3.jpg"
+    }
+]
 
 const initialState = {
     team: [],
@@ -94,7 +94,7 @@ export default function CreateUpdateModal({ show, onClose, opportunityData, onOp
     // console.log("data : ", opportunityData)
     // console.log("stageData : ", stageData)
     // console.log("leadData : ", leadData)
-    // console.log("teamData : ", teamData)
+    console.log("teamData : ", teamData)
 
     useEffect(() => {
         if (opportunityData) {
@@ -252,7 +252,10 @@ export default function CreateUpdateModal({ show, onClose, opportunityData, onOp
                         <MainMultipleSelect
                             disabled={loading}
                             value={opportunity?.team}
-                            onChange={value => setOpportunity({ ...opportunity, team: value?.name })}
+                            onChange={value => {
+                                setOpportunity({ ...opportunity, team: value })
+                                console.log(opportunity)
+                            }}
                             onDeleteItem={index => {
                                 let tempData = [...opportunity?.team]
                                 tempData.splice(index, 1)
