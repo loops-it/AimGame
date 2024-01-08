@@ -121,8 +121,22 @@ export default function CreateUpdateModal({ show, onClose, opportunityData, onOp
         }
     }
 
+
+
     async function onUpdate() {
-        onClose()
+        console.log(opportunity)
+        try {
+            const response = await api.put(`/api-v1/clients/${opportunity._id}`, opportunity);
+
+            if (response.status === 200 || response.status === 201) {
+                console.log('Client updated successfully');
+                onClose();
+            } else {
+                console.error('Failed to update client:', response.statusText);
+            }
+        } catch (error) {
+            console.error('Error updating client:', error);
+        }
     }
 
     return (
@@ -456,10 +470,12 @@ export default function CreateUpdateModal({ show, onClose, opportunityData, onOp
                             {opportunityData ? "Save" : "Create"}
                         </button> */}
                         <button
-                            onClick={onCreate}
+                            onClick={() => {
+                                opportunityData ? onUpdate() : onCreate();
+                            }}
                             disabled={loading}
                             className='disabled:bg-app-gray flex items-center gap-3 bg-app-blue-2 rounded-lg w-fit px-10 py-2 text-white' >
-                                Create
+                                {opportunityData ? "Update" : "Create"}
                         </button>
                     </div>
                 </div>

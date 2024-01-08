@@ -1,8 +1,11 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable react/prop-types */
 import React, { useEffect, useState } from 'react'
 import { Transition } from '@headlessui/react'
 import { XCircleIcon } from '@heroicons/react/24/outline'
 import MainInput from '../../MainInput'
 import MainSelect from '../../MainSelect'
+import api from '../../../services/api'
 
 
 const rates = [
@@ -16,7 +19,7 @@ const initialState = {}
 export default function CreateUpdateModal({ show, onClose, data, workspaces }) {
     const [partner, setPartner] = useState(initialState)
     const [loading, setLoading] = useState(false)
-console.log(workspaces);
+// console.log(workspaces);
     useEffect(() => {
         if (data) {
             setPartner(data)
@@ -26,25 +29,19 @@ console.log(workspaces);
         }
     }, [data])
 
+
     async function onCreate() {
         try {
-            const response = await fetch('http://localhost:4065/api-v1/partners', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${localStorage.accessToken}`,
-                },
-                body: JSON.stringify(partner),
-            });
-            console.log("Request Payload: ", JSON.stringify(partner));
-            if (response.ok) {
+            const response = await api.post('/api-v1/partners', partner);
+
+            if (response.status === 201) {
                 console.log('Partner created successfully');
                 onClose();
             } else {
-                console.error('Failed to create client:', response.statusText);
+                console.error('Failed to create partner:', response.statusText);
             }
         } catch (error) {
-            console.error('Error creating client:', error);
+            console.error('Error creating partner:', error);
         }
     }
 

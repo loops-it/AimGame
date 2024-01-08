@@ -29,6 +29,7 @@ export default function Opportunities({ title }) {
     const [team, setTeam] = useState([]);
     const [workspace, setWorkspace] = useState([]);
     const [clients, setClients] = useState([]);
+    const [org, setOrg] = useState([]);
 
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 50;
@@ -94,6 +95,21 @@ export default function Opportunities({ title }) {
                 const response = await api.get('/api-v1/workspaces');
                 const data = response.data.data;
                 setWorkspace(data);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        };
+
+        fetchData();
+    }, []);
+
+    // client organization data
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await api.get('/api-v1/client-organizations');
+                const data = response.data.data;
+                setOrg(data);
             } catch (error) {
                 console.error('Error fetching data:', error);
             }
@@ -308,6 +324,7 @@ export default function Opportunities({ title }) {
 
             <RoleMappingModal
                 data={selectedData}
+                org={org}
                 show={roleMappingShow}
                 onClose={() => setRoleMappingShow(false)}
             />

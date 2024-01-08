@@ -1,8 +1,11 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable react/prop-types */
 import React, { useEffect, useState } from 'react'
 import { Transition } from '@headlessui/react'
 import { XCircleIcon } from '@heroicons/react/24/outline'
 import MainInput from '../../MainInput'
 import MainSelect from '../../MainSelect'
+import api from '../../../services/api'
 
 const designations = [
     { id: 1, name: 'Head of Sales' },
@@ -29,14 +32,27 @@ const statuses = [
     { id: 3, name: 'Lost' },
 ]
 
-export default function RoleMappingModal({ show, onClose, data }) {
+export default function RoleMappingModal({ show, onClose, data, org }) {
 
     const [mappedRole, setMappedRole] = useState({})
     const [loading, setLoading] = useState(false)
 
     const onSave = async () => {
+        try {
+            const response = await api.post(`/api-v1/opportunities/${data._id}/mapping-role`, mappedRole);
 
+            if (response.status === 201) {
+                console.log('Mapped Role successfully');
+                onClose();
+            } else {
+                console.error('Failed to mapped role:', response.statusText);
+            }
+        } catch (error) {
+            console.error('Error mapping role:', error);
+        }
     }
+
+    console.log("data : ",data)
 
     return (
         <Transition
@@ -68,19 +84,19 @@ export default function RoleMappingModal({ show, onClose, data }) {
 
                         <MainSelect
                             disabled={loading}
-                            value={designations?.find(row => row?.name == mappedRole?.designation)}
+                            value={org?.find(row => row?.name == mappedRole?.designation)}
                             onChange={value => setMappedRole({ ...mappedRole, designation: value?.name })}
                             label={"Designation"}
                             placeholder={"Please Select Designation"}
-                            options={designations}
+                            options={org}
                         />
                         <MainSelect
                             disabled={loading}
-                            value={departments?.find(row => row?.name == mappedRole?.department)}
+                            value={org?.find(row => row?.name == mappedRole?.department)}
                             onChange={value => setMappedRole({ ...mappedRole, department: value?.name })}
                             label={"Department"}
                             placeholder={"Please Select Department"}
-                            options={departments}
+                            options={org}
                         />
                         <MainSelect
                             disabled={loading}
@@ -99,15 +115,22 @@ export default function RoleMappingModal({ show, onClose, data }) {
                             label={"How Impact do you feel?"}
                             placeholder={""}
                         />
+                        <MainInput
+                            disabled={loading}
+                            value={mappedRole?.rate}
+                            onChange={text => setMappedRole({ ...mappedRole, rate: text })}
+                            label={"Rate?"}
+                            placeholder={""}
+                        />
 
-                        <MainSelect
+                        {/* <MainSelect
                             disabled={loading}
                             value={statuses?.find(row => row?.name == mappedRole?.status)}
                             onChange={value => setMappedRole({ ...mappedRole, status: value?.name })}
                             label={"Status"}
                             placeholder={"Please Select Status"}
                             options={statuses}
-                        />
+                        /> */}
                     </div>
                     <div className='flex justify-center items-center gap-5 mb-5 mt-10' >
                         <button

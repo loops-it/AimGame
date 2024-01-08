@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable react/prop-types */
 import React, { useState, useEffect } from 'react';
 import AuthenticatedLayout from '../layouts/AuthenticatedLayout';
 import { PlusIcon, ArrowPathIcon, EllipsisVerticalIcon, PencilSquareIcon } from '@heroicons/react/24/solid';
@@ -5,104 +7,70 @@ import TableProvider from '../components/TableProvider';
 import Divider from '@mui/material/Divider';
 import MainSelect from '../components/MainSelect';
 import CreateUpdateModal from '../components/Authenticated/Partner/CreateUpdateModal';
+import api from '../services/api'
 
 export default function Partners({ title }) {
-  document.title = title;
+    document.title = title;
 
-  const [loading, setLoading] = useState(false);
-  const [show, setShow] = useState(false);
-  const [selectedData, setSelectedData] = useState(null);
-  const [tempData, setTempData] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 50;
-  const [workspaces, setWorkspaces] = useState([]);
-
-//   useEffect(() => {
-//     const fetchWorkspaceData = async () => {
-//       try {
-//         const response = await api.get('/api-v1/workspaces');
-//         const data = response.data;
-//         setWorkspaces(data);
-//       } catch (error) {
-//         console.error('Error fetching data:', error);
-//       }
-//     };
-
-//     fetchWorkspaceData();
-//   }, []);
+    const [loading, setLoading] = useState(false);
+    const [show, setShow] = useState(false);
+    const [selectedData, setSelectedData] = useState(null);
+    const [tempData, setTempData] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 50;
+    const [workspaces, setWorkspaces] = useState([]);
+    const [clients, setClients] = useState([]);
 
 
-//   useEffect(() => {
-//     const fetchPartnersData = async () => {
-//       try {
-//         const response = await api.get('/api-v1/partners');
-//         const data = response.data;
-//         console.log(data);
-//         setTempData(data);
-//       } catch (error) {
-//         console.error('Error fetching data:', error);
-//       }
-//     };
+    useEffect(() => {
+        const fetchWorkspaces = async () => {
+            try {
+                const response = await api.get('/api-v1/workspaces');
+                setWorkspaces(response.data.data);
+            } catch (error) {
+                console.error('Error fetching workspaces:', error);
+            }
+        };
 
-//     fetchPartnersData();
-//   }, []);
+        fetchWorkspaces();
+    }, []);
 
-  useEffect(() => {
-    const fetchWorkspaceData = async () => {
-      try {
-        const response = await fetch('http://localhost:4065/api-v1/workspaces', {
-          headers: {
-            Authorization: `Bearer ${localStorage.accessToken}`, // Replace with your actual token
-          },
-        });
+    useEffect(() => {
+        const fetchWorkspaces = async () => {
+            try {
+                const response = await api.get('/api-v1/partners');
+                setTempData(response.data.data);
+            } catch (error) {
+                console.error('Error fetching workspaces:', error);
+            }
+        };
 
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
+        fetchWorkspaces();
+    }, []);
 
-        const result = await response.json();
-        setWorkspaces(result.data);
-        console.log(result.data);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
+    useEffect(() => {
+        const fetchWorkspaces = async () => {
+            try {
+                const response = await api.get('/api-v1/clients');
+                setClients(response.data.data);
+            } catch (error) {
+                console.error('Error fetching workspaces:', error);
+            }
+        };
 
-    fetchWorkspaceData();
-  }, []);
+        fetchWorkspaces();
+    }, []);
 
-  useEffect(() => {
-    const fetchPartnersData = async () => {
-      try {
-        const response = await fetch('http://localhost:4065/api-v1/partners', {
-          headers: {
-            Authorization: `Bearer ${localStorage.accessToken}`,
-          },
-        });
+    console.log("tempData : ", tempData)
+    console.log("workspaces : ", workspaces)
 
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
+    const paginatedData = tempData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
-        const result = await response.json();
-        setTempData(result.data);
-        setLoading(false);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-        setLoading(false);
-      }
-    };
-
-    fetchPartnersData();
-  }, []);
-
-  const paginatedData = tempData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
-
-  useEffect(() => {
-    setTimeout(() => {
-      setLoading(false);
-    }, 3000);
-  }, [loading]);
+    useEffect(() => {
+        setTimeout(() => {
+            setLoading(false);
+        }, 3000);
+    }, [loading]);
 
     return (
         <AuthenticatedLayout>
@@ -120,10 +88,7 @@ export default function Partners({ title }) {
                     <MainSelect
                         variant="small"
                         placeholder={"Select Workspace"}
-                        options={[
-                            { id: 1, name: 'Space A' },
-                            { id: 2, name: 'Space B' },
-                        ]}
+                        options={workspaces}
                     />
                 </div>
                 <div className='flex flex-col lg:flex-row gap-3 lg:gap-5' >
@@ -138,10 +103,7 @@ export default function Partners({ title }) {
                     <MainSelect
                         variant="small"
                         placeholder={"Select Client"}
-                        options={[
-                            { id: 1, name: 'Client 1' },
-                            { id: 2, name: 'Client 2' },
-                        ]}
+                        options={clients}
                     />
                     <MainSelect
                         variant="small"
@@ -183,24 +145,27 @@ export default function Partners({ title }) {
                                 ID
                             </th>
                             <th scope="col" className="py-5 px-6 border-b">
-                                Name
+                                Date
                             </th>
-                            <th scope="col" className="py-5 px-6 border-b">
-                                Client
-                            </th>
-                            <th scope="col" className="py-5 px-6 border-b">
-                                Workspace
-                            </th>
-                            {/* <th scope="col" className="py-5 px-6 border-b">
-                                Contacts
-                            </th> */}
                             <th scope="col" className="py-5 px-6 border-b">
                                 Company
                             </th>
-                            
                             <th scope="col" className="py-5 px-6 border-b">
-
+                                Name
                             </th>
+                            <th scope="col" className="py-5 px-6 border-b">
+                                Designation
+                            </th>
+                            <th scope="col" className="py-5 px-6 border-b">
+                                Contact
+                            </th>
+                            <th scope="col" className="py-5 px-6 border-b">
+                                Email
+                            </th>
+
+                            {/* <th scope="col" className="py-5 px-6 border-b">
+
+                            </th> */}
                         </tr>
                     </thead>
                     <tbody>
@@ -208,12 +173,15 @@ export default function Partners({ title }) {
                             return (
                                 <tr key={index} className="bg-white border-b text-gray-900 ">
                                     <td className="py-5 px-6" >{row?._id}</td>
-                                    <td className="py-5 px-6" >{row?.name}</td>
-                                    <td className="py-5 px-6">{row?.clientId ? row.clientId.name : "-"}</td>
-                                    <td className="py-5 px-6" >{row?.workspaceId.name}</td>
-                                    {/* <td className="py-5 px-6" >{row?.contacts}</td> */}
+                                    <td className="py-5 px-6" >{row?.date}</td>
                                     <td className="py-5 px-6" >{row?.company}</td>
-                                    <td>
+                                    <td className="py-5 px-6" >{row?.name}</td>
+                                    <td className="py-5 px-6" >{row?.clientId ? row.clientId.designation : "-"}</td>
+                                    <td className="py-5 px-6" >{row?.clientId ? row.clientId.phone : "-"}</td>
+                                    <td className="py-5 px-6" >{row?.clientId ? row.clientId.email : "-"}</td>
+                                    {/* <td className="py-5 px-6" >{row?.contacts}</td> */}
+                                    
+                                    {/* <td>
                                         <button
                                             onClick={() => {
                                                 setShow(true)
@@ -222,7 +190,7 @@ export default function Partners({ title }) {
                                         >
                                             <PencilSquareIcon className='w-6 h-6 text-app-blue-2' />
                                         </button>
-                                    </td>
+                                    </td> */}
                                 </tr>
                             )
                         })}
