@@ -60,7 +60,7 @@ export default function Login({ title }) {
                     placeholder={"Enter Password"}
                 />
                 <div className='flex justify-end'>
-                    <Link href={"#"}>{"Forget Password?"}</Link>
+                    <Link href={"/password-reset/send"}>{"Forget Password?"}</Link>
                 </div>
                 {error && <p className="text-red-500">{error}</p>}
                 <MainButton className="mt-5">{"Sign in"}</MainButton>

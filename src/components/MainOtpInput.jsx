@@ -24,6 +24,7 @@ export default function MainOtpInput({ onOtpChange, onOtpComplete }) {
         }
         if (index === otp.length - 1 && value !== '') {
             onOtpComplete(newOtp.join(''));
+
         }
     };
 
@@ -58,6 +59,7 @@ export default function MainOtpInput({ onOtpChange, onOtpComplete }) {
                             onPaste={handleInputPaste}
                             maxLength={1}
                             className='w-full pl-4 lg:pl-5 h-full bg-transparent'
+        
                         />
                     </div>
                     {index === 2 && <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="#D0D0D0" className="w-4 h-4 lg:w-6 lg:h-6">
