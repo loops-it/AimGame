@@ -1,5 +1,5 @@
-/* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
+/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from 'react'
 import AuthenticatedLayout from '../layouts/AuthenticatedLayout'
 import Divider from '@mui/material/Divider';
@@ -11,7 +11,85 @@ import AvatarGroup from '@mui/material/AvatarGroup';
 import CreateUpdateModal from '../components/Authenticated/Opportunity/CreateUpdateModal';
 import SearchModal from '../components/Authenticated/Opportunity/SearchModal';
 import RoleMappingModal from '../components/Authenticated/Opportunity/RoleMappingModal';
-import api from '../services/api'
+import PartnerCreateModal from '../components/Authenticated/Partner/CreateUpdateModal';
+import TaskCreateModal from '../components/Authenticated/Task/CreateUpdateModal';
+
+const tempData = [
+    {
+        id: "123123",
+        startDate: "2025/10/20",
+        endDate: "2025/10/25",
+        opportunityName: "Sale of office supplies",
+        stage: "Suspect",
+        probability: "10",
+        funnelStatus: "No Task",
+        status: "start",
+        designation: "Head of Sales",
+        team: [
+            {
+                name: "James",
+                image: "https://mui.com/static/images/avatar/1.jpg"
+            },
+            {
+                name: "Harry",
+                image: "https://mui.com/static/images/avatar/2.jpg"
+            },
+            {
+                name: "Chester",
+                image: "https://mui.com/static/images/avatar/3.jpg"
+            }
+        ],
+        mappingRoles: [
+            { name: "Test1" },
+            { name: "Test2" },
+        ],
+        rate: "Low",
+        lead: "James",
+    },
+    {
+        id: "123123",
+        startDate: "2025/10/20",
+        endDate: "2025/10/25",
+        opportunityName: "Sale of office supplies",
+        stage: "Suspect",
+        probability: "10",
+        funnelStatus: "No Task",
+        status: "continue",
+        designation: "Chief Executive officer",
+        team: [
+            {
+                name: "James",
+                image: "https://mui.com/static/images/avatar/4.jpg"
+            },
+            {
+                name: "Harry",
+                image: "https://mui.com/static/images/avatar/5.jpg"
+            },
+            {
+                name: "Chester",
+                image: "https://mui.com/static/images/avatar/6.jpg"
+            },
+            {
+                name: "James1",
+                image: "https://mui.com/static/images/avatar/1.jpg"
+            },
+            {
+                name: "James2",
+                image: "https://mui.com/static/images/avatar/2.jpg"
+            },
+            {
+                name: "James3",
+                image: "https://mui.com/static/images/avatar/3.jpg"
+            },
+            {
+                name: "James4",
+                image: "https://mui.com/static/images/avatar/4.jpg"
+            },
+        ],
+        rate: "Low",
+        lead: "James",
+    },
+]
 
 export default function Opportunities({ title }) {
     document.title = title
@@ -22,162 +100,20 @@ export default function Opportunities({ title }) {
     const [showSearch, setShowSearch] = useState(false)
 
     const [roleMappingShow, setRoleMappingShow] = useState(false)
+    const [partnerCreateModalShow, setPartnerCreateModalShow] = useState(false)
+    const [taskCreateModalShow, setTaskCreateModalShow] = useState(false)
 
-    const [opportunities, setOpportunities] = useState([]);
-    const [opLead, setOpLead] = useState([]);
-    const [stage, setStage] = useState([]);
-    const [team, setTeam] = useState([]);
-    const [workspace, setWorkspace] = useState([]);
-    const [clients, setClients] = useState([]);
-    const [org, setOrg] = useState([]);
 
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 50;
 
-
+    const paginatedData = tempData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
     useEffect(() => {
         setTimeout(() => {
             setLoading(false)
         }, 3000);
     }, [loading])
-
-    // // stage data
-    // useEffect(() => {
-    //     const fetchData = async () => {
-    //         try {
-    //             const response = await api.get(`/api-v1/workspaces/user/${localStorage.userID}`);
-    //             const data = response.data.data;
-    //             setWorkspace(data);
-    //         } catch (error) {
-    //             console.error('Error fetching data:', error);
-    //         }
-    //     };
-
-    //     fetchData();
-    // }, []);
-
-
-    // // opportunity data
-    // useEffect(() => {
-    //     const fetchData = async () => {
-    //         try {
-    //             const response = await api.get('/api-v1/opportunities');
-    //             const data = response.data.data;
-    //             setOpportunities(data);
-    //         } catch (error) {
-    //             console.error('Error fetching data:', error);
-    //         }
-    //     };
-
-    //     fetchData();
-    // }, []);
-
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                // Fetch workspaces first
-                const workspacesResponse = await api.get(`/api-v1/workspaces/user/${localStorage.userID}`);
-                const workspacesData = workspacesResponse.data.data;
-                setWorkspace(workspacesData);
-                // Fetch opportunities for each workspace
-                const opportunitiesData = [];
-                for (const workspace of workspacesData) {
-                    console.log('WSID:', workspace._id);
-                    const opportunitiesResponse = await api.get(`/api-v1/opportunities/workspace/${workspace._id}`);
-                    const opportunitiesForWorkspace = opportunitiesResponse.data.data;
-                    opportunitiesData.push(...opportunitiesForWorkspace);
-                }
-    
-                setOpportunities(opportunitiesData);
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            }
-        };
-    
-        fetchData();
-    }, []);
-
-    // lead data
-    useEffect(() => {
-        const fetchLeadData = async () => {
-            try {
-                const response = await api.get('/api-v1/users');
-                const data = response.data.data;
-                setOpLead(data);
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            }
-        };
-
-        fetchLeadData();
-    }, []);
-
-
-    // stage data
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await api.get('/api-v1/funnelStatuses');
-                const data = response.data.data;
-                setStage(data);
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            }
-        };
-
-        fetchData();
-    }, []);
-
-    
-    // client organization data
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await api.get('/api-v1/client-organizations');
-                const data = response.data.data;
-                setOrg(data);
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            }
-        };
-
-        fetchData();
-    }, []);
-
-    // team data
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await api.get('/api-v1/users');
-                const data = response.data.data;
-                setTeam(data);
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            }
-        };
-
-        fetchData();
-    }, []);
-
-
-    // team data
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await api.get('/api-v1/clients');
-                const data = response.data.data;
-                setClients(data);
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            }
-        };
-
-        fetchData();
-    }, []);
-    console.log("opportunity data : ", opportunities);
-
-    const paginatedData = opportunities.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
     function getStatusColor(status) {
         if (status == "start") {
@@ -234,7 +170,7 @@ export default function Opportunities({ title }) {
                     setCurrentPage={page => setCurrentPage(page)}
                     itemsPerPage={itemsPerPage}
                     pagination={true}
-                    data={opportunities}
+                    data={tempData}
                     loading={loading}
                     emptyMessage="No Opportunity Found"
                 >
@@ -244,16 +180,19 @@ export default function Opportunities({ title }) {
                                 ID
                             </th>
                             <th scope="col" className="py-5 px-6 border-b">
+                                Start Date
+                            </th>
+                            <th scope="col" className="py-5 px-6 border-b">
+                                End Date
+                            </th>
+                            <th scope="col" className="py-5 px-6 border-b">
                                 Opportunity Name
                             </th>
                             <th scope="col" className="py-5 px-6 border-b">
-                                Opportunity Lead
+                                Stage
                             </th>
                             <th scope="col" className="py-5 px-6 border-b">
-                                Designations
-                            </th>
-                            <th scope="col" className="py-5 px-6 border-b">
-                                Team Members
+                                Probability
                             </th>
                             <th scope="col" className="py-5 px-6 border-b">
                                 Funnel Status
@@ -262,17 +201,14 @@ export default function Opportunities({ title }) {
                                 Status
                             </th>
                             <th scope="col" className="py-5 px-6 border-b">
-                                Rate
+                                Team
                             </th>
                             <th scope="col" className="py-5 px-6 border-b">
-                                Client
-                            </th>
-                            {/* <th scope="col" className="py-5 px-6 border-b">
                                 Rate
                             </th>
                             <th scope="col" className="py-5 px-6 border-b">
                                 Lead
-                            </th> */}
+                            </th>
                             <th scope="col" className="py-5 px-6 border-b">
 
                             </th>
@@ -282,10 +218,21 @@ export default function Opportunities({ title }) {
                         {paginatedData?.map((row, index) => {
                             return (
                                 <tr key={index} className="bg-white border-b text-gray-900 ">
-                                    <td className="py-5 px-6" >{row?._id}</td>
-                                    <td className="py-5 px-6" >{row?.name}</td>
-                                    <td className="py-5 px-6" >{row?.leadId ? row.leadId.name : "-"}</td>
-                                    <td className="py-5 px-6" >{row?.name}</td>
+                                    <td className="py-5 px-6" >{row?.id}</td>
+                                    <td className="py-5 px-6" >{row?.startDate}</td>
+                                    <td className="py-5 px-6" >{row?.endDate}</td>
+                                    <td className="py-5 px-6" >{row?.opportunityName}</td>
+                                    <td className="py-5 px-6" >{row?.stage}</td>
+                                    <td className="py-5 px-6" >{row?.probability}</td>
+                                    <td className="py-5 px-6" >{row?.funnelStatus}</td>
+                                    <td className="py-5 px-6" >
+                                        <Chip
+                                            sx={{ borderColor: getStatusColor(row?.status), color: getStatusColor(row?.status), fontWeight: "700", textTransform: "uppercase" }}
+                                            icon={<ArrowUpRightIcon style={{ color: getStatusColor(row?.status) }} className='w-5 h-5' />}
+                                            label={row?.status}
+                                            variant="outlined"
+                                        />
+                                    </td>
                                     <td className="py-5 px-6" >
                                         <div>
                                             <AvatarGroup
@@ -300,21 +247,8 @@ export default function Opportunities({ title }) {
                                             </AvatarGroup>
                                         </div>
                                     </td>
-                                    <td className="py-5 px-6" >{row?.funnelStatusId ? row.funnelStatusId.stage : "-"}</td>
-                                    <td className="py-5 px-6" >
-                                        <Chip
-                                            sx={{ borderColor: getStatusColor(row?.funnelStatusId ? row.funnelStatusId.status : "-"), color: getStatusColor(row?.funnelStatusId ? row.funnelStatusId.status : "-"), fontWeight: "700", textTransform: "uppercase" }}
-                                            icon={<ArrowUpRightIcon style={{ color: getStatusColor(row?.funnelStatusId ? row.funnelStatusId.status : "-") }} className='w-5 h-5' />}
-                                            label={row?.funnelStatusId ? row.funnelStatusId.status : "-"}
-                                            variant="outlined"
-                                        />
-                                    </td>
-                                    {/* <td className="py-5 px-6" >{row?.probability}</td> */}
-                                    <td className="py-5 px-6" >{row?.funnelStatusId ? row.funnelStatusId.rate : "-"}</td>
-
-
-                                    <td className="py-5 px-6" >{row?.clientId ? row.clientId.name : "-"}</td>
-                                    {/* <td className="py-5 px-6" >{row?.leadId ? row.leadId.name : "-"}</td> */}
+                                    <td className="py-5 px-6" >{row?.rate}</td>
+                                    <td className="py-5 px-6" >{row?.lead}</td>
                                     <td>
                                         <button
                                             onClick={() => {
@@ -332,29 +266,37 @@ export default function Opportunities({ title }) {
                 </TableProvider>
             </div>
             <CreateUpdateModal
-                opportunityData={selectedData}
+                data={selectedData}
                 show={show}
-                teamData={team}
-                stageData={stage}
-                leadData={opLead}
-                workspaces={workspace}
-                clients={clients}
                 onClose={() => setShow(false)}
                 onOpMappingAddClick={() => setRoleMappingShow(true)}
+                onPartnerAddClick={() => setPartnerCreateModalShow(true)}
+                onTaskAddClick={() => setTaskCreateModalShow(true)}
             />
 
             <SearchModal
-                list={opportunities}
+                list={tempData}
                 show={showSearch}
                 onClose={() => setShowSearch(false)}
             />
 
             <RoleMappingModal
                 data={selectedData}
-                org={org}
                 show={roleMappingShow}
                 onClose={() => setRoleMappingShow(false)}
             />
+
+            <PartnerCreateModal
+                data={null}
+                show={partnerCreateModalShow}
+                onClose={() => setPartnerCreateModalShow(false)}
+            />
+            <TaskCreateModal
+                data={null}
+                show={taskCreateModalShow}
+                onClose={() => setTaskCreateModalShow(false)}
+            />
+
         </AuthenticatedLayout>
     )
 }

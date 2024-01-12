@@ -19,23 +19,23 @@ const designations = [
     { id: 3, name: 'Chief Executive officer' },
 ]
 
-// const stages = [
-//     { id: 1, name: 'Suspect' },
-//     { id: 2, name: 'Success' },
-// ]
+const stages = [
+    { id: 1, name: 'Suspect' },
+    { id: 2, name: 'Success' },
+]
 
-// const rates = [
-//     { id: 1, name: 'Low' },
-//     { id: 2, name: 'Medium' },
-//     { id: 2, name: 'High' },
-// ]
+const rates = [
+    { id: 1, name: 'Low' },
+    { id: 2, name: 'Medium' },
+    { id: 2, name: 'High' },
+]
 
 
-// const funnelState = [
-//     { id: 1, name: '1' },
-//     { id: 2, name: '2' },
-//     { id: 2, name: '3' },
-// ]
+const funnelState = [
+    { id: 1, name: '1' },
+    { id: 2, name: '2' },
+    { id: 2, name: '3' },
+]
 
 const opMappingRoles = [
     { name: "Test1" },
@@ -45,7 +45,7 @@ const opMappingRoles = [
     { name: "Test5" },
 ]
 
-const teamSData = [
+const teamData = [
     {
         name: "James",
         image: "https://mui.com/static/images/avatar/1.jpg"
@@ -80,63 +80,81 @@ const teamSData = [
     }
 ]
 
+
 const initialState = {
     team: [],
     probability: 0,
     mappingRoles: [],
 }
 
-export default function CreateUpdateModal({ show, onClose, opportunityData, onOpMappingAddClick, leadData, stageData, teamData, workspaces, clients }) {
+export default function CreateUpdateModal({ show, onClose, data, onPartnerAddClick, onTaskAddClick, onOpMappingAddClick }) {
+
+    // const [opportunity, setOpportunity] = useState(initialState)
+    // const [loading, setLoading] = useState(false)
+
+    // console.log("teamData : ", teamData)
+
+    // useEffect(() => {
+    //     if (opportunityData) {
+    //         setOpportunity(opportunityData)
+    //     }
+    //     if (!opportunityData) {
+    //         setOpportunity(initialState)
+    //     }
+    // }, [opportunityData])
+
+    // async function onCreate() {
+    //     try {
+    //         console.log("opportunity : ", opportunity)
+    //         const response = await api.post('/api-v1/opportunities', opportunity);
+
+    //         if (response.status === 201) {
+    //             console.log('Opportunity created successfully');
+    //             onClose();
+    //         } else {
+    //             console.error('Failed to create opportunity:', response.statusText);
+    //         }
+    //     } catch (error) {
+    //         console.error('Error creating opportunity:', error);
+    //     }
+    // }
+
+
+
+    // async function onUpdate() {
+    //     console.log(opportunity)
+    //     try {
+    //         const response = await api.put(`/api-v1/clients/${opportunity._id}`, opportunity);
+
+    //         if (response.status === 200 || response.status === 201) {
+    //             console.log('Client updated successfully');
+    //             onClose();
+    //         } else {
+    //             console.error('Failed to update client:', response.statusText);
+    //         }
+    //     } catch (error) {
+    //         console.error('Error updating client:', error);
+    //     }
+    // }
 
     const [opportunity, setOpportunity] = useState(initialState)
     const [loading, setLoading] = useState(false)
 
-    // console.log("data : ", opportunityData)
-    // console.log("stageData : ", stageData)
-    // console.log("leadData : ", leadData)
-    console.log("teamData : ", teamData)
-
     useEffect(() => {
-        if (opportunityData) {
-            setOpportunity(opportunityData)
+        if (data) {
+            setOpportunity(data)
         }
-        if (!opportunityData) {
+        if (!data) {
             setOpportunity(initialState)
         }
-    }, [opportunityData])
+    }, [data])
 
     async function onCreate() {
-        try {
-            console.log("opportunity : ", opportunity)
-            const response = await api.post('/api-v1/opportunities', opportunity);
-
-            if (response.status === 201) {
-                console.log('Opportunity created successfully');
-                onClose();
-            } else {
-                console.error('Failed to create opportunity:', response.statusText);
-            }
-        } catch (error) {
-            console.error('Error creating opportunity:', error);
-        }
+        onClose()
     }
 
-
-
     async function onUpdate() {
-        console.log(opportunity)
-        try {
-            const response = await api.put(`/api-v1/opportunities/${opportunity._id}`, opportunity);
-
-            if (response.status === 200 || response.status === 201) {
-                console.log('Opportunity updated successfully');
-                onClose();
-            } else {
-                console.error('Opportunity to update client:', response.statusText);
-            }
-        } catch (error) {
-            console.error('Error updating Opportunity:', error);
-        }
+        onClose()
     }
 
     return (
@@ -152,8 +170,8 @@ export default function CreateUpdateModal({ show, onClose, opportunityData, onOp
         >
             <div className='bg-white shadow-lg rounded-md h-[90%] lg:h-fit w-[95%] lg:w-[70%]' >
                 <div className='bg-[#C5C5C533] h-14 flex justify-between items-center px-10' >
-                    <div className='font-semibold' >{opportunityData ?
-                        <span>View Opportunity - <span className='text-app-blue-4' >{opportunityData?.name}</span></span>
+                    <div className='font-semibold' >{data ?
+                        <span>View Opportunity - <span className='text-app-blue-4' >{data?.opportunityName}</span></span>
                         : "Create New Opportunity"}</div>
                     <button disabled={loading} onClick={onClose} className='flex justify-center items-center text-app-gray-3' >
                         <XCircleIcon className='w-7 h-7' />
@@ -161,104 +179,61 @@ export default function CreateUpdateModal({ show, onClose, opportunityData, onOp
                 </div>
                 <div className='max-h-[80vh] h-[80vh] lg:h-fit overflow-scroll no-scrollbar' >
                     <div className='grid gap-5 grid-cols-1 lg:grid-cols-2 px-10 pt-10' >
-                    <MainInput
-                            disabled={loading}
-                            value={opportunity?.referenceNumber}
-                            onChange={text => setOpportunity({ ...opportunity, referenceNumber: text })}
-                            label={"Reference number"}
-                            placeholder={"Reference number"}
-                        />
                         <MainInput
                             disabled={loading}
-                            value={opportunity?.name}
-                            onChange={text => setOpportunity({ ...opportunity, name: text })}
+                            value={opportunity?.opportunityName}
+                            onChange={text => setOpportunity({ ...opportunity, opportunityName: text })}
                             label={"Opportunity Name"}
                             placeholder={"Enter Opportunity Name"}
                         />
                         <MainSelect
                             disabled={loading}
-                            value={workspaces?.find(row => row?.name == opportunity?.name)}
-                            onChange={value => setOpportunity({
-                                ...opportunity,
-                                workspaceId: value?._id || ''
-                            })}
-                            label={"Workspace"}
-                            placeholder={"Please Select Workspace"}
-                            options={workspaces}
+                            value={teamData?.find(row => row?.name == opportunity?.lead)}
+                            onChange={value => setOpportunity({ ...opportunity, lead: value?.name })}
+                            label={"Opportunity Lead"}
+                            placeholder={"Please Select Opportunity Lead"}
+                            options={teamData}
                         />
-                        <MainStageSelect
-                            disabled={loading}
-                            value={stageData?.find(row => row?.stage == opportunity?.stage)}
-                            onChange={value => setOpportunity({
-                                ...opportunity,
-                                funnelStatusId: value?._id || ''
-                            })}
-                            label={"Funnel Status"}
-                            placeholder={"Please Select Funnel Status"}
-                            options={stageData}
-                        />
-                        {/* <MainSelect
+                        <MainSelect
                             disabled={loading}
                             value={designations?.find(row => row?.name == opportunity?.designation)}
                             onChange={value => setOpportunity({ ...opportunity, designation: value?.name })}
                             label={"Designation"}
                             placeholder={"Please Select Designation"}
                             options={designations}
-                        /> */}
-                        {/* <MainInput
+                        />
+                        <MainInput
                             disabled={loading}
                             value={parseFloat(opportunity?.probability)}
                             min={0}
                             max={100}
                             type={"number"}
                             label={"Probability(%)"}
-                        /> */}
-                        <MainSelect
-                            disabled={loading}
-                            value={clients?.find(row => row?.name == opportunity?.name)}
-                            onChange={value => setOpportunity({
-                                ...opportunity,
-                                clientId: value?._id || ''
-                            })}
-                            label={"Client"}
-                            placeholder={"Please Select Client"}
-                            options={clients}
                         />
                         <MainSelect
                             disabled={loading}
-                            value={leadData?.find(row => row?.name == opportunity?.name)}
-                            onChange={value => setOpportunity({
-                                ...opportunity,
-                                leadId: value?._id || ''
-                            })}
-                            label={"Opportunity Lead"}
-                            placeholder={"Please Select Opportunity Lead"}
-                            options={leadData}
-                        />
-                        {/* <MainStageSelect
-                            disabled={loading}
-                            value={stageData?.find(row => row?.stage == opportunity?.stage)}
-                            onChange={value => setOpportunity({ ...opportunity, stage: value?.stage })}
+                            value={stages?.find(row => row?.name == opportunity?.stage)}
+                            onChange={value => setOpportunity({ ...opportunity, stage: value?.name })}
                             label={"Stage"}
                             placeholder={"Please Select Stage"}
-                            options={stageData}
+                            options={stages}
                         />
-                        <MainRatesSelect
+                        <MainSelect
                             disabled={loading}
-                            value={stageData?.find(row => row?.rate == opportunity?.rate)}
-                            onChange={value => setOpportunity({ ...opportunity, rate: value?.rate })}
+                            value={rates?.find(row => row?.name == opportunity?.rate)}
+                            onChange={value => setOpportunity({ ...opportunity, rate: value?.name })}
                             label={"Rate"}
                             placeholder={"Please Select Rate"}
-                            options={stageData}
-                        /> */}
-                        {opportunityData &&
+                            options={rates}
+                        />
+                        {data &&
                             <MainSelect
                                 disabled={loading}
-                                value={stageData?.find(row => row?.name == opportunity?.funnelStatus)}
+                                value={funnelState?.find(row => row?.name == opportunity?.funnelStatus)}
                                 onChange={value => setOpportunity({ ...opportunity, funnelStatus: value?.name })}
                                 label={"Funnel Status"}
                                 placeholder={""}
-                                options={stageData}
+                                options={funnelState}
                             />
                         }
                     </div>
@@ -266,10 +241,7 @@ export default function CreateUpdateModal({ show, onClose, opportunityData, onOp
                         <MainMultipleSelect
                             disabled={loading}
                             value={opportunity?.team}
-                            onChange={value => {
-                                setOpportunity({ ...opportunity, team: value })
-                                console.log(opportunity)
-                            }}
+                            onChange={value => setOpportunity({ ...opportunity, team: value?.name })}
                             onDeleteItem={index => {
                                 let tempData = [...opportunity?.team]
                                 tempData.splice(index, 1)
@@ -279,7 +251,34 @@ export default function CreateUpdateModal({ show, onClose, opportunityData, onOp
                             placeholder={"Please Select Team Members"}
                             options={teamData}
                         />
-                        {opportunityData &&
+                        <div>
+                            <MainMultipleSelect
+                                disabled={loading}
+                                value={opportunity?.mappingRoles}
+                                onChange={value => setOpportunity({ ...opportunity, mappingRoles: value?.name })}
+                                onDeleteItem={index => {
+                                    let tempData = [...opportunity?.mappingRoles]
+                                    tempData.splice(index, 1)
+                                    setOpportunity({ ...opportunity, mappingRoles: tempData })
+                                }}
+                                label={"Partners"}
+                                placeholder={""}
+                                options={opMappingRoles}
+                            />
+
+                            <div className='mt-2 flex justify-end' >
+                                <button
+                                    onClick={onPartnerAddClick}
+                                    className='flex items-center gap-2 text-app-blue text-xs'
+                                >
+                                    <div className='border border-app-blue' >
+                                        <PlusIcon className='w-3 h-3' />
+                                    </div>
+                                    Add New
+                                </button>
+                            </div>
+                        </div>
+                        {data &&
                             <div>
                                 <MainMultipleSelect
                                     disabled={loading}
@@ -308,7 +307,7 @@ export default function CreateUpdateModal({ show, onClose, opportunityData, onOp
                                 </div>
                             </div>
                         }
-                        {opportunityData &&
+                        {data &&
                             <div>
                                 <MainMultipleSelect
                                     disabled={loading}
@@ -319,130 +318,14 @@ export default function CreateUpdateModal({ show, onClose, opportunityData, onOp
                                         tempData.splice(index, 1)
                                         setOpportunity({ ...opportunity, mappingRoles: tempData })
                                     }}
-                                    label={"OP Mapping Roles"}
+                                    label={"Tasks"}
                                     placeholder={""}
                                     options={opMappingRoles}
                                 />
 
                                 <div className='mt-2 flex justify-end' >
                                     <button
-                                        onClick={onOpMappingAddClick}
-                                        className='flex items-center gap-2 text-app-blue text-xs'
-                                    >
-                                        <div className='border border-app-blue' >
-                                            <PlusIcon className='w-3 h-3' />
-                                        </div>
-                                        Add New
-                                    </button>
-                                </div>
-                            </div>
-                        }
-                        {opportunityData &&
-                            <div>
-                                <MainMultipleSelect
-                                    disabled={loading}
-                                    value={opportunity?.mappingRoles}
-                                    onChange={value => setOpportunity({ ...opportunity, mappingRoles: value?.name })}
-                                    onDeleteItem={index => {
-                                        let tempData = [...opportunity?.mappingRoles]
-                                        tempData.splice(index, 1)
-                                        setOpportunity({ ...opportunity, mappingRoles: tempData })
-                                    }}
-                                    label={"OP Mapping Roles"}
-                                    placeholder={""}
-                                    options={opMappingRoles}
-                                />
-
-                                <div className='mt-2 flex justify-end' >
-                                    <button
-                                        onClick={onOpMappingAddClick}
-                                        className='flex items-center gap-2 text-app-blue text-xs'
-                                    >
-                                        <div className='border border-app-blue' >
-                                            <PlusIcon className='w-3 h-3' />
-                                        </div>
-                                        Add New
-                                    </button>
-                                </div>
-                            </div>
-                        }
-                        {opportunityData &&
-                            <div>
-                                <MainMultipleSelect
-                                    disabled={loading}
-                                    value={opportunity?.mappingRoles}
-                                    onChange={value => setOpportunity({ ...opportunity, mappingRoles: value?.name })}
-                                    onDeleteItem={index => {
-                                        let tempData = [...opportunity?.mappingRoles]
-                                        tempData.splice(index, 1)
-                                        setOpportunity({ ...opportunity, mappingRoles: tempData })
-                                    }}
-                                    label={"OP Mapping Roles"}
-                                    placeholder={""}
-                                    options={opMappingRoles}
-                                />
-
-                                <div className='mt-2 flex justify-end' >
-                                    <button
-                                        onClick={onOpMappingAddClick}
-                                        className='flex items-center gap-2 text-app-blue text-xs'
-                                    >
-                                        <div className='border border-app-blue' >
-                                            <PlusIcon className='w-3 h-3' />
-                                        </div>
-                                        Add New
-                                    </button>
-                                </div>
-                            </div>
-                        }
-                        {opportunityData &&
-                            <div>
-                                <MainMultipleSelect
-                                    disabled={loading}
-                                    value={opportunity?.mappingRoles}
-                                    onChange={value => setOpportunity({ ...opportunity, mappingRoles: value?.name })}
-                                    onDeleteItem={index => {
-                                        let tempData = [...opportunity?.mappingRoles]
-                                        tempData.splice(index, 1)
-                                        setOpportunity({ ...opportunity, mappingRoles: tempData })
-                                    }}
-                                    label={"OP Mapping Roles"}
-                                    placeholder={""}
-                                    options={opMappingRoles}
-                                />
-
-                                <div className='mt-2 flex justify-end' >
-                                    <button
-                                        onClick={onOpMappingAddClick}
-                                        className='flex items-center gap-2 text-app-blue text-xs'
-                                    >
-                                        <div className='border border-app-blue' >
-                                            <PlusIcon className='w-3 h-3' />
-                                        </div>
-                                        Add New
-                                    </button>
-                                </div>
-                            </div>
-                        }
-                        {opportunityData &&
-                            <div>
-                                <MainMultipleSelect
-                                    disabled={loading}
-                                    value={opportunity?.mappingRoles}
-                                    onChange={value => setOpportunity({ ...opportunity, mappingRoles: value?.name })}
-                                    onDeleteItem={index => {
-                                        let tempData = [...opportunity?.mappingRoles]
-                                        tempData.splice(index, 1)
-                                        setOpportunity({ ...opportunity, mappingRoles: tempData })
-                                    }}
-                                    label={"OP Mapping Roles"}
-                                    placeholder={""}
-                                    options={opMappingRoles}
-                                />
-
-                                <div className='mt-2 flex justify-end' >
-                                    <button
-                                        onClick={onOpMappingAddClick}
+                                        onClick={onTaskAddClick}
                                         className='flex items-center gap-2 text-app-blue text-xs'
                                     >
                                         <div className='border border-app-blue' >
@@ -461,21 +344,13 @@ export default function CreateUpdateModal({ show, onClose, opportunityData, onOp
                             className='disabled:bg-app-gray disabled:border-app-gray disabled:text-white flex items-center gap-3 border text-app-blue-2 border-app-blue-2 rounded-lg w-fit px-10 py-2' >
                             Cancel
                         </button>
-                        {/* <button
-                            onClick={() => {
-                                opportunityData ? onCreate() : onUpdate()
-                            }}
-                            disabled={loading}
-                            className='disabled:bg-app-gray flex items-center gap-3 bg-app-blue-2 rounded-lg w-fit px-10 py-2 text-white' >
-                            {opportunityData ? "Save" : "Create"}
-                        </button> */}
                         <button
                             onClick={() => {
-                                opportunityData ? onUpdate() : onCreate();
+                                data ? onCreate() : onUpdate()
                             }}
                             disabled={loading}
                             className='disabled:bg-app-gray flex items-center gap-3 bg-app-blue-2 rounded-lg w-fit px-10 py-2 text-white' >
-                                {opportunityData ? "Update" : "Create"}
+                            {data ? "Save" : "Create"}
                         </button>
                     </div>
                 </div>
