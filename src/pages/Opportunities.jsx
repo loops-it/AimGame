@@ -106,6 +106,7 @@ export default function Opportunities({ title }) {
     const [taskCreateModalShow, setTaskCreateModalShow] = useState(false)
     const [workspaces, setWorkspaces] = useState([]);
     const [partners, setPartners] = useState([]);
+    const [funnelStatus, setfunnelStatus] = useState([]);
 
 
     const [currentPage, setCurrentPage] = useState(1);
@@ -144,6 +145,19 @@ export default function Opportunities({ title }) {
         };
 
         fetchWorkspaces();
+    }, []);
+
+    useEffect(() => {
+        const fetchfunnelStatus = async () => {
+            try {
+                const response = await api.get('/api-v1/funnelStatuses');
+                setfunnelStatus(response.data.data);
+            } catch (error) {
+                console.error('Error fetching workspaces:', error);
+            }
+        };
+
+        fetchfunnelStatus();
     }, []);
 
     useEffect(() => {
@@ -327,6 +341,7 @@ export default function Opportunities({ title }) {
             />
             <TaskCreateModal
                 data={null}
+                funnelStatus={funnelStatus}
                 show={taskCreateModalShow}
                 onClose={() => setTaskCreateModalShow(false)}
             />
