@@ -106,6 +106,7 @@ export default function Opportunities({ title }) {
     const [taskCreateModalShow, setTaskCreateModalShow] = useState(false)
     const [workspaces, setWorkspaces] = useState([]);
     const [partners, setPartners] = useState([]);
+    const [opLead, setOpLead] = useState([]);
 
 
     const [currentPage, setCurrentPage] = useState(1);
@@ -159,7 +160,35 @@ export default function Opportunities({ title }) {
         fetchWorkspaces();
     }, []);
 
-    console.log("opportunities : ", partners)
+    useEffect(() => {
+        const fetchWorkspaces = async () => {
+            try {
+                const response = await api.get('/api-v1/partners');
+                setPartners(response.data.data);
+            } catch (error) {
+                console.error('Error fetching workspaces:', error);
+            }
+        };
+
+        fetchWorkspaces();
+    }, []);
+
+    // lead data
+    useEffect(() => {
+        const fetchLeadData = async () => {
+            try {
+                const response = await api.get('/api-v1/users');
+                const data = response.data.data;
+                setOpLead(data);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        };
+
+        fetchLeadData();
+    }, []);
+
+    console.log("opLead : ", partners)
 
     return (
         <AuthenticatedLayout>
@@ -299,6 +328,8 @@ export default function Opportunities({ title }) {
                 </TableProvider>
             </div>
             <CreateUpdateModal
+                leadData={opLead}
+                partners={partners}
                 data={selectedData}
                 show={show}
                 onClose={() => setShow(false)}
