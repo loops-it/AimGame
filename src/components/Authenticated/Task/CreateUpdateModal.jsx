@@ -3,7 +3,7 @@ import { Transition } from '@headlessui/react'
 import { XCircleIcon } from '@heroicons/react/24/outline'
 import MainInput from '../../MainInput'
 import MainSelect from '../../MainSelect'
-
+import api from '../../../services/api'
 
 const rates = [
     { id: 1, name: '1' },
@@ -16,30 +16,43 @@ const stages = [
     { id: 2, name: 'Success' },
 ]
 
-const funnelState = [
-    { id: 1, name: '1' },
-    { id: 2, name: '2' },
-    { id: 2, name: '3' },
-]
+
 const initialState = {}
 
-export default function CreateUpdateModal({ show, onClose, data }) {
+export default function CreateUpdateModal({ show, onClose, data, funnelStatus,rowID}) {
     const [task, setTask] = useState(initialState)
     const [loading, setLoading] = useState(false)
-
+    console.log("funnels", funnelStatus);
+    
     useEffect(() => {
         if (data) {
             setTask(data)
+           
         }
         if (!data) {
             setTask(initialState)
+           
         }
     }, [data])
-
     async function onCreate() {
-        onClose()
-    }
+        const taskPayload = {
+            ...task,
+            opportunityId: rowID._id !== null ? rowID._id : null, // Assign null if selectedData._id is null
+        };
+        console.log("task data : ",taskPayload);
+        try {
+            const response = await api.post('/api-v1/tasks', taskPayload);
 
+            if (response.status === 201) {
+                console.log('Opportunity created successfully');
+                onClose();
+            } else {
+                console.error('Failed to create Opportunity:', response.statusText);
+            }
+        } catch (error) {
+            console.error('Error creating Opportunity:', error);
+        }
+    }
     async function onUpdate() {
         onClose()
     }
@@ -97,13 +110,17 @@ export default function CreateUpdateModal({ show, onClose, data }) {
                             placeholder={"Please Select Status"}
                             options={rates} // change to proper data 
                         />
-                        <MainSelect
+         
+                         <MainSelect
                             disabled={loading}
-                            value={funnelState?.find(row => row?.name == task?.funnelStatus)}
-                            onChange={value => setTask({ ...task, funnelStatus: value?.name })}
+                            value={funnelStatus?.find(row => row?.status === task?.funnelStatus)}
+                            onChange={value => setTask({
+                                ...task,
+                                funnelStatus: value?._id || ''
+                            })}
                             label={"Funnel Status"}
                             placeholder={"Please Select Funnel Status"}
-                            options={funnelState} // change to proper data 
+                            options={funnelStatus}
                         />
                         <MainInput
                             disabled={loading}
@@ -161,13 +178,11 @@ export default function CreateUpdateModal({ show, onClose, data }) {
                             Cancel
                         </button>
                         <button
-                            onClick={() => {
-                                data ? onCreate() : onUpdate()
-                            }}
-                            disabled={loading}
-                            className='disabled:bg-app-gray flex items-center gap-3 bg-app-blue-2 rounded-lg w-fit px-10 py-2 text-white' >
-                            {data ? "Save" : "Create"}
-                        </button>
+                        onClick={onCreate}
+                        disabled={loading}
+                        className='disabled:bg-app-gray flex items-center gap-3 bg-app-blue-2 rounded-lg w-fit px-10 py-2 text-white' >
+                        {data ? "Save" : "Create"}
+                    </button>
                     </div>
                 </div>
 

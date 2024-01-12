@@ -16,82 +16,82 @@ import TaskCreateModal from '../components/Authenticated/Task/CreateUpdateModal'
 import api from '../services/api';
 
 
-const tempData = [
-    {
-        id: "123123",
-        startDate: "2025/10/20",
-        endDate: "2025/10/25",
-        opportunityName: "Sale of office supplies",
-        stage: "Suspect",
-        probability: "10",
-        funnelStatus: "No Task",
-        status: "start",
-        designation: "Head of Sales",
-        team: [
-            {
-                name: "James",
-                image: "https://mui.com/static/images/avatar/1.jpg"
-            },
-            {
-                name: "Harry",
-                image: "https://mui.com/static/images/avatar/2.jpg"
-            },
-            {
-                name: "Chester",
-                image: "https://mui.com/static/images/avatar/3.jpg"
-            }
-        ],
-        mappingRoles: [
-            { name: "Test1" },
-            { name: "Test2" },
-        ],
-        rate: "Low",
-        lead: "James",
-    },
-    {
-        id: "123123",
-        startDate: "2025/10/20",
-        endDate: "2025/10/25",
-        opportunityName: "Sale of office supplies",
-        stage: "Suspect",
-        probability: "10",
-        funnelStatus: "No Task",
-        status: "continue",
-        designation: "Chief Executive officer",
-        team: [
-            {
-                name: "James",
-                image: "https://mui.com/static/images/avatar/4.jpg"
-            },
-            {
-                name: "Harry",
-                image: "https://mui.com/static/images/avatar/5.jpg"
-            },
-            {
-                name: "Chester",
-                image: "https://mui.com/static/images/avatar/6.jpg"
-            },
-            {
-                name: "James1",
-                image: "https://mui.com/static/images/avatar/1.jpg"
-            },
-            {
-                name: "James2",
-                image: "https://mui.com/static/images/avatar/2.jpg"
-            },
-            {
-                name: "James3",
-                image: "https://mui.com/static/images/avatar/3.jpg"
-            },
-            {
-                name: "James4",
-                image: "https://mui.com/static/images/avatar/4.jpg"
-            },
-        ],
-        rate: "Low",
-        lead: "James",
-    },
-]
+// const tempData = [
+//     {
+//         id: "123123",
+//         startDate: "2025/10/20",
+//         endDate: "2025/10/25",
+//         opportunityName: "Sale of office supplies",
+//         stage: "Suspect",
+//         probability: "10",
+//         funnelStatus: "No Task",
+//         status: "start",
+//         designation: "Head of Sales",
+//         team: [
+//             {
+//                 name: "James",
+//                 image: "https://mui.com/static/images/avatar/1.jpg"
+//             },
+//             {
+//                 name: "Harry",
+//                 image: "https://mui.com/static/images/avatar/2.jpg"
+//             },
+//             {
+//                 name: "Chester",
+//                 image: "https://mui.com/static/images/avatar/3.jpg"
+//             }
+//         ],
+//         mappingRoles: [
+//             { name: "Test1" },
+//             { name: "Test2" },
+//         ],
+//         rate: "Low",
+//         lead: "James",
+//     },
+//     {
+//         id: "123123",
+//         startDate: "2025/10/20",
+//         endDate: "2025/10/25",
+//         opportunityName: "Sale of office supplies",
+//         stage: "Suspect",
+//         probability: "10",
+//         funnelStatus: "No Task",
+//         status: "continue",
+//         designation: "Chief Executive officer",
+//         team: [
+//             {
+//                 name: "James",
+//                 image: "https://mui.com/static/images/avatar/4.jpg"
+//             },
+//             {
+//                 name: "Harry",
+//                 image: "https://mui.com/static/images/avatar/5.jpg"
+//             },
+//             {
+//                 name: "Chester",
+//                 image: "https://mui.com/static/images/avatar/6.jpg"
+//             },
+//             {
+//                 name: "James1",
+//                 image: "https://mui.com/static/images/avatar/1.jpg"
+//             },
+//             {
+//                 name: "James2",
+//                 image: "https://mui.com/static/images/avatar/2.jpg"
+//             },
+//             {
+//                 name: "James3",
+//                 image: "https://mui.com/static/images/avatar/3.jpg"
+//             },
+//             {
+//                 name: "James4",
+//                 image: "https://mui.com/static/images/avatar/4.jpg"
+//             },
+//         ],
+//         rate: "Low",
+//         lead: "James",
+//     },
+// ]
 
 export default function Opportunities({ title }) {
     document.title = title
@@ -100,7 +100,7 @@ export default function Opportunities({ title }) {
     const [show, setShow] = useState(false)
     const [selectedData, setSelectedData] = useState(null)
     const [showSearch, setShowSearch] = useState(false)
-
+    const [tempData, setTempData] = useState([]);
     const [roleMappingShow, setRoleMappingShow] = useState(false)
     const [partnerCreateModalShow, setPartnerCreateModalShow] = useState(false)
     const [taskCreateModalShow, setTaskCreateModalShow] = useState(false)
@@ -112,7 +112,18 @@ export default function Opportunities({ title }) {
 
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 50;
+    useEffect(() => {
+        const fetchOpportunities = async () => {
+            try {
+                const response = await api.get(`/api-v1/opportunities`);
+                setTempData(response.data.data);
+            } catch (error) {
+                console.error('Error fetching opportunities:', error);
+            }
+        };
 
+        fetchOpportunities();
+    }, []);
     const paginatedData = tempData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
     useEffect(() => {
@@ -372,6 +383,7 @@ export default function Opportunities({ title }) {
             />
             <TaskCreateModal
                 data={null}
+                rowID={selectedData}
                 funnelStatus={funnelStatus}
                 show={taskCreateModalShow}
                 onClose={() => setTaskCreateModalShow(false)}
@@ -380,3 +392,4 @@ export default function Opportunities({ title }) {
         </AuthenticatedLayout>
     )
 }
+ 
