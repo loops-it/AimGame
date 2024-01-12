@@ -13,6 +13,8 @@ import SearchModal from '../components/Authenticated/Opportunity/SearchModal';
 import RoleMappingModal from '../components/Authenticated/Opportunity/RoleMappingModal';
 import PartnerCreateModal from '../components/Authenticated/Partner/CreateUpdateModal';
 import TaskCreateModal from '../components/Authenticated/Task/CreateUpdateModal';
+import api from '../services/api';
+
 
 const tempData = [
     {
@@ -102,6 +104,8 @@ export default function Opportunities({ title }) {
     const [roleMappingShow, setRoleMappingShow] = useState(false)
     const [partnerCreateModalShow, setPartnerCreateModalShow] = useState(false)
     const [taskCreateModalShow, setTaskCreateModalShow] = useState(false)
+    const [workspaces, setWorkspaces] = useState([]);
+    const [partners, setPartners] = useState([]);
 
 
     const [currentPage, setCurrentPage] = useState(1);
@@ -127,6 +131,35 @@ export default function Opportunities({ title }) {
         }
         return "#9c9c9c"
     }
+
+
+    useEffect(() => {
+        const fetchWorkspaces = async () => {
+            try {
+                const response = await api.get(`/api-v1/workspaces/user/${localStorage.userID}`);
+                setWorkspaces(response.data.data);
+            } catch (error) {
+                console.error('Error fetching workspaces:', error);
+            }
+        };
+
+        fetchWorkspaces();
+    }, []);
+
+    useEffect(() => {
+        const fetchWorkspaces = async () => {
+            try {
+                const response = await api.get('/api-v1/opportunities');
+                setPartners(response.data.data);
+            } catch (error) {
+                console.error('Error fetching workspaces:', error);
+            }
+        };
+
+        fetchWorkspaces();
+    }, []);
+
+    console.log("opportunities : ", partners)
 
     return (
         <AuthenticatedLayout>
@@ -288,6 +321,7 @@ export default function Opportunities({ title }) {
 
             <PartnerCreateModal
                 data={null}
+                worspaces={workspaces}
                 show={partnerCreateModalShow}
                 onClose={() => setPartnerCreateModalShow(false)}
             />

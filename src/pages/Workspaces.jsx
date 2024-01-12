@@ -32,6 +32,7 @@ export default function Events({ title }) {
 
         fetchWorkspaces();
     }, []);
+    console.error('Fetching workspaces:', tempData);
     const paginatedData = tempData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
     useEffect(() => {

@@ -16,10 +16,11 @@ const rates = [
 
 const initialState = {}
 
-export default function CreateUpdateModal({ show, onClose, data, workspaces }) {
+export default function CreateUpdateModal({ show, onClose, data, worspaces }) {
     const [partner, setPartner] = useState(initialState)
     const [loading, setLoading] = useState(false)
-// console.log(workspaces);
+console.log(worspaces);
+
     useEffect(() => {
         if (data) {
             setPartner(data)
@@ -87,13 +88,16 @@ export default function CreateUpdateModal({ show, onClose, data, workspaces }) {
                         placeholder={"Enter Account Name"}
                     />
                     <MainSelect
-                        disabled={loading}
-                        value={rates?.find(row => row?.name == partner?.rate)}
-                        onChange={value => setPartner({ ...partner, rate: value?.name })}
-                        label={"Rate"}
-                        placeholder={"Please Select Rate"}
-                        options={rates}
-                    />
+                            disabled={loading}
+                            value={worspaces?.find(row => row?.name === partner?.workspaceId)}
+                            onChange={value => setPartner({
+                                ...partner,
+                                workspaceId: value?._id || ''
+                            })}
+                            label={"Workspaces"}
+                            placeholder={"Please Select workspaces"}
+                            options={worspaces}
+                        />
                     <MainSelect
                         disabled={loading}
                         value={rates?.find(row => row?.name == partner?.rate)}
