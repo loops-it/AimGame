@@ -32,9 +32,15 @@ export default function PasswordResetVerify({title}) {
                 const errorData = await response.json();
                 setError(errorData.errors);
             } else {
-                // const data = await response.json();
-                 localStorage.setItem('otp', otp);
-                navigateTo('/password-reset');
+                const verifyType = localStorage.verifyType;
+                if(verifyType == "admin"){
+                    navigateTo('/');
+                }
+                else{
+                    localStorage.setItem('otp', otp);
+                    navigateTo('/password-reset');
+                }
+                
             }
         } catch (error) {
             console.error('Error occurred:', error);

@@ -27,6 +27,10 @@ export const menuData = [
         title: "Clients",
         href: "/clients"
     },
+    {
+        title: "Workspaces",
+        href: "/workspaces"
+    },
     // {
     //     title: "Subscription",
     //     href: "/subscription"

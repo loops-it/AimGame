@@ -32,6 +32,7 @@ export default function PasswordResetSend({ title }) {
             } else {
                 // const data = await response.json();
                 localStorage.setItem('otpEmail', email);
+                localStorage.setItem('verifyType', 'reset');
                 navigateTo('/password-reset/verify');
             }
         } catch (error) {

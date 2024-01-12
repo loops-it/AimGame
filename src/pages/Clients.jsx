@@ -9,28 +9,6 @@ import Avatar from '@mui/material/Avatar';
 import CreateUpdateModal from '../components/Authenticated/Client/CreateUpdateModal';
 import api from '../services/api'
 
-const tempData = [
-    {
-        id: "2123123",
-        companyName: "Dialog PVT",
-        createdAt: "2025/10/12",
-        image: "https://fastly.picsum.photos/id/655/536/354.jpg?hmac=yks7pBLyZAstY3Khhmjee0_AcrlFgbVV6VpCAwNx1EU",
-        industryType: "Telecommunication",
-        email: "test@dialog.lk",
-        contact: "+94312222344",
-        address: "No 123 test rd, test",
-    },
-    {
-        id: "1213123",
-        companyName: "Dialog 1",
-        createdAt: "2025/10/14",
-        image: "https://fastly.picsum.photos/id/655/536/354.jpg?hmac=yks7pBLyZAstY3Khhmjee0_AcrlFgbVV6VpCAwNx1EU",
-        industryType: "Telecommunication",
-        email: "test@dialog.lk",
-        contact: "+94312222344",
-        address: "No 123 test rd, test",
-    },
-]
 
 export default function Clients({ title }) {
     document.title = title
@@ -79,38 +57,60 @@ export default function Clients({ title }) {
 
 
     // workspace data
-    useEffect(() => {
-        const fetchWorkspaces = async () => {
-            try {
-                const response = await api.get('/api-v1/workspaces');
-                setWorkspaces(response.data.data);
-            } catch (error) {
-                console.error('Error fetching workspaces:', error);
-            }
-        };
+    // useEffect(() => {
+    //     const fetchWorkspaces = async () => {
+    //         try {
+    //             const response = await api.get('/api-v1/workspaces');
+    //             setWorkspaces(response.data.data);
+    //         } catch (error) {
+    //             console.error('Error fetching workspaces:', error);
+    //         }
+    //     };
 
-        fetchWorkspaces();
-    }, []);
-    // console.log("workspaces data : ", workspaces);
-
+    //     fetchWorkspaces();
+    // }, []);
 
 
-    // clients data
+    // // clients data
+    // useEffect(() => {
+    //     const fetchData = async () => {
+    //         try {
+    //             const response = await api.get('/api-v1/clients');
+    //             const data = response.data.data;
+    //             setClients(data);
+    //         } catch (error) {
+    //             console.error('Error fetching data:', error);
+    //         }
+    //     };
+
+    //     fetchData();
+    // }, []);
+    // console.log("clients : ", clients)
+    
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await api.get('/api-v1/clients');
-                const data = response.data.data;
-                setClients(data);
+                // Fetch workspaces first
+                const workspacesResponse = await api.get(`/api-v1/workspaces/user/${localStorage.userID}`);
+                const workspacesData = workspacesResponse.data.data;
+                setWorkspaces(workspacesData);
+                // Fetch opportunities for each workspace
+                const clientsData = [];
+                for (const workspace of workspacesData) {
+                    console.log('WSID:', workspace._id);
+                    const clientsResponse = await api.get(`/api-v1/clients/workspace/${workspace._id}`);
+                    const clientsForWorkspace = clientsResponse.data.data;
+                    clientsData.push(...clientsForWorkspace);
+                }
+    
+                setClients(clientsData);
             } catch (error) {
                 console.error('Error fetching data:', error);
             }
         };
-
+    
         fetchData();
     }, []);
-    console.log("clients : ", clients)
-
 
     const fetchSearchResults = async () => {
         if (searchValue.trim() !== '') {
@@ -185,6 +185,9 @@ export default function Clients({ title }) {
                                 ID
                             </th>
                             <th scope="col" className="py-5 px-6 border-b">
+                            Reference No
+                            </th>
+                            <th scope="col" className="py-5 px-6 border-b">
                                 Logo
                             </th>
                             <th scope="col" className="py-5 px-6 border-b">
@@ -216,6 +219,7 @@ export default function Clients({ title }) {
                             return (
                                 <tr key={index} className="bg-white border-b text-gray-900 ">
                                     <td className="py-5 px-6" >{row?.id}</td>
+                                    <td className="py-5 px-6" >{row?.refNo}</td>
                                     <td className="py-5 px-6" >
                                         <Avatar
                                             alt={row?.name}

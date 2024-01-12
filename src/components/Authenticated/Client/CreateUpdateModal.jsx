@@ -104,6 +104,13 @@ export default function CreateUpdateModal({ show, onClose, data, industryTypes, 
                             label={"Company Name"}
                             placeholder={"Enter Company Name"}
                         />
+                        <MainInput
+                            disabled={loading}
+                            value={client?.refNo}
+                            onChange={text => setClient({ ...client, refNo: text })}
+                            label={"Reference No"}
+                            placeholder={"Enter Reference No"}
+                        />
                         <MainSelect
                             disabled={loading}
                             value={industryTypes?.find(row => row?.name === client?.industryType)}

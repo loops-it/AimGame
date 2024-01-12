@@ -6,7 +6,7 @@ import MainPasswordInput from '../components/MainPasswordInput';
 import Link from '../components/Link';
 import { useNavigate } from 'react-router-dom';
 
-export default function Login({ title }) {
+export default function Register({ title }) {
     document.title = title;
 
     const [error, setError] = useState(null);
@@ -16,28 +16,35 @@ export default function Login({ title }) {
         e.preventDefault();
 
         try {
+            const name = e.target.name.value;
             const email = e.target.email.value;
             const password = e.target.password.value;
+            const confirm_password = e.target.confirm_password.value;
+            const userRole = "admin";
+            if(password != confirm_password){
+                setError("Passwords dose not match");
+            }
+            else{
+            console.log(JSON.stringify({ name,email, password, userRole }));
 
-            console.log(JSON.stringify({ email, password }));
-
-            const response = await fetch('http://localhost:4065/api-v1/auth/login', {
+            const response = await fetch('http://localhost:4065/api-v1/users', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ email, password }),
+                body: JSON.stringify({ name,email, password, userRole }),
             });
 
             if (!response.ok) {
                 const errorData = await response.json();
-                setError(errorData.msg);
+                setError(errorData.errors);
             } else {
-                const data = await response.json();
-                localStorage.setItem('accessToken', data.token);
-                localStorage.setItem('userID', data.userID);
-                navigateTo('/dashboard');
+                //const data = await response.json();
+                localStorage.setItem('otpEmail', email);
+                localStorage.setItem('verifyType', 'admin');
+                navigateTo('/password-reset/verify');
             }
+        }
         } catch (error) {
             console.error('Error occurred:', error);
             setError('An unexpected error occurred.');
@@ -46,10 +53,15 @@ export default function Login({ title }) {
 
     return (
         <GuestLayout
-            headerText={"Sign In"}
+            headerText={"Register"}
             secondaryHeaderText={"We suggest using the email address you use at work."}
         >
             <form className='flex flex-col gap-5 w-[90%] lg:w-[400px] mt-10' onSubmit={handleFormSubmit}>
+                <MainInput
+                    name="name"
+                    label={" Name"}
+                    placeholder={"Enter Name"}
+                />
                 <MainInput
                     name="email"
                     label={"Email"}
@@ -60,13 +72,16 @@ export default function Login({ title }) {
                     label={"Password"}
                     placeholder={"Enter Password"}
                 />
-                <div className='flex justify-end'>
-                    <Link href={"/password-reset/send"}>{"Forget Password?"}</Link>
-                </div>
+                <MainPasswordInput
+                    name="confirm_password"
+                    label={"Confirm Password"}
+                    placeholder={"Enter Confirm Password"}
+                />
+               
                 {error && <p className="text-red-500">{error}</p>}
-                <MainButton className="mt-5">{"Sign in"}</MainButton>
+                <MainButton className="mt-5">{"Register"}</MainButton>
 
-                <span className='text-sm text-center text-[#77787A]' >Don't have a  account?<a className='text-app-blue ' href={"/register"} > Register</a> </span>
+                <span className='text-sm text-center text-[#77787A]' >Already have a account ?<a className='text-app-blue ' href={"/"} > Sign In</a> </span>
             </form>
         </GuestLayout>
     );
