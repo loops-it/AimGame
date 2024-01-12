@@ -38,6 +38,7 @@ export default function RoleMappingModal({ show, onClose, data, org }) {
     const [loading, setLoading] = useState(false)
 
     const onSave = async () => {
+        console.log("Role data : ",data)
         try {
             const response = await api.post(`/api-v1/opportunities/${data._id}/mapping-role`, mappedRole);
 
@@ -52,7 +53,7 @@ export default function RoleMappingModal({ show, onClose, data, org }) {
         }
     }
 
-    console.log("data : ",data)
+    
 
     return (
         <Transition

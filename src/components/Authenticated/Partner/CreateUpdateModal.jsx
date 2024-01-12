@@ -31,6 +31,7 @@ export default function CreateUpdateModal({ show, onClose, data, workspaces }) {
 
 
     async function onCreate() {
+        console.log("partner data : ",partner);
         try {
             const response = await api.post('/api-v1/partners', partner);
 
@@ -109,10 +110,16 @@ export default function CreateUpdateModal({ show, onClose, data, workspaces }) {
                         className='disabled:bg-app-gray disabled:border-app-gray disabled:text-white flex items-center gap-3 border text-app-blue-2 border-app-blue-2 rounded-lg w-fit px-10 py-2' >
                         Cancel
                     </button>
-                    <button
+                    {/* <button
                         onClick={() => {
                             data ? onCreate() : onUpdate()
                         }}
+                        disabled={loading}
+                        className='disabled:bg-app-gray flex items-center gap-3 bg-app-blue-2 rounded-lg w-fit px-10 py-2 text-white' >
+                        {data ? "Save" : "Create"}
+                    </button> */}
+                    <button
+                        onClick={onCreate}
                         disabled={loading}
                         className='disabled:bg-app-gray flex items-center gap-3 bg-app-blue-2 rounded-lg w-fit px-10 py-2 text-white' >
                         {data ? "Save" : "Create"}
