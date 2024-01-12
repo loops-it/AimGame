@@ -9,6 +9,7 @@ import { MainContextProvider } from "./context/MainContext";
 
 //Pages
 import Login from "./pages/Login";
+import Register from "./pages/Register";
 import LoginWorkspace from "./pages/LoginWorkspace";
 import LoginWorkspaceSelect from "./pages/LoginWorkspaceSelect";
 
@@ -25,7 +26,7 @@ import Clients from "./pages/Clients";
 import Partners from "./pages/Partners";
 import Events from "./pages/Events";
 import Tasks from "./pages/Tasks";
-
+import Workspaces from "./pages/Workspaces";
 
 
 
@@ -35,6 +36,7 @@ export default function App() {
       <BrowserRouter>
         <Routes >
           <Route path="/" element={<Login title={"Aimgame | Login"} />} />
+          <Route path="/register" element={<Register title={"Aimgame | Register"} />} />
           <Route path="/login/workspace" element={<LoginWorkspace title={"Aimgame | Login Workspace"} />} />
           <Route path="/login/workspace-select" element={<LoginWorkspaceSelect title={"Aimgame | Select Workspace"} />} />
 
@@ -55,6 +57,7 @@ export default function App() {
 
           <Route path="/tasks" element={<Tasks title={"Aimgame"} />} />
 
+          <Route path="/workspaces" element={<Workspaces title={"Aimgame | Workspaces"} />} />
 
         </Routes>
       </BrowserRouter>

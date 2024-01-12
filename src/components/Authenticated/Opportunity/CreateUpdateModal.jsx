@@ -126,16 +126,16 @@ export default function CreateUpdateModal({ show, onClose, opportunityData, onOp
     async function onUpdate() {
         console.log(opportunity)
         try {
-            const response = await api.put(`/api-v1/clients/${opportunity._id}`, opportunity);
+            const response = await api.put(`/api-v1/opportunities/${opportunity._id}`, opportunity);
 
             if (response.status === 200 || response.status === 201) {
-                console.log('Client updated successfully');
+                console.log('Opportunity updated successfully');
                 onClose();
             } else {
-                console.error('Failed to update client:', response.statusText);
+                console.error('Opportunity to update client:', response.statusText);
             }
         } catch (error) {
-            console.error('Error updating client:', error);
+            console.error('Error updating Opportunity:', error);
         }
     }
 

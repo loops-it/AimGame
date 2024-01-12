@@ -42,18 +42,59 @@ export default function Opportunities({ title }) {
         }, 3000);
     }, [loading])
 
-    // opportunity data
+    // // stage data
+    // useEffect(() => {
+    //     const fetchData = async () => {
+    //         try {
+    //             const response = await api.get(`/api-v1/workspaces/user/${localStorage.userID}`);
+    //             const data = response.data.data;
+    //             setWorkspace(data);
+    //         } catch (error) {
+    //             console.error('Error fetching data:', error);
+    //         }
+    //     };
+
+    //     fetchData();
+    // }, []);
+
+
+    // // opportunity data
+    // useEffect(() => {
+    //     const fetchData = async () => {
+    //         try {
+    //             const response = await api.get('/api-v1/opportunities');
+    //             const data = response.data.data;
+    //             setOpportunities(data);
+    //         } catch (error) {
+    //             console.error('Error fetching data:', error);
+    //         }
+    //     };
+
+    //     fetchData();
+    // }, []);
+
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await api.get('/api-v1/opportunities');
-                const data = response.data.data;
-                setOpportunities(data);
+                // Fetch workspaces first
+                const workspacesResponse = await api.get(`/api-v1/workspaces/user/${localStorage.userID}`);
+                const workspacesData = workspacesResponse.data.data;
+                setWorkspace(workspacesData);
+                // Fetch opportunities for each workspace
+                const opportunitiesData = [];
+                for (const workspace of workspacesData) {
+                    console.log('WSID:', workspace._id);
+                    const opportunitiesResponse = await api.get(`/api-v1/opportunities/workspace/${workspace._id}`);
+                    const opportunitiesForWorkspace = opportunitiesResponse.data.data;
+                    opportunitiesData.push(...opportunitiesForWorkspace);
+                }
+    
+                setOpportunities(opportunitiesData);
             } catch (error) {
                 console.error('Error fetching data:', error);
             }
         };
-
+    
         fetchData();
     }, []);
 
@@ -88,21 +129,7 @@ export default function Opportunities({ title }) {
         fetchData();
     }, []);
 
-    // stage data
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await api.get('/api-v1/workspaces');
-                const data = response.data.data;
-                setWorkspace(data);
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            }
-        };
-
-        fetchData();
-    }, []);
-
+    
     // client organization data
     useEffect(() => {
         const fetchData = async () => {
