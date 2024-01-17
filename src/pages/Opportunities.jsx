@@ -350,7 +350,7 @@ export default function Opportunities({ title }) {
                         {paginatedData?.map((row, index) => {
                             return (
                                 <tr key={index} className="bg-white border-b text-gray-900 ">
-                                    <td className="py-5 px-6" >{row?._id}</td>
+                                    <td className="py-5 px-6" >{row?.referenceNumber}</td>
                                     <td className="py-5 px-6" >{row?.startDate}</td>
                                     <td className="py-5 px-6" >{row?.endDate}</td>
                                     <td className="py-5 px-6" >{row?.name}</td>

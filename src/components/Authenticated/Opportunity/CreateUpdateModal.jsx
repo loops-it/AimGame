@@ -133,6 +133,8 @@ export default function CreateUpdateModal({ show, onClose, data, onPartnerAddCli
         } catch (error) {
             console.error('Error updating client:', error);
         }
+    }function isValidNumber(value) {
+        return !isNaN(parseFloat(value)) && isFinite(value);
     }
 
     return (
@@ -192,7 +194,7 @@ export default function CreateUpdateModal({ show, onClose, data, onPartnerAddCli
                         />
                         <MainInput
                             disabled={loading}
-                            value={parseFloat(opportunity?.probability)}
+                            value={isValidNumber(opportunity?.probability) ? parseFloat(opportunity?.probability) : ''}
                             min={0}
                             max={100}
                             type={"number"}
