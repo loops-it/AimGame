@@ -87,12 +87,16 @@ const initialState = {
     mappingRoles: [],
 }
 
-export default function CreateUpdateModal({ show, onClose, data, onPartnerAddClick, onTaskAddClick, onOpMappingAddClick, leadData, partners, teamMembers, clients, allworkspaces }) {
+export default function CreateUpdateModal({ show, onClose, data, onPartnerAddClick, onTaskAddClick, onOpMappingAddClick, leadData, partners, teamMembers, clients, allworkspaces, tasks }) {
 
     const [opportunity, setOpportunity] = useState(initialState)
     const [loading, setLoading] = useState(false)
 
+    console.log("teamMembers : - ", teamMembers)
     console.log("partners : - ", partners)
+    console.log("opMappingRoles : - ", opMappingRoles)
+    console.log("opMappingRoles : - ", opMappingRoles)
+    console.log("tasks : - ", tasks)
 
     useEffect(() => {
         if (data) {
@@ -120,7 +124,7 @@ export default function CreateUpdateModal({ show, onClose, data, onPartnerAddCli
     }
 
     async function onUpdate() {
-        console.log("Update data:",opportunity)
+        console.log("Update data:", opportunity)
         try {
             const response = await api.put(`/api-v1/opportunities/${opportunity._id}`, opportunity);
 
@@ -133,7 +137,7 @@ export default function CreateUpdateModal({ show, onClose, data, onPartnerAddCli
         } catch (error) {
             console.error('Error updating client:', error);
         }
-    }function isValidNumber(value) {
+    } function isValidNumber(value) {
         return !isNaN(parseFloat(value)) && isFinite(value);
     }
 
@@ -228,7 +232,7 @@ export default function CreateUpdateModal({ show, onClose, data, onPartnerAddCli
                         }
                     </div>
                     <div className='px-10 py-5 flex flex-col gap-5' >
-                    <MainSelect
+                        <MainSelect
                             disabled={loading}
                             value={clients?.find(row => row?.name === opportunity?.clientId)}
                             onChange={value => setOpportunity({
@@ -250,44 +254,31 @@ export default function CreateUpdateModal({ show, onClose, data, onPartnerAddCli
                             placeholder={"Please Select Workspace"}
                             options={allworkspaces ?? []}
                         />
-                        {/* <MainMultipleSelect
-                            disabled={loading}
-                            value={teamMembers?.team}
-                            onChange={value => setOpportunity({ ...opportunity, team: value?.name })}
-                            onDeleteItem={index => {
-                                let tempData = [...opportunity?.team]
-                                tempData.splice(index, 1)
-                                setOpportunity({ ...opportunity, team: tempData })
-                            }}
-                            label={"Team Members"}
-                            placeholder={"Please Select Team Members"}
-                            options={teamMembers}
-                        /> */}
                         <MainMultipleSelect
+                            key={JSON.stringify(opportunity.team)}
                             disabled={loading}
-                            value={teamMembers?.team}
-                            onChange={value => {
-                                setOpportunity({ ...opportunity, team: value })
-                                console.log(opportunity)
-                            }}
+                            value={opportunity.team}
+                            onChange={value => setOpportunity({ ...opportunity, team: value })}
                             onDeleteItem={index => {
-                                let tempData = [...opportunity?.team]
-                                tempData.splice(index, 1)
-                                setOpportunity({ ...opportunity, team: tempData })
+                                let tempData = [...opportunity.team];
+                                tempData.splice(index, 1);
+                                setOpportunity({ ...opportunity, team: tempData });
                             }}
                             label={"Team Members"}
-                            placeholder={"Please Select Team Members"}
-                            options={teamMembers ?? []}
+                            placeholder={""}
+                            options={teamMembers.map(member => ({ _id: member._id, name: member.name }))}
                         />
                         <div>
+
                             <MainMultipleSelect
+                                key={JSON.stringify(opportunity.partners)}
                                 disabled={loading}
-                                value={partners?.find(row => row?.name === opportunity?.name)}
-                                onChange={value => setOpportunity({ ...opportunity, partners: value?.name })}
+                                value={opportunity.partners}
+                                onChange={value => setOpportunity({ ...opportunity, partners: value })}
                                 onDeleteItem={index => {
-                                    let tempData = [...opportunity?.partners]
-                                    tempData.splice(index, 1)
-                                    setOpportunity({ ...opportunity, partners: tempData })
+                                    let tempData = [...opportunity.partners];
+                                    tempData.splice(index, 1);
+                                    setOpportunity({ ...opportunity, partners: tempData });
                                 }}
                                 label={"Partners"}
                                 placeholder={""}
@@ -309,17 +300,18 @@ export default function CreateUpdateModal({ show, onClose, data, onPartnerAddCli
                         {data &&
                             <div>
                                 <MainMultipleSelect
+                                    key={JSON.stringify(opportunity.mappingRoles)}
                                     disabled={loading}
-                                    value={opportunity?.mappingRoles}
-                                    onChange={value => setOpportunity({ ...opportunity, mappingRoles: value?.name })}
+                                    value={opportunity.mappingRoles}
+                                    onChange={value => setOpportunity({ ...opportunity, mappingRoles: value })}
                                     onDeleteItem={index => {
-                                        let tempData = [...opportunity?.mappingRoles]
-                                        tempData.splice(index, 1)
-                                        setOpportunity({ ...opportunity, mappingRoles: tempData })
+                                        let tempData = [...opportunity.mappingRoles];
+                                        tempData.splice(index, 1);
+                                        setOpportunity({ ...opportunity, mappingRoles: tempData });
                                     }}
                                     label={"OP Mapping Roles"}
                                     placeholder={""}
-                                    options={opMappingRoles ?? []}
+                                    options={opMappingRoles.map(member => ({ _id: member.name, name: member.name }))}
                                 />
 
                                 <div className='mt-2 flex justify-end' >
@@ -338,17 +330,18 @@ export default function CreateUpdateModal({ show, onClose, data, onPartnerAddCli
                         {data &&
                             <div>
                                 <MainMultipleSelect
+                                key={JSON.stringify(opportunity.tasks)}
                                     disabled={loading}
-                                    value={opportunity?.mappingRoles}
-                                    onChange={value => setOpportunity({ ...opportunity, mappingRoles: value?.name })}
+                                    value={opportunity.tasks}
+                                    onChange={value => setOpportunity({ ...opportunity, tasks: value })}
                                     onDeleteItem={index => {
-                                        let tempData = [...opportunity?.mappingRoles]
-                                        tempData.splice(index, 1)
-                                        setOpportunity({ ...opportunity, mappingRoles: tempData })
+                                        let tempData = [...opportunity.tasks];
+                                        tempData.splice(index, 1);
+                                        setOpportunity({ ...opportunity, tasks: tempData });
                                     }}
                                     label={"Tasks"}
                                     placeholder={""}
-                                    options={opMappingRoles ?? []}
+                                    options={tasks.map(member => ({ _id: member.name, name: member.name }))}
                                 />
 
                                 <div className='mt-2 flex justify-end' >

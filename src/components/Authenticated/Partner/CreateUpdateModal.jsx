@@ -97,7 +97,7 @@ export default function CreateUpdateModal({ show, onClose, data, worspaces }) {
                             })}
                             label={"Workspaces"}
                             placeholder={"Please Select workspaces"}
-                            options={worspaces?? []}
+                            options={worspaces ?? []}
                         />
                     <MainSelect
                         disabled={loading}

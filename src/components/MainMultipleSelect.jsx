@@ -42,28 +42,19 @@ export default function MainMultipleSelect({ options, label, placeholder, onDele
                         </Combobox.Button>
                     </div>
                     {value.length > 0 && (
-                        <div className='flex flex-wrap gap-1 my-3'>
-                            {/* {value.map((option, index) => {
-                                // console.log("chip : ", option)
-                                return(
-                                
-                                    <Chip
-                                        key={option._id}
-                                        label={option.name}
-                                        onDelete={() => onDeleteItem(index)}
-                                    />
-                                )
-                            })} */}
-                            {value.map((option, index) => {
-                                // console.log("chip : ", option)
-                                return (
 
+                        <div className='flex flex-wrap gap-1 my-3'>
+                            {value.map((optionId, index) => {
+                                const selectedOption = options.find(option => option._id === optionId);
+                                console.log("chip : ", selectedOption);
+
+                                return (
                                     <Chip
-                                        key={option._id}
-                                        label={option._id}
+                                        key={optionId}
+                                        label={selectedOption ? selectedOption.name : 'Unknown'}
                                         onDelete={() => onDeleteItem(index)}
                                     />
-                                )
+                                );
                             })}
                         </div>
                     )}

@@ -111,6 +111,7 @@ export default function Opportunities({ title }) {
     const [opLead, setOpLead] = useState([]);
     const [teamMembers, setTeamMembers] = useState([]);
     const [clients, setClients] = useState([]);
+    const [tasks, setTasks] = useState([]);
 
 
     const [currentPage, setCurrentPage] = useState(1);
@@ -148,6 +149,19 @@ export default function Opportunities({ title }) {
         return "#9c9c9c"
     }
 
+
+    useEffect(() => {
+        const fetchWorkspaces = async () => {
+            try {
+                const response = await api.get('/api-v1/tasks');
+                setTasks(response.data.data);
+            } catch (error) {
+                console.error('Error fetching workspaces:', error);
+            }
+        };
+
+        fetchWorkspaces();
+    }, []);
 
     useEffect(() => {
         const fetchWorkspaces = async () => {
@@ -405,6 +419,7 @@ export default function Opportunities({ title }) {
                 allworkspaces={allworkspaces}
                 teamMembers={teamMembers}
                 show={show}
+                tasks={tasks}
                 onClose={() => setShow(false)}
                 onOpMappingAddClick={() => setRoleMappingShow(true)}
                 onPartnerAddClick={() => setPartnerCreateModalShow(true)}
