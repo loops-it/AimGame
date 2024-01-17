@@ -27,7 +27,7 @@ import Partners from "./pages/Partners";
 import Events from "./pages/Events";
 import Tasks from "./pages/Tasks";
 import Workspaces from "./pages/Workspaces";
-
+import Teams from "./pages/Teams";
 
 
 export default function App() {
@@ -56,7 +56,7 @@ export default function App() {
           <Route path="/events" element={<Events title={"Aimgame | Events"} />} />
 
           <Route path="/tasks" element={<Tasks title={"Aimgame"} />} />
-
+          <Route path="/teams" element={<Teams title={"Aimgame | Teams"} />} />
           <Route path="/workspaces" element={<Workspaces title={"Aimgame | Workspaces"} />} />
 
         </Routes>

@@ -31,6 +31,10 @@ export const menuData = [
         title: "Workspaces",
         href: "/workspaces"
     },
+    {
+        title: "Team",
+        href: "/teams"
+    },
     // {
     //     title: "Subscription",
     //     href: "/subscription"
