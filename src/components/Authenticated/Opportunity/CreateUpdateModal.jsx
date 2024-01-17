@@ -153,7 +153,7 @@ export default function CreateUpdateModal({ show, onClose, data, onPartnerAddCli
 
     async function onCreate() {
         try {
-            console.log("opportunity : ", opportunity)
+            // console.log("opportunity : ", opportunity)
             const response = await api.post('/api-v1/opportunities', opportunity);
 
             if (response.status === 201) {
@@ -168,9 +168,9 @@ export default function CreateUpdateModal({ show, onClose, data, onPartnerAddCli
     }
 
     async function onUpdate() {
-        console.log(opportunity)
+        console.log("Update data:",opportunity)
         try {
-            const response = await api.put(`/api-v1/clients/${opportunity._id}`, opportunity);
+            const response = await api.put(`/api-v1/opportunities/${opportunity._id}`, opportunity);
 
             if (response.status === 200 || response.status === 201) {
                 console.log('Client updated successfully');
@@ -418,11 +418,20 @@ export default function CreateUpdateModal({ show, onClose, data, onPartnerAddCli
                             className='disabled:bg-app-gray disabled:border-app-gray disabled:text-white flex items-center gap-3 border text-app-blue-2 border-app-blue-2 rounded-lg w-fit px-10 py-2' >
                             Cancel
                         </button>
-                        <button
+                        {/* <button
                             onClick={onCreate}
                             disabled={loading}
                             className='disabled:bg-app-gray flex items-center gap-3 bg-app-blue-2 rounded-lg w-fit px-10 py-2 text-white' >
                             {data ? "Save" : "Create"}
+                        </button> */}
+                        <button
+                            onClick={() => {
+                                data ? onUpdate() : onCreate();
+                            }}
+                            disabled={loading}
+                            className='disabled:bg-app-gray flex items-center gap-3 bg-app-blue-2 rounded-lg w-fit px-10 py-2 text-white'
+                        >
+                            {data ? "Update" : "Create"}
                         </button>
                     </div>
                 </div>

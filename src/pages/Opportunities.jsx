@@ -258,7 +258,7 @@ export default function Opportunities({ title }) {
 
     // console.log("opLead : ", partners)
     // console.log("team : ", teamMembers);
-    console.log("tempData : ", tempData);
+    // console.log("tempData : ", tempData);
 
     return (
         <AuthenticatedLayout>
