@@ -22,7 +22,7 @@ const initialState = {}
 export default function CreateUpdateModal({ show, onClose, data, funnelStatus,rowID}) {
     const [task, setTask] = useState(initialState)
     const [loading, setLoading] = useState(false)
-    console.log("funnels", funnelStatus);
+    // console.log("funnels", funnelStatus);
     
     useEffect(() => {
         if (data) {

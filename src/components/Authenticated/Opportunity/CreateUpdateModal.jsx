@@ -89,54 +89,6 @@ const initialState = {
 
 export default function CreateUpdateModal({ show, onClose, data, onPartnerAddClick, onTaskAddClick, onOpMappingAddClick, leadData, partners, teamMembers, clients, allworkspaces }) {
 
-    // const [opportunity, setOpportunity] = useState(initialState)
-    // const [loading, setLoading] = useState(false)
-
-    // console.log("teamData : ", teamData)
-
-    // useEffect(() => {
-    //     if (opportunityData) {
-    //         setOpportunity(opportunityData)
-    //     }
-    //     if (!opportunityData) {
-    //         setOpportunity(initialState)
-    //     }
-    // }, [opportunityData])
-
-    // async function onCreate() {
-    //     try {
-    //         console.log("opportunity : ", opportunity)
-    //         const response = await api.post('/api-v1/opportunities', opportunity);
-
-    //         if (response.status === 201) {
-    //             console.log('Opportunity created successfully');
-    //             onClose();
-    //         } else {
-    //             console.error('Failed to create opportunity:', response.statusText);
-    //         }
-    //     } catch (error) {
-    //         console.error('Error creating opportunity:', error);
-    //     }
-    // }
-
-
-
-    // async function onUpdate() {
-    //     console.log(opportunity)
-    //     try {
-    //         const response = await api.put(`/api-v1/clients/${opportunity._id}`, opportunity);
-
-    //         if (response.status === 200 || response.status === 201) {
-    //             console.log('Client updated successfully');
-    //             onClose();
-    //         } else {
-    //             console.error('Failed to update client:', response.statusText);
-    //         }
-    //     } catch (error) {
-    //         console.error('Error updating client:', error);
-    //     }
-    // }
-
     const [opportunity, setOpportunity] = useState(initialState)
     const [loading, setLoading] = useState(false)
 
@@ -228,7 +180,7 @@ export default function CreateUpdateModal({ show, onClose, data, onPartnerAddCli
                             })}
                             label={"Opportunity Lead"}
                             placeholder={"Please Select Opportunity Lead"}
-                            options={leadData}
+                            options={leadData ?? []}
                         />
                         <MainSelect
                             disabled={loading}
@@ -236,7 +188,7 @@ export default function CreateUpdateModal({ show, onClose, data, onPartnerAddCli
                             onChange={value => setOpportunity({ ...opportunity, designation: value?.name })}
                             label={"Designation"}
                             placeholder={"Please Select Designation"}
-                            options={designations}
+                            options={designations ?? []}
                         />
                         <MainInput
                             disabled={loading}
@@ -252,7 +204,7 @@ export default function CreateUpdateModal({ show, onClose, data, onPartnerAddCli
                             onChange={value => setOpportunity({ ...opportunity, stage: value?.name })}
                             label={"Stage"}
                             placeholder={"Please Select Stage"}
-                            options={stages}
+                            options={stages ?? []}
                         />
                         <MainSelect
                             disabled={loading}
@@ -260,7 +212,7 @@ export default function CreateUpdateModal({ show, onClose, data, onPartnerAddCli
                             onChange={value => setOpportunity({ ...opportunity, rate: value?.name })}
                             label={"Rate"}
                             placeholder={"Please Select Rate"}
-                            options={rates}
+                            options={rates ?? []}
                         />
                         {data &&
                             <MainSelect
@@ -269,7 +221,7 @@ export default function CreateUpdateModal({ show, onClose, data, onPartnerAddCli
                                 onChange={value => setOpportunity({ ...opportunity, funnelStatus: value?.name })}
                                 label={"Funnel Status"}
                                 placeholder={""}
-                                options={funnelState}
+                                options={funnelState ?? []}
                             />
                         }
                     </div>
@@ -283,7 +235,7 @@ export default function CreateUpdateModal({ show, onClose, data, onPartnerAddCli
                             })}
                             label={"Clients"}
                             placeholder={"Please Select Client"}
-                            options={clients}
+                            options={clients ?? []}
                         />
                         <MainSelect
                             disabled={loading}
@@ -294,7 +246,7 @@ export default function CreateUpdateModal({ show, onClose, data, onPartnerAddCli
                             })}
                             label={"Workspace"}
                             placeholder={"Please Select Workspace"}
-                            options={allworkspaces}
+                            options={allworkspaces ?? []}
                         />
                         {/* <MainMultipleSelect
                             disabled={loading}
@@ -323,7 +275,7 @@ export default function CreateUpdateModal({ show, onClose, data, onPartnerAddCli
                             }}
                             label={"Team Members"}
                             placeholder={"Please Select Team Members"}
-                            options={teamMembers}
+                            options={teamMembers ?? []}
                         />
                         <div>
                             <MainMultipleSelect
@@ -337,7 +289,7 @@ export default function CreateUpdateModal({ show, onClose, data, onPartnerAddCli
                                 }}
                                 label={"Partners"}
                                 placeholder={""}
-                                options={partners}
+                                options={partners ?? []}
                             />
 
                             <div className='mt-2 flex justify-end' >
@@ -365,7 +317,7 @@ export default function CreateUpdateModal({ show, onClose, data, onPartnerAddCli
                                     }}
                                     label={"OP Mapping Roles"}
                                     placeholder={""}
-                                    options={opMappingRoles}
+                                    options={opMappingRoles ?? []}
                                 />
 
                                 <div className='mt-2 flex justify-end' >
@@ -394,7 +346,7 @@ export default function CreateUpdateModal({ show, onClose, data, onPartnerAddCli
                                     }}
                                     label={"Tasks"}
                                     placeholder={""}
-                                    options={opMappingRoles}
+                                    options={opMappingRoles ?? []}
                                 />
 
                                 <div className='mt-2 flex justify-end' >

@@ -37,12 +37,12 @@ export default function RoleMappingModal({ show, onClose, data, org }) {
     const [mappedRole, setMappedRole] = useState({})
     const [loading, setLoading] = useState(false)
 
-    console.log("Role data : ",data)
+    // console.log("Role data : ",data)
 
     const onSave = async () => {
-        console.log("mappedRole data : ",mappedRole)
+        // console.log("mappedRole data : ",mappedRole)
         try {
-            const response = await api.post(`/api-v1/opportunities/${data.id}/mapping-role`, mappedRole);
+            const response = await api.post(`/api-v1/opportunities/${data._id}/mapping-role`, mappedRole);
 
             if (response.status === 201) {
                 console.log('Mapped Role successfully');

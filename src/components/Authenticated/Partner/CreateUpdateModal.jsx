@@ -19,7 +19,7 @@ const initialState = {}
 export default function CreateUpdateModal({ show, onClose, data, worspaces }) {
     const [partner, setPartner] = useState(initialState)
     const [loading, setLoading] = useState(false)
-console.log(worspaces);
+// console.log(worspaces);
 
     useEffect(() => {
         if (data) {
@@ -29,7 +29,6 @@ console.log(worspaces);
             setPartner(initialState)
         }
     }, [data])
-
 
     async function onCreate() {
         console.log("partner data : ",partner);
@@ -46,6 +45,8 @@ console.log(worspaces);
             console.error('Error creating partner:', error);
         }
     }
+
+    console.log("partner data : ",partner);
 
     async function onUpdate() {
         onClose()
@@ -96,7 +97,7 @@ console.log(worspaces);
                             })}
                             label={"Workspaces"}
                             placeholder={"Please Select workspaces"}
-                            options={worspaces}
+                            options={worspaces?? []}
                         />
                     <MainSelect
                         disabled={loading}
