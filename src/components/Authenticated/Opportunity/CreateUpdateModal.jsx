@@ -87,7 +87,7 @@ const initialState = {
     mappingRoles: [],
 }
 
-export default function CreateUpdateModal({ show, onClose, data, onPartnerAddClick, onTaskAddClick, onOpMappingAddClick, leadData, partners }) {
+export default function CreateUpdateModal({ show, onClose, data, onPartnerAddClick, onTaskAddClick, onOpMappingAddClick, leadData, partners, teamMembers, clients, allworkspaces }) {
 
     // const [opportunity, setOpportunity] = useState(initialState)
     // const [loading, setLoading] = useState(false)
@@ -152,11 +152,35 @@ export default function CreateUpdateModal({ show, onClose, data, onPartnerAddCli
     }, [data])
 
     async function onCreate() {
-        onClose()
+        try {
+            // console.log("opportunity : ", opportunity)
+            const response = await api.post('/api-v1/opportunities', opportunity);
+
+            if (response.status === 201) {
+                console.log('Opportunity created successfully');
+                onClose();
+            } else {
+                console.error('Failed to create opportunity:', response.statusText);
+            }
+        } catch (error) {
+            console.error('Error creating opportunity:', error);
+        }
     }
 
     async function onUpdate() {
-        onClose()
+        console.log("Update data:",opportunity)
+        try {
+            const response = await api.put(`/api-v1/opportunities/${opportunity._id}`, opportunity);
+
+            if (response.status === 200 || response.status === 201) {
+                console.log('Client updated successfully');
+                onClose();
+            } else {
+                console.error('Failed to update client:', response.statusText);
+            }
+        } catch (error) {
+            console.error('Error updating client:', error);
+        }
     }
 
     return (
@@ -188,12 +212,19 @@ export default function CreateUpdateModal({ show, onClose, data, onPartnerAddCli
                             label={"Opportunity Name"}
                             placeholder={"Enter Opportunity Name"}
                         />
+                        <MainInput
+                            disabled={loading}
+                            value={opportunity?.referenceNumber}
+                            onChange={text => setOpportunity({ ...opportunity, referenceNumber: text })}
+                            label={"Reference Number"}
+                            placeholder={"Enter Reference Number"}
+                        />
                         <MainSelect
                             disabled={loading}
                             value={leadData?.find(row => row?.name === opportunity?.leadId)}
                             onChange={value => setOpportunity({
                                 ...opportunity,
-                                workspaceId: value?._id || ''
+                                leadId: value?._id || ''
                             })}
                             label={"Opportunity Lead"}
                             placeholder={"Please Select Opportunity Lead"}
@@ -243,9 +274,31 @@ export default function CreateUpdateModal({ show, onClose, data, onPartnerAddCli
                         }
                     </div>
                     <div className='px-10 py-5 flex flex-col gap-5' >
-                        <MainMultipleSelect
+                    <MainSelect
                             disabled={loading}
-                            value={opportunity?.team}
+                            value={clients?.find(row => row?.name === opportunity?.clientId)}
+                            onChange={value => setOpportunity({
+                                ...opportunity,
+                                clientId: value?._id || ''
+                            })}
+                            label={"Clients"}
+                            placeholder={"Please Select Client"}
+                            options={clients}
+                        />
+                        <MainSelect
+                            disabled={loading}
+                            value={allworkspaces?.find(row => row?.name === opportunity?.workspaceId)}
+                            onChange={value => setOpportunity({
+                                ...opportunity,
+                                workspaceId: value?._id || ''
+                            })}
+                            label={"Workspace"}
+                            placeholder={"Please Select Workspace"}
+                            options={allworkspaces}
+                        />
+                        {/* <MainMultipleSelect
+                            disabled={loading}
+                            value={teamMembers?.team}
                             onChange={value => setOpportunity({ ...opportunity, team: value?.name })}
                             onDeleteItem={index => {
                                 let tempData = [...opportunity?.team]
@@ -254,7 +307,23 @@ export default function CreateUpdateModal({ show, onClose, data, onPartnerAddCli
                             }}
                             label={"Team Members"}
                             placeholder={"Please Select Team Members"}
-                            options={teamData}
+                            options={teamMembers}
+                        /> */}
+                        <MainMultipleSelect
+                            disabled={loading}
+                            value={teamMembers?.team}
+                            onChange={value => {
+                                setOpportunity({ ...opportunity, team: value })
+                                console.log(opportunity)
+                            }}
+                            onDeleteItem={index => {
+                                let tempData = [...opportunity?.team]
+                                tempData.splice(index, 1)
+                                setOpportunity({ ...opportunity, team: tempData })
+                            }}
+                            label={"Team Members"}
+                            placeholder={"Please Select Team Members"}
+                            options={teamMembers}
                         />
                         <div>
                             <MainMultipleSelect
@@ -349,13 +418,20 @@ export default function CreateUpdateModal({ show, onClose, data, onPartnerAddCli
                             className='disabled:bg-app-gray disabled:border-app-gray disabled:text-white flex items-center gap-3 border text-app-blue-2 border-app-blue-2 rounded-lg w-fit px-10 py-2' >
                             Cancel
                         </button>
-                        <button
-                            onClick={() => {
-                                data ? onCreate() : onUpdate()
-                            }}
+                        {/* <button
+                            onClick={onCreate}
                             disabled={loading}
                             className='disabled:bg-app-gray flex items-center gap-3 bg-app-blue-2 rounded-lg w-fit px-10 py-2 text-white' >
                             {data ? "Save" : "Create"}
+                        </button> */}
+                        <button
+                            onClick={() => {
+                                data ? onUpdate() : onCreate();
+                            }}
+                            disabled={loading}
+                            className='disabled:bg-app-gray flex items-center gap-3 bg-app-blue-2 rounded-lg w-fit px-10 py-2 text-white'
+                        >
+                            {data ? "Update" : "Create"}
                         </button>
                     </div>
                 </div>

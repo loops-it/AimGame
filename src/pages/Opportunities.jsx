@@ -105,9 +105,12 @@ export default function Opportunities({ title }) {
     const [partnerCreateModalShow, setPartnerCreateModalShow] = useState(false)
     const [taskCreateModalShow, setTaskCreateModalShow] = useState(false)
     const [workspaces, setWorkspaces] = useState([]);
+    const [allworkspaces, setAllWorkspaces] = useState([]);
     const [partners, setPartners] = useState([]);
     const [funnelStatus, setfunnelStatus] = useState([]);
     const [opLead, setOpLead] = useState([]);
+    const [teamMembers, setTeamMembers] = useState([]);
+    const [clients, setClients] = useState([]);
 
 
     const [currentPage, setCurrentPage] = useState(1);
@@ -173,6 +176,19 @@ export default function Opportunities({ title }) {
     }, []);
 
     useEffect(() => {
+        const fetchfunnelStatus = async () => {
+            try {
+                const response = await api.get('/api-v1/clients');
+                setClients(response.data.data);
+            } catch (error) {
+                console.error('Error fetching workspaces:', error);
+            }
+        };
+
+        fetchfunnelStatus();
+    }, []);
+
+    useEffect(() => {
         const fetchWorkspaces = async () => {
             try {
                 const response = await api.get('/api-v1/opportunities');
@@ -213,7 +229,36 @@ export default function Opportunities({ title }) {
         fetchLeadData();
     }, []);
 
-    console.log("opLead : ", partners)
+    useEffect(() => {
+        const fetchLeadData = async () => {
+            try {
+                const response = await api.get('/api-v1/workspaces');
+                const data = response.data.data;
+                setAllWorkspaces(data);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        };
+
+        fetchLeadData();
+    }, []);
+
+    useEffect(() => {
+        const fetchWorkspaces = async () => {
+            try {
+                const response = await api.get('/api-v1/team-members');
+                setTeamMembers(response.data.data);
+            } catch (error) {
+                console.error('Error fetching workspaces:', error);
+            }
+        };
+
+        fetchWorkspaces();
+    }, []);
+
+    // console.log("opLead : ", partners)
+    // console.log("team : ", teamMembers);
+    // console.log("tempData : ", tempData);
 
     return (
         <AuthenticatedLayout>
@@ -305,18 +350,18 @@ export default function Opportunities({ title }) {
                         {paginatedData?.map((row, index) => {
                             return (
                                 <tr key={index} className="bg-white border-b text-gray-900 ">
-                                    <td className="py-5 px-6" >{row?.id}</td>
+                                    <td className="py-5 px-6" >{row?._id}</td>
                                     <td className="py-5 px-6" >{row?.startDate}</td>
                                     <td className="py-5 px-6" >{row?.endDate}</td>
-                                    <td className="py-5 px-6" >{row?.opportunityName}</td>
-                                    <td className="py-5 px-6" >{row?.stage}</td>
+                                    <td className="py-5 px-6" >{row?.name}</td>
+                                    <td className="py-5 px-6" >{row?.funnelStatusId ? row.funnelStatusId.stage : "-"}</td>
                                     <td className="py-5 px-6" >{row?.probability}</td>
-                                    <td className="py-5 px-6" >{row?.funnelStatus}</td>
+                                    <td className="py-5 px-6" >{row?.funnelStatusId ? row.funnelStatusId.status : "-"}</td>
                                     <td className="py-5 px-6" >
                                         <Chip
-                                            sx={{ borderColor: getStatusColor(row?.status), color: getStatusColor(row?.status), fontWeight: "700", textTransform: "uppercase" }}
-                                            icon={<ArrowUpRightIcon style={{ color: getStatusColor(row?.status) }} className='w-5 h-5' />}
-                                            label={row?.status}
+                                            sx={{ borderColor: getStatusColor(row?.funnelStatusId ? row.funnelStatusId.status : "-"), color: getStatusColor(row?.status), fontWeight: "700", textTransform: "uppercase" }}
+                                            icon={<ArrowUpRightIcon style={{ color: getStatusColor(row?.funnelStatusId ? row.funnelStatusId.status : "-") }} className='w-5 h-5' />}
+                                            label={row?.funnelStatusId ? row.funnelStatusId.status : "-"}
                                             variant="outlined"
                                         />
                                     </td>
@@ -334,8 +379,8 @@ export default function Opportunities({ title }) {
                                             </AvatarGroup>
                                         </div>
                                     </td>
-                                    <td className="py-5 px-6" >{row?.rate}</td>
-                                    <td className="py-5 px-6" >{row?.lead}</td>
+                                    <td className="py-5 px-6" >{row?.funnelStatusId ? row.funnelStatusId.rate : "-"}</td>
+                                    <td className="py-5 px-6" >{row?.leadId ? row.leadId.name : "-"}</td>
                                     <td>
                                         <button
                                             onClick={() => {
@@ -354,8 +399,11 @@ export default function Opportunities({ title }) {
             </div>
             <CreateUpdateModal
                 leadData={opLead}
+                clients={clients}
                 partners={partners}
                 data={selectedData}
+                allworkspaces={allworkspaces}
+                teamMembers={teamMembers}
                 show={show}
                 onClose={() => setShow(false)}
                 onOpMappingAddClick={() => setRoleMappingShow(true)}
