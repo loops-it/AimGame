@@ -141,7 +141,7 @@ export default function CreateUpdateModal({ show, onClose, data, onPartnerAddCli
     }
 
     async function onUpdate() {
-        console.log("Update data:", opportunity)
+        // console.log("Update data:", opportunity)
         try {
             const response = await api.put(`/api-v1/opportunities/${opportunity._id}`, opportunity);
 
@@ -213,6 +213,7 @@ export default function CreateUpdateModal({ show, onClose, data, onPartnerAddCli
                             placeholder={"Please Select Designation"}
                             options={designations ?? []}
                         />
+                        <div className="d-flex">
                         <MainInput
                             disabled={loading}
                             value={isValidNumber(opportunity?.probability) ? parseFloat(opportunity?.probability) : ''}
@@ -221,6 +222,24 @@ export default function CreateUpdateModal({ show, onClose, data, onPartnerAddCli
                             type={"number"}
                             label={"Probability(%)"}
                         />
+                        <div style={{ width: '100%', backgroundColor: '#ddd', height: "20px", marginTop: "10px", borderRadius:"8px", textAlign:"center" }}>
+                            <div
+                                style={{
+                                    width: `${parseFloat(opportunity?.probability) || 0}%`,
+                                    height: '20px',
+                                    backgroundColor: '#30385e',
+                                    borderRadius:"8px",
+                                    color: "#fff",
+                                    textAlign:"center",
+                                    display:"flex",
+                                    justifyContent: "center",
+                                    alignItems:"center"
+                                }}
+                            >
+                                {parseFloat(opportunity?.probability) || 0}%
+                            </div>
+                        </div>
+                        </div>
                         <MainSelect
                             disabled={loading}
                             value={stages?.find(row => row?.name == opportunity?.stage)}
@@ -347,7 +366,7 @@ export default function CreateUpdateModal({ show, onClose, data, onPartnerAddCli
                         {data &&
                             <div>
                                 <MainMultipleSelect
-                                key={JSON.stringify(opportunity.tasks)}
+                                    key={JSON.stringify(opportunity.tasks)}
                                     disabled={loading}
                                     value={opportunity.tasks}
                                     onChange={value => setOpportunity({ ...opportunity, tasks: value })}
