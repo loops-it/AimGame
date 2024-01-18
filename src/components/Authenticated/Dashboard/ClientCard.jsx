@@ -3,7 +3,7 @@ import Divider from '@mui/material/Divider';
 import { ArrowPathIcon, EllipsisVerticalIcon } from '@heroicons/react/24/solid'
 import TableProvider from '../../TableProvider'
 import Avatar from '@mui/material/Avatar';
-
+import { Link } from 'react-router-dom'; 
 
 const tempData = [
     {
@@ -104,14 +104,16 @@ export default function ClientCard() {
                         return (
                             <tr key={index} className="bg-white border-b text-gray-900 ">
                                 <td className="py-3 px-6" >
-                                    <div className="flex items-center gap-2" >
-                                        <Avatar
-                                            alt="Remy Sharp"
-                                            src={row?.photo}
-                                            sx={{ border: "0.5px solid #ABB3BB" }}
-                                        />
-                                        <div>{row?.companyName}</div>
-                                    </div>
+                                <Link to={`/client/${row._id}`}>
+                  <div className="flex items-center gap-2">
+                    <Avatar
+                      alt="Remy Sharp"
+                      src={row?.photo}
+                      sx={{ border: "0.5px solid #ABB3BB" }}
+                    />
+                    <div>{row?.companyName}</div>
+                  </div>
+                </Link>
                                 </td>
                                 <td className="py-3 px-6" >{row?.industryTypeId ? row.industryTypeId.name : "-"}</td>
                                 <td className="py-3 px-6" >{row?.email}</td>
