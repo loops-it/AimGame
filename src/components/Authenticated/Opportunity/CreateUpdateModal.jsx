@@ -11,6 +11,9 @@ import { PlusIcon } from '@heroicons/react/24/solid'
 import api from '../../../services/api'
 import MainStageSelect from '../../StageDataSelect'
 import MainRatesSelect from '../../RatesDataSelect'
+import MainSelectFunnelStatus from '../../MainSelectFunnelStatus'
+import MainSelectStage from '../../MainSelectStage'
+import MainSelectRate from '../../MainSelectRate'
 
 const designations = [
     { id: 1, name: 'Head of Sales' },
@@ -104,16 +107,18 @@ const initialState = {
 
 
 
-export default function CreateUpdateModal({ show, onClose, data, onPartnerAddClick, onTaskAddClick, onOpMappingAddClick, leadData, partners, teamMembers, clients, allworkspaces, tasks }) {
+export default function CreateUpdateModal({ show, onClose, data, onPartnerAddClick, onTaskAddClick, onOpMappingAddClick, leadData, partners, teamMembers, clients, allworkspaces, tasks, funnelStatus }) {
 
     const [opportunity, setOpportunity] = useState(initialState)
     const [loading, setLoading] = useState(false)
-
-    console.log("teamMembers : - ", teamMembers)
-    console.log("partners : - ", partners)
-    console.log("opMappingRoles : - ", opMappingRoles)
-    console.log("opMappingRoles : - ", opMappingRoles)
-    console.log("tasks : - ", tasks)
+    const [availableStages, setAvailableStages] = useState([]);
+    const [availableRates, setAvailableRates] = useState([]);
+    // console.log("teamMembers : - ", teamMembers)
+    // console.log("partners : - ", partners)
+    // console.log("opMappingRoles : - ", opMappingRoles)
+    // console.log("opMappingRoles : - ", opMappingRoles)
+    // console.log("tasks : - ", tasks)
+    console.log("funnelStatus : - ", funnelStatus)
 
     useEffect(() => {
         if (data) {
@@ -157,6 +162,19 @@ export default function CreateUpdateModal({ show, onClose, data, onPartnerAddCli
     } function isValidNumber(value) {
         return !isNaN(parseFloat(value)) && isFinite(value);
     }
+
+
+
+    useEffect(() => {
+        // Update available stages and rates based on the selected funnel status
+        const selectedFunnelStatus = funnelStatus.find(row => row.level === opportunity.probability);
+
+        if (selectedFunnelStatus) {
+            setAvailableStages(selectedFunnelStatus.stages || []);
+            setAvailableRates(selectedFunnelStatus.rates || []);
+        }
+    }, [opportunity.probability, funnelStatus]);
+
 
     return (
         <Transition
@@ -213,59 +231,74 @@ export default function CreateUpdateModal({ show, onClose, data, onPartnerAddCli
                             placeholder={"Please Select Designation"}
                             options={designations ?? []}
                         />
-                        <div className="d-flex">
-                        <MainInput
-                            disabled={loading}
-                            value={isValidNumber(opportunity?.probability) ? parseFloat(opportunity?.probability) : ''}
-                            min={0}
-                            max={100}
-                            type={"number"}
-                            label={"Probability(%)"}
-                        />
-                        <div style={{ width: '100%', backgroundColor: '#ddd', height: "20px", marginTop: "10px", borderRadius:"8px", textAlign:"center" }}>
-                            <div
-                                style={{
-                                    width: `${parseFloat(opportunity?.probability) || 0}%`,
-                                    height: '20px',
-                                    backgroundColor: '#30385e',
-                                    borderRadius:"8px",
-                                    color: "#fff",
-                                    textAlign:"center",
-                                    display:"flex",
-                                    justifyContent: "center",
-                                    alignItems:"center"
-                                }}
-                            >
-                                {parseFloat(opportunity?.probability) || 0}%
-                            </div>
-                        </div>
-                        </div>
-                        <MainSelect
-                            disabled={loading}
-                            value={stages?.find(row => row?.name == opportunity?.stage)}
-                            onChange={value => setOpportunity({ ...opportunity, stage: value?.name })}
-                            label={"Stage"}
-                            placeholder={"Please Select Stage"}
-                            options={stages ?? []}
-                        />
-                        <MainSelect
-                            disabled={loading}
-                            value={rates?.find(row => row?.name == opportunity?.rate)}
-                            onChange={value => setOpportunity({ ...opportunity, rate: value?.name })}
-                            label={"Rate"}
-                            placeholder={"Please Select Rate"}
-                            options={rates ?? []}
-                        />
                         {data &&
-                            <MainSelect
+                            <MainSelectFunnelStatus
                                 disabled={loading}
-                                value={probability?.find(row => row?.name == opportunity?.probability)}
-                                onChange={value => setOpportunity({ ...opportunity, probability: value?.name })}
+                                value={funnelStatus?.find(row => row?.level == opportunity?.probability)}
+                                onChange={value => setOpportunity({ ...opportunity, probability: value?.level })}
                                 label={"Funnel Status"}
                                 placeholder={""}
-                                options={probability ?? []}
+                                options={funnelStatus ?? []}
                             />
                         }
+                        <div className="d-flex">
+                            <MainInput
+                                disabled={loading}
+                                value={isValidNumber(opportunity?.probability) ? parseFloat(opportunity?.probability) : ''}
+                                min={0}
+                                max={100}
+                                type={"number"}
+                                label={"Probability(%)"}
+                            />
+                            <div style={{ width: '100%', backgroundColor: '#ddd', height: "20px", marginTop: "10px", borderRadius: "8px", textAlign: "center" }}>
+                                <div
+                                    style={{
+                                        width: `${parseFloat(opportunity?.probability) || 0}%`,
+                                        height: '20px',
+                                        backgroundColor: '#30385e',
+                                        borderRadius: "8px",
+                                        color: "#fff",
+                                        textAlign: "center",
+                                        display: "flex",
+                                        justifyContent: "center",
+                                        alignItems: "center"
+                                    }}
+                                >
+                                    {parseFloat(opportunity?.probability) || 0}%
+                                </div>
+                            </div>
+                        </div>
+                        <MainInput
+                            disabled={loading}
+                            value={opportunity?.stage }
+                            onChange={text => setOpportunity({ ...opportunity, stages : text })}
+                            label={"Stage"}
+                            placeholder={"Stage"}
+                        />
+                        <MainInput
+                            disabled={loading}
+                            value={opportunity?.rate}
+                            onChange={text => setOpportunity({ ...opportunity, rates : text })}
+                            label={"Rate"}
+                            placeholder={"Rate"}
+                        />
+                        {/* <MainSelectStage
+                            disabled={loading}
+                            value={funnelStatus?.find(row => row?.stage == opportunity?.stage)}
+                            onChange={value => setOpportunity({ ...opportunity, stage: value?.stage })}
+                            label={"Stage"}
+                            placeholder={"Please Select Stage"}
+                            options={funnelStatus ?? []}
+                        />
+                        <MainSelectRate
+                            disabled={loading}
+                            value={funnelStatus?.find(row => row?.rate == opportunity?.rate)}
+                            onChange={value => setOpportunity({ ...opportunity, rate: value?.rate })}
+                            label={"Rate"}
+                            placeholder={"Please Select Rate"}
+                            options={funnelStatus ?? []}
+                        /> */}
+
                     </div>
                     <div className='px-10 py-5 flex flex-col gap-5' >
                         <MainSelect

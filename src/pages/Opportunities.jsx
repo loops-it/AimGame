@@ -245,6 +245,9 @@ export default function Opportunities({ title }) {
 
     const paginatedData = tempData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
+    
+
+
     return (
         <AuthenticatedLayout>
             <div className='flex flex-col-reverse lg:flex-row  lg:items-center justify-between gap-3' >
@@ -387,6 +390,7 @@ export default function Opportunities({ title }) {
                 clients={clients}
                 partners={partners}
                 data={selectedData}
+                funnelStatus={funnelStatus}
                 allworkspaces={allworkspaces}
                 teamMembers={teamMembers}
                 show={show}
