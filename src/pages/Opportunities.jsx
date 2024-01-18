@@ -116,25 +116,14 @@ export default function Opportunities({ title }) {
 
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 50;
-    useEffect(() => {
-        const fetchOpportunities = async () => {
-            try {
-                const response = await api.get(`/api-v1/opportunities`);
-                setTempData(response.data.data);
-            } catch (error) {
-                console.error('Error fetching opportunities:', error);
-            }
-        };
-
-        fetchOpportunities();
-    }, []);
-    const paginatedData = tempData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+    
 
     useEffect(() => {
         setTimeout(() => {
             setLoading(false)
         }, 3000);
     }, [loading])
+
 
     function getStatusColor(status) {
         if (status == "start") {
@@ -150,129 +139,111 @@ export default function Opportunities({ title }) {
     }
 
 
+    const fetchTasks = async () => {
+        try {
+            const response = await api.get('/api-v1/tasks');
+            setTasks(response.data.data);
+        } catch (error) {
+            console.error('Error fetching workspaces:', error);
+        }
+    };
+
+    const fetchWorkspacesById = async () => {
+        try {
+            const response = await api.get(`/api-v1/workspaces/user/${localStorage.userID}`);
+            setWorkspaces(response.data.data);
+        } catch (error) {
+            console.error('Error fetching workspaces:', error);
+        }
+    };
+
+    const fetchfunnelStatus = async () => {
+        try {
+            const response = await api.get('/api-v1/funnelStatuses');
+            setfunnelStatus(response.data.data);
+        } catch (error) {
+            console.error('Error fetching workspaces:', error);
+        }
+    };
+
+    const fetchClients = async () => {
+        try {
+            const response = await api.get('/api-v1/clients');
+            setClients(response.data.data);
+        } catch (error) {
+            console.error('Error fetching workspaces:', error);
+        }
+    };
+
+    const fetchOpportunities = async () => {
+        try {
+            const response = await api.get(`/api-v1/opportunities`);
+            setTempData(response.data.data);
+        } catch (error) {
+            console.error('Error fetching opportunities:', error);
+        }
+    };
+
+    // const fetchOpportunities = async () => {
+    //     try {
+    //         const response = await api.get('/api-v1/opportunities');
+    //         setPartners(response.data.data);
+    //     } catch (error) {
+    //         console.error('Error fetching workspaces:', error);
+    //     }
+    // };
+
+    const fetchLeadData = async () => {
+        try {
+            const response = await api.get('/api-v1/users');
+            const data = response.data.data;
+            setOpLead(data);
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    };
+
+    const fetchAllWorkspaces = async () => {
+        try {
+            const response = await api.get('/api-v1/workspaces');
+            const data = response.data.data;
+            setAllWorkspaces(data);
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    };
+
+    const fetchTeamMembers = async () => {
+        try {
+            const response = await api.get('/api-v1/team-members');
+            setTeamMembers(response.data.data);
+        } catch (error) {
+            console.error('Error fetching workspaces:', error);
+        }
+    };
+
+    const fetchPartners = async () => {
+        try {
+            const response = await api.get('/api-v1/partners');
+            setPartners(response.data.data);
+        } catch (error) {
+            console.error('Error fetching workspaces:', error);
+        }
+    };
+
     useEffect(() => {
-        const fetchWorkspaces = async () => {
-            try {
-                const response = await api.get('/api-v1/tasks');
-                setTasks(response.data.data);
-            } catch (error) {
-                console.error('Error fetching workspaces:', error);
-            }
-        };
-
-        fetchWorkspaces();
-    }, []);
-
-    useEffect(() => {
-        const fetchWorkspaces = async () => {
-            try {
-                const response = await api.get(`/api-v1/workspaces/user/${localStorage.userID}`);
-                setWorkspaces(response.data.data);
-            } catch (error) {
-                console.error('Error fetching workspaces:', error);
-            }
-        };
-
-        fetchWorkspaces();
-    }, []);
-
-    useEffect(() => {
-        const fetchfunnelStatus = async () => {
-            try {
-                const response = await api.get('/api-v1/funnelStatuses');
-                setfunnelStatus(response.data.data);
-            } catch (error) {
-                console.error('Error fetching workspaces:', error);
-            }
-        };
-
+        fetchTasks();
+        fetchWorkspacesById();
         fetchfunnelStatus();
-    }, []);
-
-    useEffect(() => {
-        const fetchfunnelStatus = async () => {
-            try {
-                const response = await api.get('/api-v1/clients');
-                setClients(response.data.data);
-            } catch (error) {
-                console.error('Error fetching workspaces:', error);
-            }
-        };
-
-        fetchfunnelStatus();
-    }, []);
-
-    useEffect(() => {
-        const fetchWorkspaces = async () => {
-            try {
-                const response = await api.get('/api-v1/opportunities');
-                setPartners(response.data.data);
-            } catch (error) {
-                console.error('Error fetching workspaces:', error);
-            }
-        };
-
-        fetchWorkspaces();
-    }, []);
-
-    useEffect(() => {
-        const fetchWorkspaces = async () => {
-            try {
-                const response = await api.get('/api-v1/partners');
-                setPartners(response.data.data);
-            } catch (error) {
-                console.error('Error fetching workspaces:', error);
-            }
-        };
-
-        fetchWorkspaces();
-    }, []);
-
-    // lead data
-    useEffect(() => {
-        const fetchLeadData = async () => {
-            try {
-                const response = await api.get('/api-v1/users');
-                const data = response.data.data;
-                setOpLead(data);
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            }
-        };
-
+        fetchClients();
+        fetchOpportunities();
         fetchLeadData();
+        fetchAllWorkspaces();
+        fetchTeamMembers();
+        fetchPartners();
     }, []);
 
-    useEffect(() => {
-        const fetchLeadData = async () => {
-            try {
-                const response = await api.get('/api-v1/workspaces');
-                const data = response.data.data;
-                setAllWorkspaces(data);
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            }
-        };
-
-        fetchLeadData();
-    }, []);
-
-    useEffect(() => {
-        const fetchWorkspaces = async () => {
-            try {
-                const response = await api.get('/api-v1/team-members');
-                setTeamMembers(response.data.data);
-            } catch (error) {
-                console.error('Error fetching workspaces:', error);
-            }
-        };
-
-        fetchWorkspaces();
-    }, []);
-
-    // console.log("opLead : ", partners)
-    // console.log("team : ", teamMembers);
-    // console.log("tempData : ", tempData);
+    const paginatedData = tempData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
     return (
         <AuthenticatedLayout>
