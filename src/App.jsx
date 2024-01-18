@@ -28,7 +28,7 @@ import Events from "./pages/Events";
 import Tasks from "./pages/Tasks";
 import Workspaces from "./pages/Workspaces";
 import Teams from "./pages/Teams";
-
+import ClientOpportunities from "./pages/ClientOpportunities";
 
 export default function App() {
   return (
@@ -51,6 +51,7 @@ export default function App() {
           <Route path="/dashboard" element={<Dashboard title={"Aimgame | Dashboard"} />} />
           <Route path="/opportunities" element={<Opportunities title={"Aimgame | Opportunities"} />} />
           <Route path="/clients" element={<Clients title={"Aimgame | Clients"} />} />
+          <Route path="/client/:clientId" element={<ClientOpportunities title={"Aimgame | Client Opportunities"} />} />
           <Route path="/partners" element={<Partners title={"Aimgame | Partners"} />} />
 
           <Route path="/events" element={<Events title={"Aimgame | Events"} />} />
