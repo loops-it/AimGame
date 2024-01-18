@@ -37,6 +37,20 @@ const funnelState = [
     { id: 2, name: '3' },
 ]
 
+const probability = [
+    { id: 1, name: '0' },
+    { id: 2, name: '10' },
+    { id: 3, name: '20' },
+    { id: 4, name: '30' },
+    { id: 5, name: '40' },
+    { id: 6, name: '50' },
+    { id: 7, name: '60' },
+    { id: 8, name: '70' },
+    { id: 9, name: '80' },
+    { id: 10, name: '90' },
+    { id: 11, name: '100' },
+]
+
 const opMappingRoles = [
     { name: "Test1" },
     { name: "Test2" },
@@ -86,6 +100,9 @@ const initialState = {
     probability: 0,
     mappingRoles: [],
 }
+
+
+
 
 export default function CreateUpdateModal({ show, onClose, data, onPartnerAddClick, onTaskAddClick, onOpMappingAddClick, leadData, partners, teamMembers, clients, allworkspaces, tasks }) {
 
@@ -223,11 +240,11 @@ export default function CreateUpdateModal({ show, onClose, data, onPartnerAddCli
                         {data &&
                             <MainSelect
                                 disabled={loading}
-                                value={funnelState?.find(row => row?.name == opportunity?.funnelStatus)}
-                                onChange={value => setOpportunity({ ...opportunity, funnelStatus: value?.name })}
+                                value={probability?.find(row => row?.name == opportunity?.probability)}
+                                onChange={value => setOpportunity({ ...opportunity, probability: value?.name })}
                                 label={"Funnel Status"}
                                 placeholder={""}
-                                options={funnelState ?? []}
+                                options={probability ?? []}
                             />
                         }
                     </div>

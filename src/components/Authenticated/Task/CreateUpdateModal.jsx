@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable react/prop-types */
 import React, { useEffect, useState } from 'react'
 import { Transition } from '@headlessui/react'
 import { XCircleIcon } from '@heroicons/react/24/outline'
@@ -17,9 +19,11 @@ const stages = [
 ]
 
 
+
+
 const initialState = {}
 
-export default function CreateUpdateModal({ show, onClose, data, funnelStatus,rowID}) {
+export default function CreateUpdateModal({ show, onClose, data, funnelStatus, rowID}) {
     const [task, setTask] = useState(initialState)
     const [loading, setLoading] = useState(false)
     // console.log("funnels", funnelStatus);
@@ -34,6 +38,7 @@ export default function CreateUpdateModal({ show, onClose, data, funnelStatus,ro
            
         }
     }, [data])
+    
     async function onCreate() {
         const taskPayload = {
             ...task,
@@ -133,7 +138,7 @@ export default function CreateUpdateModal({ show, onClose, data, funnelStatus,ro
                         <MainSelect
                             disabled={loading}
                             value={stages?.find(row => row?.name == task?.stage)}
-                            onChange={value => setTask({ ...opportunity, stage: value?.name })}
+                            onChange={value => setTask({ ...task, stage: value?.name })}
                             label={"Stage"}
                             placeholder={"Please Select Stage"}
                             options={stages}
