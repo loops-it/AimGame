@@ -131,7 +131,7 @@ export default function CreateUpdateModal({ show, onClose, data, onPartnerAddCli
 
     async function onCreate() {
         try {
-            // console.log("opportunity : ", opportunity)
+            console.log("opportunity : ", opportunity)
             const response = await api.post('/api-v1/opportunities', opportunity);
 
             if (response.status === 201) {
@@ -146,7 +146,7 @@ export default function CreateUpdateModal({ show, onClose, data, onPartnerAddCli
     }
 
     async function onUpdate() {
-        // console.log("Update data:", opportunity)
+        console.log("Update data:", opportunity)
         try {
             const response = await api.put(`/api-v1/opportunities/${opportunity._id}`, opportunity);
 
@@ -165,15 +165,16 @@ export default function CreateUpdateModal({ show, onClose, data, onPartnerAddCli
 
 
 
-    useEffect(() => {
-        // Update available stages and rates based on the selected funnel status
-        const selectedFunnelStatus = funnelStatus.find(row => row.level === opportunity.probability);
-
-        if (selectedFunnelStatus) {
-            setAvailableStages(selectedFunnelStatus.stages || []);
-            setAvailableRates(selectedFunnelStatus.rates || []);
-        }
-    }, [opportunity.probability, funnelStatus]);
+    const handleFunnelStatusChange = (selectedStatus) => {
+        const selectedStatusData = funnelStatus.find(row => row.level === selectedStatus?.level);
+    
+        setOpportunity({
+          ...opportunity,
+          probability: selectedStatusData?.level || '',
+          stage: selectedStatusData?.stage || '',
+          rate: selectedStatusData?.rate || '',
+        });
+      };
 
 
     return (
@@ -235,7 +236,8 @@ export default function CreateUpdateModal({ show, onClose, data, onPartnerAddCli
                             <MainSelectFunnelStatus
                                 disabled={loading}
                                 value={funnelStatus?.find(row => row?.level == opportunity?.probability)}
-                                onChange={value => setOpportunity({ ...opportunity, probability: value?.level })}
+                                // onChange={value => setOpportunity({ ...opportunity, probability: value?.level })}
+                                onChange={handleFunnelStatusChange}
                                 label={"Funnel Status"}
                                 placeholder={""}
                                 options={funnelStatus ?? []}
@@ -269,16 +271,16 @@ export default function CreateUpdateModal({ show, onClose, data, onPartnerAddCli
                             </div>
                         </div>
                         <MainInput
-                            disabled={loading}
+                            disabled={true}
                             value={opportunity?.stage }
-                            onChange={text => setOpportunity({ ...opportunity, stages : text })}
+                            // onChange={text => setOpportunity({ ...opportunity, stages : text })}
                             label={"Stage"}
                             placeholder={"Stage"}
                         />
                         <MainInput
-                            disabled={loading}
+                            disabled={true}
                             value={opportunity?.rate}
-                            onChange={text => setOpportunity({ ...opportunity, rates : text })}
+                            // onChange={text => setOpportunity({ ...opportunity, rates : text })}
                             label={"Rate"}
                             placeholder={"Rate"}
                         />
