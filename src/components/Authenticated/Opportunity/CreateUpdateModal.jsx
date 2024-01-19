@@ -115,7 +115,7 @@ export default function CreateUpdateModal({ show, onClose, data, onPartnerAddCli
     const [availableRates, setAvailableRates] = useState([]);
     // console.log("teamMembers : - ", teamMembers)
     // console.log("partners : - ", partners)
-    // console.log("opMappingRoles : - ", opMappingRoles)
+    console.log("opMappingRoles : - ", opMappingRoles)
     // console.log("opMappingRoles : - ", opMappingRoles)
     // console.log("tasks : - ", tasks)
     console.log("funnelStatus : - ", funnelStatus)
@@ -232,7 +232,7 @@ export default function CreateUpdateModal({ show, onClose, data, onPartnerAddCli
                             placeholder={"Please Select Designation"}
                             options={designations ?? []}
                         />
-                        {data &&
+                        {/* {data && */}
                             <MainSelectFunnelStatus
                                 disabled={loading}
                                 value={funnelStatus?.find(row => row?.level == opportunity?.probability)}
@@ -242,7 +242,7 @@ export default function CreateUpdateModal({ show, onClose, data, onPartnerAddCli
                                 placeholder={""}
                                 options={funnelStatus ?? []}
                             />
-                        }
+                        {/* } */}
                         <div className="d-flex">
                             <MainInput
                                 disabled={loading}

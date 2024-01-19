@@ -29,7 +29,7 @@ export default function OpportunityCard() {
     useEffect(() => {
         const fetchData = async () => {
           try {
-            const response = await fetch('http://localhost:4065/api-v1/opportunities', {
+            const response = await fetch('http://13.126.15.131:4065/api-v1/opportunities', {
               headers: {
                 Authorization: `Bearer ${localStorage.accessToken}`,
               },

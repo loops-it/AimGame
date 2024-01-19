@@ -21,7 +21,7 @@ export default function TaskCard() {
     useEffect(() => {
         const fetchData = async () => {
           try {
-            const response = await fetch('http://localhost:4065/api-v1/tasks', {
+            const response = await fetch('http://13.126.15.131:4065/api-v1/tasks', {
               headers: {
                 Authorization: `Bearer ${localStorage.accessToken}`,
               },
