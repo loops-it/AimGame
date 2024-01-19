@@ -36,6 +36,7 @@ export default function Clients({ title }) {
     const [industryTypes, setIndustryTypes] = useState([]);
     const [workspaces, setWorkspaces] = useState([]);
     const [searchValue, setSearchValue] = useState([]);
+    const [allworkspaces, setAllWorkspaces] = useState([]);
 
 
     // industry types data
@@ -112,6 +113,29 @@ export default function Clients({ title }) {
         fetchData();
     }, []);
 
+    const [allClients, setAllClients] = useState([]);
+    const fetchAllWorkspaces = async () => {
+        try {
+            const response = await api.get('/api-v1/workspaces');
+            const data = response.data.data;
+            setAllWorkspaces(data);
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    };
+    const fetchClients = async () => {
+        try {
+            const response = await api.get('/api-v1/clients');
+            setAllClients(response.data.data);
+        } catch (error) {
+            console.error('Error fetching workspaces:', error);
+        }
+    };
+    useEffect(() => {
+        fetchClients();
+        fetchAllWorkspaces();
+    }, []);
+
     const fetchSearchResults = async () => {
         if (searchValue.trim() !== '') {
             try {
@@ -128,7 +152,7 @@ export default function Clients({ title }) {
 
 
     // console.log(clients)
-    const paginatedData = clients.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+    const paginatedData = allClients.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
     return (
         <AuthenticatedLayout>
@@ -253,6 +277,7 @@ export default function Clients({ title }) {
                 data={selectedData}
                 industryTypes={industryTypes}
                 workspaces={workspaces}
+                allworkspaces={allworkspaces}
                 show={show}
                 onClose={() => setShow(false)}
             />

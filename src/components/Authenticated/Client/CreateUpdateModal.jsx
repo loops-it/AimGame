@@ -15,7 +15,7 @@ const initialState = {
     photo: null
 }
 
-export default function CreateUpdateModal({ show, onClose, data, industryTypes, workspaces }) {
+export default function CreateUpdateModal({ show, onClose, data, industryTypes, workspaces, allworkspaces }) {
 
     const [client, setClient] = useState(initialState)
     const [loading, setLoading] = useState(false)
@@ -149,14 +149,14 @@ export default function CreateUpdateModal({ show, onClose, data, industryTypes, 
                         /> */}
                         <MainSelect
                             disabled={loading}
-                            value={workspaces?.find(row => row?.name === client?.workspaceId)}
+                            value={allworkspaces?.find(row => row?.name === client?.workspaceId)}
                             onChange={value => setClient({
                                 ...client,
                                 workspaceId: value?._id || ''
                             })}
                             label={"Workspaces"}
                             placeholder={"Please Select workspaces"}
-                            options={workspaces}
+                            options={allworkspaces}
                         />
                         <MainInput
                             disabled={loading}
