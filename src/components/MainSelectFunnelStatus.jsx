@@ -9,7 +9,7 @@ export default function MainSelectFunnelStatus({ options, label, placeholder, va
         query === ''
             ? options
             : options.filter((option) =>
-                option.name
+                option.status
                     .toLowerCase()
                     .replace(/\s+/g, '')
                     .includes(query.toLowerCase().replace(/\s+/g, ''))

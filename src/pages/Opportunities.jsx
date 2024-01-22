@@ -36,6 +36,7 @@ export default function Opportunities({ title }) {
     const [teamMembers, setTeamMembers] = useState([]);
     const [clients, setClients] = useState([]);
     const [tasks, setTasks] = useState([]);
+    const [mappingRoles, setMappingRoles] = useState([]);
 
 
     const [currentPage, setCurrentPage] = useState(1);
@@ -108,6 +109,16 @@ export default function Opportunities({ title }) {
         }
     };
 
+    const fetchOpportunitiesMappingRoles = async () => {
+        try {
+            const response = await api.get(`/api-v1/opportunities/65867fc7cbe698d4c8d1d716/mapping-role`);
+            setMappingRoles(response.data.data);
+        } catch (error) {
+            console.error('Error fetching opportunities:', error);
+        }
+    };
+    console.log("opMappingRoles : - ", mappingRoles);
+
     // const fetchOpportunities = async () => {
     //     try {
     //         const response = await api.get('/api-v1/opportunities');
@@ -156,6 +167,7 @@ export default function Opportunities({ title }) {
     };
 
     useEffect(() => {
+        fetchOpportunitiesMappingRoles();
         fetchTasks();
         fetchWorkspacesById();
         fetchfunnelStatus();
@@ -169,7 +181,7 @@ export default function Opportunities({ title }) {
 
     const paginatedData = tempData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
-    
+    console.log("Mapping Roles : ", mappingRoles)
 
 
     return (

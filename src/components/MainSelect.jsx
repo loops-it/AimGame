@@ -59,7 +59,7 @@ export default function MainSelect({ options, label, placeholder, value, onChang
                             ) : (
                                 filteredOptions.map((option) => (
                                     <Combobox.Option
-                                        key={option.name}
+                                        key={option._id}
                                         className={({ active }) =>
                                             `relative cursor-default select-none py-2 pl-10 pr-4 ${active ? 'bg-app-blue text-white' : 'text-gray-900'
                                             }`
