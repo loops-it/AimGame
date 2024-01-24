@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import Divider from '@mui/material/Divider';
 import { ArrowPathIcon, EllipsisVerticalIcon } from '@heroicons/react/24/solid'
 import TableProvider from '../../TableProvider'
+import api from '../../../services/api';
 
 const tempData = [
     {
@@ -29,18 +30,8 @@ export default function OpportunityCard() {
     useEffect(() => {
         const fetchData = async () => {
           try {
-            const response = await fetch('http://13.126.15.131:4065/api-v1/opportunities', {
-              headers: {
-                Authorization: `Bearer ${localStorage.accessToken}`,
-              },
-            });
-    
-            if (!response.ok) {
-              throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-    
-            const result = await response.json();
-            setTempData(result.data);
+            const response = await api.get(`/api-v1/opportunities`);
+            setTempData(response.data.data);
             setLoading(false);
           } catch (error) {
             console.error('Error fetching data:', error);
@@ -98,7 +89,7 @@ export default function OpportunityCard() {
                     </tr>
                 </thead>
                 <tbody>
-                    {tempData?.map((row, index) => {
+                    {tempData?.slice(0, 10).map((row, index) => {
                         return (
                             <tr key={index} className="bg-white border-b text-gray-900 ">
                                 <td className="py-3 px-6" >{row?.name}</td>
@@ -112,6 +103,11 @@ export default function OpportunityCard() {
                     })}
                 </tbody>
             </TableProvider>
+            <div style={{ textAlign: 'center'}}>
+            <a href={"/opportunities"} ><button className='bg-app-blue-2 rounded-lg w-full lg:w-fit px-6 py-2 text-white mt-4 mb-4' >
+                    <div>View All</div>
+            </button></a>
+            </div>
         </div>
     )
 }

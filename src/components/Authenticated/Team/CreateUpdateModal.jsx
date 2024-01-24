@@ -13,6 +13,7 @@ const designations = [
     {name: 'Head of Transport' },
     {name: 'Head of IT' },
     {name: 'Chief Executive officer' },
+    {name: 'Presales' },
 ]
 
 const initialState = {

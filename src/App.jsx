@@ -29,6 +29,7 @@ import Tasks from "./pages/Tasks";
 import Workspaces from "./pages/Workspaces";
 import Teams from "./pages/Teams";
 import ClientOpportunities from "./pages/ClientOpportunities";
+import Presales from "./pages/Presales";
 
 export default function App() {
   return (
@@ -59,7 +60,7 @@ export default function App() {
           <Route path="/tasks" element={<Tasks title={"Aimgame"} />} />
           <Route path="/teams" element={<Teams title={"Aimgame | Teams"} />} />
           <Route path="/workspaces" element={<Workspaces title={"Aimgame | Workspaces"} />} />
-
+          <Route path="/presales" element={<Presales title={"Aimgame | Presales"} />} />
         </Routes>
       </BrowserRouter>
     </MainContextProvider>
