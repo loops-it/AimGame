@@ -2,14 +2,14 @@ import { Fragment, useState } from 'react'
 import { Combobox, Transition } from '@headlessui/react'
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
 
-export default function MainSelect({ options, label, placeholder, value, onChange, disabled, variant }) {
+export default function MainSelectStage({ options, label, placeholder, value, onChange, disabled, variant }) {
     const [query, setQuery] = useState('')
 
     const filteredOptions =
         query === ''
             ? options
             : options.filter((option) =>
-                option.name
+                option.stage
                     .toLowerCase()
                     .replace(/\s+/g, '')
                     .includes(query.toLowerCase().replace(/\s+/g, ''))
@@ -34,7 +34,7 @@ export default function MainSelect({ options, label, placeholder, value, onChang
                         <Combobox.Input
                             placeholder={placeholder}
                             className={`w-full border-none ${getHeight()} outline-none pl-3 pr-10 text-sm lg:text-base leading-5 text-gray-900 bg-transparent`}
-                            displayValue={(option) => option.name}
+                            displayValue={(option) => option.stage}
                             onChange={(event) => setQuery(event.target.value)}
                         />
                         <Combobox.Button className="absolute inset-y-0 right-0 flex items-center pr-2">
@@ -59,7 +59,7 @@ export default function MainSelect({ options, label, placeholder, value, onChang
                             ) : (
                                 filteredOptions.map((option) => (
                                     <Combobox.Option
-                                        key={option._id}
+                                        key={option.stage}
                                         className={({ active }) =>
                                             `relative cursor-default select-none py-2 pl-10 pr-4 ${active ? 'bg-app-blue text-white' : 'text-gray-900'
                                             }`
@@ -72,7 +72,7 @@ export default function MainSelect({ options, label, placeholder, value, onChang
                                                     className={`block truncate ${selected ? 'font-medium' : 'font-normal'
                                                         }`}
                                                 >
-                                                    {option.name}
+                                                    {option.stage}
                                                 </span>
                                                 {selected ? (
                                                     <span

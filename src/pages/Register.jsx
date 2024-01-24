@@ -27,7 +27,7 @@ export default function Register({ title }) {
             else{
             console.log(JSON.stringify({ name,email, password, userRole }));
 
-            const response = await fetch('http://localhost:4065/api-v1/users', {
+            const response = await fetch('http://13.126.15.131:4065/api-v1/users', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

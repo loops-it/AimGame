@@ -32,7 +32,7 @@ const statuses = [
     { id: 3, name: 'Lost' },
 ]
 
-export default function RoleMappingModal({ show, onClose, data, org }) {
+export default function RoleMappingModal({ show, onClose, data, org, allworkspaces }) {
 
     const [mappedRole, setMappedRole] = useState({})
     const [loading, setLoading] = useState(false)
@@ -112,7 +112,7 @@ export default function RoleMappingModal({ show, onClose, data, org }) {
                 </div>
                 <div className='grid gap-5 grid-cols-1 lg:grid-cols-2 px-10 lg:px-20 pt-10' >
                     <MainInput
-                        disabled={loading}
+                        disabled={loading}s
                         value={mappedRole?.impact}
                         onChange={text => setMappedRole({ ...mappedRole, impact: text })}
                         label={"Rate - How Impact do you feel?"}

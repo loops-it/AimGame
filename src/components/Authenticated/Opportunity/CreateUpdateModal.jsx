@@ -11,6 +11,9 @@ import { PlusIcon } from '@heroicons/react/24/solid'
 import api from '../../../services/api'
 import MainStageSelect from '../../StageDataSelect'
 import MainRatesSelect from '../../RatesDataSelect'
+import MainSelectFunnelStatus from '../../MainSelectFunnelStatus'
+import MainSelectStage from '../../MainSelectStage'
+import MainSelectRate from '../../MainSelectRate'
 
 const designations = [
     { id: 1, name: 'Head of Sales' },
@@ -59,40 +62,13 @@ const opMappingRoles = [
     { name: "Test5" },
 ]
 
-const teamData = [
-    {
-        name: "James",
-        image: "https://mui.com/static/images/avatar/1.jpg"
-    },
-    {
-        name: "Harry",
-        image: "https://mui.com/static/images/avatar/2.jpg"
-    },
-    {
-        name: "Chester",
-        image: "https://mui.com/static/images/avatar/3.jpg"
-    },
-    {
-        name: "Chester1",
-        image: "https://mui.com/static/images/avatar/3.jpg"
-    },
-    {
-        name: "Chester2",
-        image: "https://mui.com/static/images/avatar/3.jpg"
-    },
-    {
-        name: "Chester3",
-        image: "https://mui.com/static/images/avatar/3.jpg"
-    },
-    {
-        name: "Chester4",
-        image: "https://mui.com/static/images/avatar/3.jpg"
-    },
-    {
-        name: "Chester5",
-        image: "https://mui.com/static/images/avatar/3.jpg"
-    }
+const lead = [
+    { id: 1, name: 'Admin user' },
+    { id: 2, name: 'IT Main' },
+    { id: 3, name: 'Altmanb' },
+    { id: 3, name: 'DILAXN' },
 ]
+
 
 
 const initialState = {
@@ -104,16 +80,13 @@ const initialState = {
 
 
 
-export default function CreateUpdateModal({ show, onClose, data, onPartnerAddClick, onTaskAddClick, onOpMappingAddClick, leadData, partners, teamMembers, clients, allworkspaces, tasks }) {
+export default function CreateUpdateModal({ show, onClose, data, onPartnerAddClick, onTaskAddClick, onOpMappingAddClick, leadData, partners, teamMembers, clients, allworkspaces, tasks, funnelStatus }) {
 
     const [opportunity, setOpportunity] = useState(initialState)
     const [loading, setLoading] = useState(false)
+    const [mappingRoles, setMappingRoles] = useState([]);
 
-    console.log("teamMembers : - ", teamMembers)
-    console.log("partners : - ", partners)
-    console.log("opMappingRoles : - ", opMappingRoles)
-    console.log("opMappingRoles : - ", opMappingRoles)
-    console.log("tasks : - ", tasks)
+    // console.log("funnelStatus : - ", funnelStatus)
 
     useEffect(() => {
         if (data) {
@@ -126,8 +99,16 @@ export default function CreateUpdateModal({ show, onClose, data, onPartnerAddCli
 
     async function onCreate() {
         try {
-            // console.log("opportunity : ", opportunity)
-            const response = await api.post('/api-v1/opportunities', opportunity);
+            
+            const updatedOpportunity = {
+                ...opportunity,
+                leadId: opportunity.leadId._id || opportunity.leadId,
+                clientId: opportunity.clientId._id || opportunity.clientId,
+                workspaceId: opportunity.workspaceId._id || opportunity.workspaceId,
+                funnelStatusId: opportunity.funnelStatusId._id || opportunity.funnelStatusId
+            };
+            // console.log("opportunity updated : ", updatedOpportunity)
+            const response = await api.post('/api-v1/opportunities', updatedOpportunity);
 
             if (response.status === 201) {
                 console.log('Opportunity created successfully');
@@ -142,8 +123,16 @@ export default function CreateUpdateModal({ show, onClose, data, onPartnerAddCli
 
     async function onUpdate() {
         // console.log("Update data:", opportunity)
+        const updatedOpportunity = {
+            ...opportunity,
+            leadId: opportunity.leadId?._id || opportunity.leadId,
+            clientId: opportunity.clientId?._id || opportunity.clientId,
+            workspaceId: opportunity.workspaceId?._id || opportunity.workspaceId,
+            funnelStatusId: opportunity.funnelStatusId?._id || opportunity.funnelStatusId
+        };
+
         try {
-            const response = await api.put(`/api-v1/opportunities/${opportunity._id}`, opportunity);
+            const response = await api.put(`/api-v1/opportunities/${opportunity._id}`, updatedOpportunity);
 
             if (response.status === 200 || response.status === 201) {
                 console.log('Client updated successfully');
@@ -154,9 +143,45 @@ export default function CreateUpdateModal({ show, onClose, data, onPartnerAddCli
         } catch (error) {
             console.error('Error updating client:', error);
         }
-    } function isValidNumber(value) {
+    }
+    function isValidNumber(value) {
         return !isNaN(parseFloat(value)) && isFinite(value);
     }
+
+    const fetchOpportunitiesMappingRoles = async () => {
+        try {
+            const response = await api.get(`/api-v1/opportunities/65867fc7cbe698d4c8d1d716/mapping-role`);
+            setMappingRoles(response.data.data);
+        } catch (error) {
+            console.error('Error fetching opportunities:', error);
+        }
+    };
+
+    const handleFunnelStatusChange = (selectedStatus) => {
+        const selectedStatusData = funnelStatus.find(row => row._id === selectedStatus?._id);
+
+        setOpportunity({
+            ...opportunity,
+            funnelStatusId: {
+                _id: selectedStatusData?._id || '',
+                status: selectedStatusData?.status || '',
+                stage: selectedStatusData?.stage || '',
+                rate: selectedStatusData?.rate || '',
+                level: selectedStatusData?.level || ''
+            }
+        });
+
+
+    };
+    // console.log("Update data:", opportunity)
+    useEffect(() => {
+        fetchOpportunitiesMappingRoles();
+    }, [])
+
+    useEffect(() => {
+    }, [opportunity])
+
+    // console.log("data : ", data || '')
 
     return (
         <Transition
@@ -196,7 +221,7 @@ export default function CreateUpdateModal({ show, onClose, data, onPartnerAddCli
                         />
                         <MainSelect
                             disabled={loading}
-                            value={leadData?.find(row => row?.name === opportunity?.leadId)}
+                            value={leadData?.find(row => row?.name === opportunity?.leadId?.name)}
                             onChange={value => setOpportunity({
                                 ...opportunity,
                                 leadId: value?._id || ''
@@ -205,6 +230,7 @@ export default function CreateUpdateModal({ show, onClose, data, onPartnerAddCli
                             placeholder={"Please Select Opportunity Lead"}
                             options={leadData ?? []}
                         />
+
                         <MainSelect
                             disabled={loading}
                             value={designations?.find(row => row?.name == opportunity?.designation)}
@@ -213,64 +239,71 @@ export default function CreateUpdateModal({ show, onClose, data, onPartnerAddCli
                             placeholder={"Please Select Designation"}
                             options={designations ?? []}
                         />
-                        <div className="d-flex">
-                        <MainInput
+
+                        <MainSelectFunnelStatus
                             disabled={loading}
-                            value={isValidNumber(opportunity?.probability) ? parseFloat(opportunity?.probability) : ''}
-                            min={0}
-                            max={100}
-                            type={"number"}
-                            label={"Probability(%)"}
+                            value={funnelStatus?.find(row => row?.status === opportunity?.funnelStatusId?.status)}
+                            onChange={handleFunnelStatusChange}
+                            label={"Funnel Status"}
+                            placeholder={""}
+                            options={funnelStatus ?? []}
                         />
-                        <div style={{ width: '100%', backgroundColor: '#ddd', height: "20px", marginTop: "10px", borderRadius:"8px", textAlign:"center" }}>
-                            <div
-                                style={{
-                                    width: `${parseFloat(opportunity?.probability) || 0}%`,
-                                    height: '20px',
-                                    backgroundColor: '#30385e',
-                                    borderRadius:"8px",
-                                    color: "#fff",
-                                    textAlign:"center",
-                                    display:"flex",
-                                    justifyContent: "center",
-                                    alignItems:"center"
-                                }}
-                            >
-                                {parseFloat(opportunity?.probability) || 0}%
+                        <div className="d-flex">
+                            <MainInput
+                                disabled={loading}
+                                value={isValidNumber(opportunity?.funnelStatusId?.level) ? parseFloat(opportunity?.funnelStatusId?.level) : ''}
+                                min={0}
+                                max={100}
+                                type={"number"}
+                                label={"Probability(%)"}
+                            />
+                            <div style={{ width: '100%', backgroundColor: '#ddd', height: "20px", marginTop: "10px", borderRadius: "8px", textAlign: "center" }}>
+                                <div
+                                    style={{
+                                        width: `${parseFloat(opportunity?.funnelStatusId?.level) || 0}%`,
+                                        height: '20px',
+                                        backgroundColor: '#30385e',
+                                        borderRadius: "8px",
+                                        color: "#fff",
+                                        textAlign: "center",
+                                        display: "flex",
+                                        justifyContent: "center",
+                                        alignItems: "center"
+                                    }}
+                                >
+                                    {parseFloat(opportunity?.funnelStatusId?.level) || 0}%
+                                </div>
                             </div>
                         </div>
-                        </div>
-                        <MainSelect
-                            disabled={loading}
-                            value={stages?.find(row => row?.name == opportunity?.stage)}
-                            onChange={value => setOpportunity({ ...opportunity, stage: value?.name })}
+                        <MainInput
+                            disabled={true}
+                            value={opportunity?.funnelStatusId?.stage}
                             label={"Stage"}
-                            placeholder={"Please Select Stage"}
-                            options={stages ?? []}
+                            placeholder={"Stage"}
                         />
-                        <MainSelect
-                            disabled={loading}
-                            value={rates?.find(row => row?.name == opportunity?.rate)}
-                            onChange={value => setOpportunity({ ...opportunity, rate: value?.name })}
+                        <MainInput
+                            disabled={true}
+                            value={opportunity?.funnelStatusId?.rate}
                             label={"Rate"}
-                            placeholder={"Please Select Rate"}
-                            options={rates ?? []}
+                            placeholder={"Rate"}
                         />
-                        {data &&
-                            <MainSelect
-                                disabled={loading}
-                                value={probability?.find(row => row?.name == opportunity?.probability)}
-                                onChange={value => setOpportunity({ ...opportunity, probability: value?.name })}
-                                label={"Funnel Status"}
-                                placeholder={""}
-                                options={probability ?? []}
-                            />
-                        }
+
                     </div>
                     <div className='px-10 py-5 flex flex-col gap-5' >
+                        {/* <MainSelect
+                            disabled={loading}
+                            value={clients?.find(row => row?.name === opportunity?.clientId?.name)}
+                            onChange={value => setOpportunity({
+                                ...opportunity,
+                                clientId: value?._id || ''
+                            })}
+                            label={"Clients"}
+                            placeholder={"Please Select Client"}
+                            options={clients ?? []}
+                        /> */}
                         <MainSelect
                             disabled={loading}
-                            value={clients?.find(row => row?.name === opportunity?.clientId)}
+                            value={clients?.find(row => row?.name === opportunity?.clientId?.name)}
                             onChange={value => setOpportunity({
                                 ...opportunity,
                                 clientId: value?._id || ''
@@ -279,9 +312,10 @@ export default function CreateUpdateModal({ show, onClose, data, onPartnerAddCli
                             placeholder={"Please Select Client"}
                             options={clients ?? []}
                         />
+
                         <MainSelect
                             disabled={loading}
-                            value={allworkspaces?.find(row => row?.name === opportunity?.workspaceId)}
+                            value={allworkspaces?.find(row => row?.name === opportunity?.workspaceId?.name)}
                             onChange={value => setOpportunity({
                                 ...opportunity,
                                 workspaceId: value?._id || ''

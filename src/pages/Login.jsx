@@ -21,7 +21,7 @@ export default function Login({ title }) {
 
             console.log(JSON.stringify({ email, password }));
 
-            const response = await fetch('http://localhost:4065/api-v1/auth/login', {
+            const response = await fetch('http://13.126.15.131:4065/api-v1/auth/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

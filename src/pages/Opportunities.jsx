@@ -16,82 +16,6 @@ import TaskCreateModal from '../components/Authenticated/Task/CreateUpdateModal'
 import api from '../services/api';
 
 
-// const tempData = [
-//     {
-//         id: "123123",
-//         startDate: "2025/10/20",
-//         endDate: "2025/10/25",
-//         opportunityName: "Sale of office supplies",
-//         stage: "Suspect",
-//         probability: "10",
-//         funnelStatus: "No Task",
-//         status: "start",
-//         designation: "Head of Sales",
-//         team: [
-//             {
-//                 name: "James",
-//                 image: "https://mui.com/static/images/avatar/1.jpg"
-//             },
-//             {
-//                 name: "Harry",
-//                 image: "https://mui.com/static/images/avatar/2.jpg"
-//             },
-//             {
-//                 name: "Chester",
-//                 image: "https://mui.com/static/images/avatar/3.jpg"
-//             }
-//         ],
-//         mappingRoles: [
-//             { name: "Test1" },
-//             { name: "Test2" },
-//         ],
-//         rate: "Low",
-//         lead: "James",
-//     },
-//     {
-//         id: "123123",
-//         startDate: "2025/10/20",
-//         endDate: "2025/10/25",
-//         opportunityName: "Sale of office supplies",
-//         stage: "Suspect",
-//         probability: "10",
-//         funnelStatus: "No Task",
-//         status: "continue",
-//         designation: "Chief Executive officer",
-//         team: [
-//             {
-//                 name: "James",
-//                 image: "https://mui.com/static/images/avatar/4.jpg"
-//             },
-//             {
-//                 name: "Harry",
-//                 image: "https://mui.com/static/images/avatar/5.jpg"
-//             },
-//             {
-//                 name: "Chester",
-//                 image: "https://mui.com/static/images/avatar/6.jpg"
-//             },
-//             {
-//                 name: "James1",
-//                 image: "https://mui.com/static/images/avatar/1.jpg"
-//             },
-//             {
-//                 name: "James2",
-//                 image: "https://mui.com/static/images/avatar/2.jpg"
-//             },
-//             {
-//                 name: "James3",
-//                 image: "https://mui.com/static/images/avatar/3.jpg"
-//             },
-//             {
-//                 name: "James4",
-//                 image: "https://mui.com/static/images/avatar/4.jpg"
-//             },
-//         ],
-//         rate: "Low",
-//         lead: "James",
-//     },
-// ]
 
 export default function Opportunities({ title }) {
     document.title = title
@@ -112,6 +36,7 @@ export default function Opportunities({ title }) {
     const [teamMembers, setTeamMembers] = useState([]);
     const [clients, setClients] = useState([]);
     const [tasks, setTasks] = useState([]);
+    const [mappingRoles, setMappingRoles] = useState([]);
 
 
     const [currentPage, setCurrentPage] = useState(1);
@@ -184,6 +109,16 @@ export default function Opportunities({ title }) {
         }
     };
 
+    const fetchOpportunitiesMappingRoles = async () => {
+        try {
+            const response = await api.get(`/api-v1/opportunities/65867fc7cbe698d4c8d1d716/mapping-role`);
+            setMappingRoles(response.data.data);
+        } catch (error) {
+            console.error('Error fetching opportunities:', error);
+        }
+    };
+    console.log("opMappingRoles : - ", mappingRoles);
+
     // const fetchOpportunities = async () => {
     //     try {
     //         const response = await api.get('/api-v1/opportunities');
@@ -232,6 +167,7 @@ export default function Opportunities({ title }) {
     };
 
     useEffect(() => {
+        fetchOpportunitiesMappingRoles();
         fetchTasks();
         fetchWorkspacesById();
         fetchfunnelStatus();
@@ -244,6 +180,9 @@ export default function Opportunities({ title }) {
     }, []);
 
     const paginatedData = tempData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
+    console.log("Mapping Roles : ", mappingRoles)
+
 
     return (
         <AuthenticatedLayout>
@@ -387,6 +326,7 @@ export default function Opportunities({ title }) {
                 clients={clients}
                 partners={partners}
                 data={selectedData}
+                funnelStatus={funnelStatus}
                 allworkspaces={allworkspaces}
                 teamMembers={teamMembers}
                 show={show}
@@ -405,12 +345,14 @@ export default function Opportunities({ title }) {
 
             <RoleMappingModal
                 data={selectedData}
+                allworkspaces={allworkspaces}
                 show={roleMappingShow}
                 onClose={() => setRoleMappingShow(false)}
             />
 
             <PartnerCreateModal
                 data={null}
+                allworkspaces={allworkspaces}
                 worspaces={workspaces}
                 show={partnerCreateModalShow}
                 onClose={() => setPartnerCreateModalShow(false)}

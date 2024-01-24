@@ -25,7 +25,7 @@ export default function PasswordReset({ title }) {
             else{
             console.log(JSON.stringify({email, otp, password}));
             
-            const response = await fetch('http://localhost:4065/api-v1/auth/reset-password', {
+            const response = await fetch('http://13.126.15.131:4065/api-v1/auth/reset-password', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

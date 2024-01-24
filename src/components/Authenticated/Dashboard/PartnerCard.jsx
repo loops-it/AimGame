@@ -21,7 +21,7 @@ export default function PartnerCard() {
     useEffect(() => {
         const fetchData = async () => {
           try {
-            const response = await fetch('http://localhost:4065/api-v1/partners', {
+            const response = await fetch('http://13.126.15.131:4065/api-v1/partners', {
               headers: {
                 Authorization: `Bearer ${localStorage.accessToken}`,
               },

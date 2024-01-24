@@ -31,7 +31,7 @@ export default function ClientCard() {
     useEffect(() => {
         const fetchData = async () => {
           try {
-            const response = await fetch('http://localhost:4065/api-v1/clients', {
+            const response = await fetch('http://13.126.15.131:4065/api-v1/clients', {
               headers: {
                 Authorization: `Bearer ${localStorage.accessToken}`,
               },
