@@ -363,7 +363,7 @@ export default function Opportunities({ title }) {
                                                 })}
                                             </AvatarGroup>
                                         </div>
-                                    </td>
+                                    </td> 
                                     <td className="py-5 px-6" >{row?.funnelStatusId ? row.funnelStatusId.rate : "-"}</td>
                                     <td className="py-5 px-6" >{row?.leadId ? row.leadId.name : "-"}</td>
                                     <td>
