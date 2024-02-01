@@ -14,6 +14,7 @@ import MainRatesSelect from '../../RatesDataSelect'
 import MainSelectFunnelStatus from '../../MainSelectFunnelStatus'
 import MainSelectStage from '../../MainSelectStage'
 import MainSelectRate from '../../MainSelectRate'
+import MainMultipleSelectTasks from '../../MainMultipleSelectTasks'
 
 const designations = [
     { id: 1, name: 'Head of Sales' },
@@ -85,6 +86,8 @@ export default function CreateUpdateModal({ show, onClose, data, onPartnerAddCli
     const [opportunity, setOpportunity] = useState(initialState)
     const [loading, setLoading] = useState(false)
     const [mappingRoles, setMappingRoles] = useState([]);
+    const [message, setMessage] = useState('');
+
 
     // console.log("funnelStatus : - ", funnelStatus)
 
@@ -99,7 +102,7 @@ export default function CreateUpdateModal({ show, onClose, data, onPartnerAddCli
 
     async function onCreate() {
         try {
-            
+
             const updatedOpportunity = {
                 ...opportunity,
                 leadId: opportunity.leadId._id || opportunity.leadId,
@@ -111,12 +114,19 @@ export default function CreateUpdateModal({ show, onClose, data, onPartnerAddCli
             const response = await api.post('/api-v1/opportunities', updatedOpportunity);
 
             if (response.status === 201) {
+                setMessage('Opportunity created successfully');
+                
                 console.log('Opportunity created successfully');
+                window.alert('Opportunity created successfully');
                 onClose();
             } else {
+                setMessage('Failed to create opportunity');
+                window.alert('Failed to create opportunity');
                 console.error('Failed to create opportunity:', response.statusText);
             }
         } catch (error) {
+            setMessage('Error creating opportunity');
+            window.alert('Failed to create opportunity');
             console.error('Error creating opportunity:', error);
         }
     }
@@ -135,12 +145,18 @@ export default function CreateUpdateModal({ show, onClose, data, onPartnerAddCli
             const response = await api.put(`/api-v1/opportunities/${opportunity._id}`, updatedOpportunity);
 
             if (response.status === 200 || response.status === 201) {
+                setMessage('Opportunity updated successfully');
+                window.alert('Opportunity updated successfully');
                 console.log('Client updated successfully');
                 onClose();
             } else {
+                window.alert('Failed to update opportunity');
+                setMessage('Failed to update opportunity');
                 console.error('Failed to update client:', response.statusText);
             }
         } catch (error) {
+            setMessage('Error updating opportunity');
+            window.alert('Failed to update opportunity');
             console.error('Error updating client:', error);
         }
     }
@@ -156,9 +172,10 @@ export default function CreateUpdateModal({ show, onClose, data, onPartnerAddCli
             console.error('Error fetching opportunities:', error);
         }
     };
-
+    console.log("funnel status :", funnelStatus)
     const handleFunnelStatusChange = (selectedStatus) => {
         const selectedStatusData = funnelStatus.find(row => row._id === selectedStatus?._id);
+
 
         setOpportunity({
             ...opportunity,
@@ -399,7 +416,7 @@ export default function CreateUpdateModal({ show, onClose, data, onPartnerAddCli
                         }
                         {data &&
                             <div>
-                                <MainMultipleSelect
+                                {/* <MainMultipleSelectTasks
                                     key={JSON.stringify(opportunity.tasks)}
                                     disabled={loading}
                                     value={opportunity.tasks}
@@ -412,6 +429,13 @@ export default function CreateUpdateModal({ show, onClose, data, onPartnerAddCli
                                     label={"Tasks"}
                                     placeholder={""}
                                     options={tasks.map(member => ({ _id: member.name, name: member.name }))}
+                                /> */}
+
+                                <MainInput
+                                    disabled={true}
+                                    value={""}
+                                    label={"Tasks"}
+                                    placeholder={"Tasks"}
                                 />
 
                                 <div className='mt-2 flex justify-end' >
@@ -429,6 +453,11 @@ export default function CreateUpdateModal({ show, onClose, data, onPartnerAddCli
                         }
                     </div>
                     <div className='flex justify-center items-center gap-5 mb-5' >
+                    {/* {message && (
+            <div className={`alert ${message.includes('success') ? 'alert-success' : 'alert-error'}`}>
+                {message}
+            </div>
+        )} */}
                         <button
                             onClick={onClose}
                             disabled={loading}
