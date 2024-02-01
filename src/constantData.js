@@ -7,10 +7,10 @@ export const menuData = [
         title: "Opportunity",
         href: "/opportunities"
     },
-    {
-        title: "Account",
-        href: "/account"
-    },
+    // {
+    //     title: "Account",
+    //     href: "/account"
+    // },
     {
         title: "Presales",
         href: "/presales"
@@ -19,10 +19,10 @@ export const menuData = [
         title: "Partners",
         href: "/partners"
     },
-    {
-        title: "Resources",
-        href: "/resources"
-    },
+    // {
+    //     title: "Resources",
+    //     href: "/resources"
+    // },
     {
         title: "Clients",
         href: "/clients"
@@ -34,6 +34,10 @@ export const menuData = [
     {
         title: "Team",
         href: "/teams"
+    },
+    {
+        title: "Tasks",
+        href: "/tasks"
     },
     // {
     //     title: "Subscription",

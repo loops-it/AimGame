@@ -18,7 +18,7 @@ export default function Teams({ title }) {
     const [selectedData, setSelectedData] = useState(null)
     const [tempData, setTempData] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 50;
+    const itemsPerPage = 10;
     useEffect(() => {
         const fetchOpportunities = async () => {
             try {

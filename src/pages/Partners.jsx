@@ -17,7 +17,7 @@ export default function Partners({ title }) {
     const [selectedData, setSelectedData] = useState(null);
     const [tempData, setTempData] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 50;
+    const itemsPerPage = 10;
     const [workspaces, setWorkspaces] = useState([]);
     const [clients, setClients] = useState([]);
 

@@ -20,7 +20,7 @@ export default function Clients({ title }) {
 
 
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 20;
+    const itemsPerPage = 10;
 
 
 

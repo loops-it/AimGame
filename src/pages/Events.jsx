@@ -32,7 +32,7 @@ export default function Events({ title }) {
     const [selectedData, setSelectedData] = useState(null)
 
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 50;
+    const itemsPerPage = 10;
 
     const paginatedData = tempData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 

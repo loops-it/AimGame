@@ -40,7 +40,7 @@ export default function Opportunities({ title }) {
 
 
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 50;
+    const itemsPerPage = 10;
     
 
     useEffect(() => {
@@ -272,14 +272,15 @@ export default function Opportunities({ title }) {
                     </thead>
                     <tbody>
                         {paginatedData?.map((row, index) => {
+                            console.log(row.funnelStatusId);
                             return (
                                 <tr key={index} className="bg-white border-b text-gray-900 ">
-                                    <td className="py-5 px-6" >{row?.referenceNumber}</td>
+                                    <td className="py-5 px-6" >{row?._id}</td>
                                     <td className="py-5 px-6" >{row?.startDate}</td>
                                     <td className="py-5 px-6" >{row?.endDate}</td>
                                     <td className="py-5 px-6" >{row?.name}</td>
                                     <td className="py-5 px-6" >{row?.funnelStatusId ? row.funnelStatusId.stage : "-"}</td>
-                                    <td className="py-5 px-6" >{row?.probability}</td>
+                                    <td className="py-5 px-6" >{row?.funnelStatusId ? row.funnelStatusId.level : "-"}</td>
                                     <td className="py-5 px-6" >{row?.funnelStatusId ? row.funnelStatusId.status : "-"}</td>
                                     <td className="py-5 px-6" >
                                         <Chip
