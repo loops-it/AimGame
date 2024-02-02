@@ -5,6 +5,10 @@ import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
 export default function MainSelectFunnelStatus({ options, label, placeholder, value, onChange, disabled, variant }) {
     const [query, setQuery] = useState('')
 
+
+    if (!value && options.some(option => option.status === 'List')) {
+        value = options.find(option => option.status === 'List')
+    }
     const filteredOptions =
         query === ''
             ? options

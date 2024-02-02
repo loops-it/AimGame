@@ -185,10 +185,10 @@ export default function CreateUpdateModal({ show, onClose, data, onPartnerAddCli
             ...opportunity,
             funnelStatusId: {
                 _id: selectedStatusData?._id || '',
-                status: selectedStatusData?.status || '',
-                stage: selectedStatusData?.stage || '',
-                rate: selectedStatusData?.rate || '',
-                level: selectedStatusData?.level || ''
+                status: selectedStatusData?.status || 'List',
+                stage: selectedStatusData?.stage || 'Suspect',
+                rate: selectedStatusData?.rate || 'No',
+                level: selectedStatusData?.level || 0
             }
         });
 
@@ -265,7 +265,6 @@ export default function CreateUpdateModal({ show, onClose, data, onPartnerAddCli
                             placeholder={"Please Select Designation"}
                             options={designations ?? []}
                         /> */}
-
                         <MainSelectFunnelStatus
                             disabled={loading}
                             value={funnelStatus?.find(row => row?.status === opportunity?.funnelStatusId?.status)}
@@ -303,13 +302,13 @@ export default function CreateUpdateModal({ show, onClose, data, onPartnerAddCli
                         </div>
                         <MainInput
                             disabled={true}
-                            value={opportunity?.funnelStatusId?.stage}
+                            value={opportunity?.funnelStatusId?.stage || 'Suspect'}
                             label={"Stage"}
                             placeholder={"Stage"}
                         />
                         <MainInput
                             disabled={true}
-                            value={opportunity?.funnelStatusId?.rate}
+                            value={opportunity?.funnelStatusId?.rate || 'No'}
                             label={"Rate"}
                             placeholder={"Rate"}
                         />
@@ -483,10 +482,10 @@ export default function CreateUpdateModal({ show, onClose, data, onPartnerAddCli
                     </div>
                     <div className='flex justify-center items-center gap-5 mb-5' >
                         {/* {message && (
-            <div className={`alert ${message.includes('success') ? 'alert-success' : 'alert-error'}`}>
-                {message}
-            </div>
-        )} */}
+                            <div className={`alert ${message.includes('success') ? 'alert-success' : 'alert-error'}`}>
+                                {message}
+                            </div>
+                        )} */}
                         <button
                             onClick={onClose}
                             disabled={loading}
