@@ -93,6 +93,7 @@ export default function Opportunities({ title }) {
             console.error('Error fetching workspaces:', error);
         }
     };
+    console.log("funnelStatus ---: ", funnelStatus)
 
     const fetchClients = async () => {
         try {
