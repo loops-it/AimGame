@@ -36,7 +36,7 @@ export default function CreateUpdateModal({ show, onClose, data }) {
     }, [data])
 
     async function onCreate() {
-        console.log('Team : ',team);
+        // console.log('Team : ',team);
         try {
             const response = await api.post('/api-v1/team-members', team);
 
@@ -52,7 +52,7 @@ export default function CreateUpdateModal({ show, onClose, data }) {
     }
 
     async function onUpdate() {
-        console.log(team)
+        // console.log(team)
         try {
             const response = await api.put(`/api-v1/team-members/${team._id}`, team);
 

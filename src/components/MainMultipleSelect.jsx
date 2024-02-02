@@ -46,7 +46,7 @@ export default function MainMultipleSelect({ options, label, placeholder, onDele
                         <div className='flex flex-wrap gap-1 my-3'>
                             {value.map((optionId, index) => {
                                 const selectedOption = options.find(option => option._id === optionId);
-                                console.log("chip : ", selectedOption);
+                                // console.log("chip : ", selectedOption);
 
                                 return (
                                     <Chip

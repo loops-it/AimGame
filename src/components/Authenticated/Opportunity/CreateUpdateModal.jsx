@@ -15,6 +15,7 @@ import MainSelectFunnelStatus from '../../MainSelectFunnelStatus'
 import MainSelectStage from '../../MainSelectStage'
 import MainSelectRate from '../../MainSelectRate'
 import MainMultipleSelectTasks from '../../MainMultipleSelectTasks'
+import MainDateInput from '../../MainDateInput'
 
 const designations = [
     { id: 1, name: 'Head of Sales' },
@@ -89,7 +90,8 @@ export default function CreateUpdateModal({ show, onClose, data, onPartnerAddCli
     const [message, setMessage] = useState('');
 
 
-    // console.log("funnelStatus : - ", funnelStatus)
+
+    console.log("leadData : - ", leadData)
 
     useEffect(() => {
         if (data) {
@@ -105,36 +107,38 @@ export default function CreateUpdateModal({ show, onClose, data, onPartnerAddCli
 
             const updatedOpportunity = {
                 ...opportunity,
+                completionDate: opportunity.completionDate || null,
                 leadId: opportunity.leadId._id || opportunity.leadId,
                 clientId: opportunity.clientId._id || opportunity.clientId,
                 workspaceId: opportunity.workspaceId._id || opportunity.workspaceId,
                 funnelStatusId: opportunity.funnelStatusId._id || opportunity.funnelStatusId
             };
-            // console.log("opportunity updated : ", updatedOpportunity)
+            console.log("opportunity updated : ", updatedOpportunity)
             const response = await api.post('/api-v1/opportunities', updatedOpportunity);
 
             if (response.status === 201) {
                 setMessage('Opportunity created successfully');
-                
-                console.log('Opportunity created successfully');
+
+                // console.log('Opportunity created successfully');
                 window.alert('Opportunity created successfully');
                 onClose();
             } else {
                 setMessage('Failed to create opportunity');
                 window.alert('Failed to create opportunity');
-                console.error('Failed to create opportunity:', response.statusText);
+                // console.error('Failed to create opportunity:', response.statusText);
             }
         } catch (error) {
             setMessage('Error creating opportunity');
             window.alert('Failed to create opportunity');
-            console.error('Error creating opportunity:', error);
+            // console.error('Error creating opportunity:', error);
         }
     }
 
     async function onUpdate() {
-        // console.log("Update data:", opportunity)
+        console.log("Update data:", opportunity)
         const updatedOpportunity = {
             ...opportunity,
+            completionDate: opportunity.completionDate || null,
             leadId: opportunity.leadId?._id || opportunity.leadId,
             clientId: opportunity.clientId?._id || opportunity.clientId,
             workspaceId: opportunity.workspaceId?._id || opportunity.workspaceId,
@@ -147,17 +151,17 @@ export default function CreateUpdateModal({ show, onClose, data, onPartnerAddCli
             if (response.status === 200 || response.status === 201) {
                 setMessage('Opportunity updated successfully');
                 window.alert('Opportunity updated successfully');
-                console.log('Client updated successfully');
+                // console.log('Client updated successfully');
                 onClose();
             } else {
                 window.alert('Failed to update opportunity');
                 setMessage('Failed to update opportunity');
-                console.error('Failed to update client:', response.statusText);
+                // console.error('Failed to update client:', response.statusText);
             }
         } catch (error) {
             setMessage('Error updating opportunity');
             window.alert('Failed to update opportunity');
-            console.error('Error updating client:', error);
+            // console.error('Error updating client:', error);
         }
     }
     function isValidNumber(value) {
@@ -172,7 +176,7 @@ export default function CreateUpdateModal({ show, onClose, data, onPartnerAddCli
             console.error('Error fetching opportunities:', error);
         }
     };
-    console.log("funnel status :", funnelStatus)
+    // console.log("funnel status :", funnelStatus)
     const handleFunnelStatusChange = (selectedStatus) => {
         const selectedStatusData = funnelStatus.find(row => row._id === selectedStatus?._id);
 
@@ -247,15 +251,20 @@ export default function CreateUpdateModal({ show, onClose, data, onPartnerAddCli
                             placeholder={"Please Select Opportunity Lead"}
                             options={leadData ?? []}
                         />
-
-                        <MainSelect
+                        <MainInput
+                            disabled={true}
+                            value={opportunity?.leadId?.designation}
+                            label={"Designation"}
+                            placeholder={"Please Select Designation"}
+                        />
+                        {/* <MainSelect
                             disabled={loading}
                             value={designations?.find(row => row?.name == opportunity?.designation)}
                             onChange={value => setOpportunity({ ...opportunity, designation: value?.name })}
                             label={"Designation"}
                             placeholder={"Please Select Designation"}
                             options={designations ?? []}
-                        />
+                        /> */}
 
                         <MainSelectFunnelStatus
                             disabled={loading}
@@ -305,6 +314,7 @@ export default function CreateUpdateModal({ show, onClose, data, onPartnerAddCli
                             placeholder={"Rate"}
                         />
 
+
                     </div>
                     <div className='px-10 py-5 flex flex-col gap-5' >
                         {/* <MainSelect
@@ -318,18 +328,37 @@ export default function CreateUpdateModal({ show, onClose, data, onPartnerAddCli
                             placeholder={"Please Select Client"}
                             options={clients ?? []}
                         /> */}
-                        <MainSelect
+                        <MainDateInput
                             disabled={loading}
-                            value={clients?.find(row => row?.name === opportunity?.clientId?.name)}
-                            onChange={value => setOpportunity({
-                                ...opportunity,
-                                clientId: value?._id || ''
-                            })}
-                            label={"Clients"}
-                            placeholder={"Please Select Client"}
-                            options={clients ?? []}
+                            value={opportunity?.completionDate || ""}
+                            onChange={date => setOpportunity({ ...opportunity, completionDate: date })}
+                            label={"Expected Opportunity Completion Date"}
+                            placeholder={""}
                         />
-
+                        <div>
+                            <MainSelect
+                                disabled={loading}
+                                value={clients?.find(row => row?.name === opportunity?.clientId?.name)}
+                                onChange={value => setOpportunity({
+                                    ...opportunity,
+                                    clientId: value?._id || ''
+                                })}
+                                label={"Clients"}
+                                placeholder={"Please Select Client"}
+                                options={clients ?? []}
+                            />
+                            <div className='mt-2 flex justify-end' >
+                                <button
+                                    onClick={onOpMappingAddClick}
+                                    className='flex items-center gap-2 text-app-blue text-xs'
+                                >
+                                    <div className='border border-app-blue' >
+                                        <PlusIcon className='w-3 h-3' />
+                                    </div>
+                                    Add New
+                                </button>
+                            </div>
+                        </div>
                         <MainSelect
                             disabled={loading}
                             value={allworkspaces?.find(row => row?.name === opportunity?.workspaceId?.name)}
@@ -453,7 +482,7 @@ export default function CreateUpdateModal({ show, onClose, data, onPartnerAddCli
                         }
                     </div>
                     <div className='flex justify-center items-center gap-5 mb-5' >
-                    {/* {message && (
+                        {/* {message && (
             <div className={`alert ${message.includes('success') ? 'alert-success' : 'alert-error'}`}>
                 {message}
             </div>

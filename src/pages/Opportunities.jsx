@@ -14,6 +14,7 @@ import RoleMappingModal from '../components/Authenticated/Opportunity/RoleMappin
 import PartnerCreateModal from '../components/Authenticated/Partner/CreateUpdateModal';
 import TaskCreateModal from '../components/Authenticated/Task/CreateUpdateModal';
 import api from '../services/api';
+import ClientCreateUpdateModal from '../components/Authenticated/Client/ClientCreateUpdateModal';
 
 
 
@@ -28,6 +29,7 @@ export default function Opportunities({ title }) {
     const [roleMappingShow, setRoleMappingShow] = useState(false)
     const [partnerCreateModalShow, setPartnerCreateModalShow] = useState(false)
     const [taskCreateModalShow, setTaskCreateModalShow] = useState(false)
+    const [clientCreateShow, setClientCreateShow] = useState(false)
     const [workspaces, setWorkspaces] = useState([]);
     const [allworkspaces, setAllWorkspaces] = useState([]);
     const [partners, setPartners] = useState([]);
@@ -37,11 +39,12 @@ export default function Opportunities({ title }) {
     const [clients, setClients] = useState([]);
     const [tasks, setTasks] = useState([]);
     const [mappingRoles, setMappingRoles] = useState([]);
+    const [industryTypes, setIndustryTypes] = useState([]);
 
 
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 10;
-    
+
 
     useEffect(() => {
         setTimeout(() => {
@@ -104,10 +107,12 @@ export default function Opportunities({ title }) {
         try {
             const response = await api.get(`/api-v1/opportunities`);
             setTempData(response.data.data);
+
         } catch (error) {
             console.error('Error fetching opportunities:', error);
         }
     };
+    console.log("Opp Data : ", tempData)
 
     const fetchOpportunitiesMappingRoles = async () => {
         try {
@@ -117,7 +122,7 @@ export default function Opportunities({ title }) {
             console.error('Error fetching opportunities:', error);
         }
     };
-    console.log("opMappingRoles : - ", mappingRoles);
+    // console.log("opMappingRoles : - ", mappingRoles);
 
     // const fetchOpportunities = async () => {
     //     try {
@@ -156,6 +161,17 @@ export default function Opportunities({ title }) {
             console.error('Error fetching workspaces:', error);
         }
     };
+    const fetchIndustryTypes = async () => {
+        try {
+            const response = await api.get('/api-v1/industryTypes');
+            const data = response.data.data;
+            setIndustryTypes(data);
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    };
+
+
 
     const fetchPartners = async () => {
         try {
@@ -177,11 +193,18 @@ export default function Opportunities({ title }) {
         fetchAllWorkspaces();
         fetchTeamMembers();
         fetchPartners();
+        fetchIndustryTypes();
     }, []);
+
+    // useEffect(() => {
+    //     console.log("Opportunities : ", tempData)
+    // }, [tempData])
+
+
 
     const paginatedData = tempData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
-    console.log("Mapping Roles : ", mappingRoles)
+    // console.log("Mapping Roles : ", mappingRoles)
 
 
     return (
@@ -272,12 +295,34 @@ export default function Opportunities({ title }) {
                     </thead>
                     <tbody>
                         {paginatedData?.map((row, index) => {
-                            console.log(row.funnelStatusId);
+                            // console.log(row.funnelStatusId);
+                            // console.log("Creation Date:", row?.creationDate);
+                            // console.log("Completion Date:", row?.completionDate);
                             return (
                                 <tr key={index} className="bg-white border-b text-gray-900 ">
                                     <td className="py-5 px-6" >{row?._id}</td>
-                                    <td className="py-5 px-6" >{row?.startDate}</td>
-                                    <td className="py-5 px-6" >{row?.endDate}</td>
+                                    <td className="py-5 px-6">
+                                        {row?.creationDate ? new Date(row.creationDate).toLocaleDateString('en-US', {
+                                            year: 'numeric',
+                                            month: 'short',
+                                            day: 'numeric',
+                                        }) : ""}
+                                    </td>
+
+                                    {/* <td className="py-5 px-6">{row?.completionDate ? new Date(row?.completionDate).toLocaleDateString('en-US', {
+                                        year: 'numeric',
+                                        month: 'short',
+                                        day: 'numeric',
+                                    }) : ""}</td> */}
+                                    <td className="py-5 px-6">
+                                        {row?.completionDate ?
+                                            new Date(row?.completionDate).toLocaleDateString('en-US', {
+                                                year: 'numeric',
+                                                month: 'short',
+                                                day: 'numeric',
+                                            }) :
+                                            ""}
+                                    </td>
                                     <td className="py-5 px-6" >{row?.name}</td>
                                     <td className="py-5 px-6" >{row?.funnelStatusId ? row.funnelStatusId.stage : "-"}</td>
                                     <td className="py-5 px-6" >{row?.funnelStatusId ? row.funnelStatusId.level : "-"}</td>
@@ -290,7 +335,7 @@ export default function Opportunities({ title }) {
                                             variant="outlined"
                                         />
                                     </td>
-                                    <td className="py-5 px-6" >
+                                    {/* <td className="py-5 px-6" >
                                         <div>
                                             <AvatarGroup
                                                 renderSurplus={(surplus) => <span>+{surplus.toString()[0]}</span>}
@@ -303,7 +348,20 @@ export default function Opportunities({ title }) {
                                                 })}
                                             </AvatarGroup>
                                         </div>
-                                    </td> 
+                                    </td> */}
+                                    <td className="py-5 px-6">
+                                        <div>
+                                            <AvatarGroup
+                                                renderSurplus={(surplus) => <span>+{surplus.toString()[0]}</span>}
+                                                total={row?.team?.length}
+                                            >
+                                                {row?.team?.slice(0, 4)?.map((teamRow, teamIndex) => (
+                                                    <Avatar key={teamIndex} alt={teamRow?.name} src={teamRow?.image} />
+                                                ))}
+                                            </AvatarGroup>
+                                        </div>
+                                    </td>
+
                                     <td className="py-5 px-6" >{row?.funnelStatusId ? row.funnelStatusId.rate : "-"}</td>
                                     <td className="py-5 px-6" >{row?.leadId ? row.leadId.name : "-"}</td>
                                     <td>
@@ -366,7 +424,15 @@ export default function Opportunities({ title }) {
                 onClose={() => setTaskCreateModalShow(false)}
             />
 
+            <ClientCreateUpdateModal
+                data={selectedData}
+                industryTypes={industryTypes}
+                workspaces={workspaces}
+                allworkspaces={allworkspaces}
+                show={clientCreateShow}
+                onClose={() => setClientCreateShow(false)}
+            />
+
         </AuthenticatedLayout>
     )
 }
- 

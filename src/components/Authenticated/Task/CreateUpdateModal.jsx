@@ -44,7 +44,7 @@ export default function CreateUpdateModal({ show, onClose, data, funnelStatus, r
             ...task,
             opportunityId: rowID._id !== null ? rowID._id : null, // Assign null if selectedData._id is null
         };
-        console.log("task data : ",taskPayload);
+        // console.log("task data : ",taskPayload);
         try {
             const response = await api.post('/api-v1/tasks', taskPayload);
 

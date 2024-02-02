@@ -31,7 +31,7 @@ export default function CreateUpdateModal({ show, onClose, data, worspaces, allw
     }, [data])
 
     async function onCreate() {
-        console.log("partner data : ",partner);
+        // console.log("partner data : ",partner);
         try {
             const response = await api.post('/api-v1/partners', partner);
 
@@ -46,7 +46,7 @@ export default function CreateUpdateModal({ show, onClose, data, worspaces, allw
         }
     }
 
-    console.log("partner data : ",partner);
+    // console.log("partner data : ",partner);
 
     async function onUpdate() {
         onClose()
