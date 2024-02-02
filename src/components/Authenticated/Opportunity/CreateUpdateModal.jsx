@@ -253,7 +253,9 @@ export default function CreateUpdateModal({ show, onClose, data, onPartnerAddCli
                         />
                         <MainInput
                             disabled={true}
-                            value={opportunity?.leadId?.designation}
+                            value={
+                                leadData.find(lead => lead._id === opportunity?.leadId)?.designation || ''
+                            }
                             label={"Designation"}
                             placeholder={"Please Select Designation"}
                         />

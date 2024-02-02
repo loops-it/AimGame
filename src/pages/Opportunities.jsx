@@ -162,6 +162,8 @@ export default function Opportunities({ title }) {
             console.error('Error fetching workspaces:', error);
         }
     };
+
+    console.log("team members : ", teamMembers)
     const fetchIndustryTypes = async () => {
         try {
             const response = await api.get('/api-v1/industryTypes');
