@@ -57,11 +57,10 @@ const probability = [
 ]
 
 const opMappingRoles = [
-    { name: "Test1" },
-    { name: "Test2" },
-    { name: "Test3" },
-    { name: "Test4" },
-    { name: "Test5" },
+    { name: "Test1", designation: "CEO" },
+    { name: "Test2", designation: "Director" },
+    { name: "Test3", designation: "Manager" },
+    { name: "Test4", designation: "Team Member" },
 ]
 
 const lead = [
@@ -91,7 +90,22 @@ export default function CreateUpdateModal({ show, onClose, data, onPartnerAddCli
 
 
 
-    console.log("leadData : - ", leadData)
+    console.log("data : - ", data)
+
+    useEffect(() => {
+        if (leadData && leadData.length > 0) {
+            // Find the lead with the same name as the opportunity's leadId
+            const selectedLead = leadData.find(row => row?.name === opportunity.leadId?.name);
+
+            if (selectedLead) {
+                // Set the opportunity state with the selected lead's ID
+                setOpportunity(prevState => ({
+                    ...prevState,
+                    leadId: selectedLead._id
+                }));
+            }
+        }
+    }, [leadData, opportunity.leadId]);
 
     useEffect(() => {
         if (data) {
@@ -240,7 +254,7 @@ export default function CreateUpdateModal({ show, onClose, data, onPartnerAddCli
                             label={"Reference Number"}
                             placeholder={"Enter Reference Number"}
                         />
-                        <MainSelect
+                        {/* <MainSelect
                             disabled={loading}
                             value={leadData?.find(row => row?.name === opportunity?.leadId?.name)}
                             onChange={value => setOpportunity({
@@ -258,7 +272,28 @@ export default function CreateUpdateModal({ show, onClose, data, onPartnerAddCli
                             }
                             label={"Designation"}
                             placeholder={"Please Select Designation"}
-                        />
+                        /> */}
+
+
+<MainSelect
+                disabled={loading}
+                value={opportunity.leadId}
+                onChange={value => setOpportunity({
+                    ...opportunity,
+                    leadId: value
+                })}
+                label={"Opportunity Lead"}
+                placeholder={"Please Select Opportunity Lead"}
+                options={leadData ?? []}
+            />
+            <MainInput
+                disabled={true}
+                value={
+                    leadData.find(lead => lead._id === opportunity.leadId)?.designation || ''
+                }
+                label={"Designation"}
+                placeholder={"Please Select Designation"}
+            />
                         {/* <MainSelect
                             disabled={loading}
                             value={designations?.find(row => row?.name == opportunity?.designation)}
@@ -428,7 +463,7 @@ export default function CreateUpdateModal({ show, onClose, data, onPartnerAddCli
                                     }}
                                     label={"OP Mapping Roles"}
                                     placeholder={""}
-                                    options={opMappingRoles.map(member => ({ _id: member.name, name: member.name }))}
+                                    options={opMappingRoles.map(member => ({ _id: member.name, name: `${member.name}, ${member.designation}` }))}
                                 />
 
                                 <div className='mt-2 flex justify-end' >
