@@ -37,12 +37,15 @@ export default function CreateUpdateModal({ show, onClose, data, worspaces, allw
 
             if (response.status === 201) {
                 console.log('Partner created successfully');
+                window.alert('Partner created successfully');
                 onClose();
             } else {
                 console.error('Failed to create partner:', response.statusText);
+                window.alert('Failed to create partner');
             }
         } catch (error) {
             console.error('Error creating partner:', error);
+            window.alert('Failed to create partner');
         }
     }
 

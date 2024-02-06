@@ -62,7 +62,7 @@ export default function Partners({ title }) {
     }, []);
 
     console.log("tempData : ", tempData)
-    console.log("workspaces : ", workspaces)
+    // console.log("workspaces : ", workspaces)
 
     const paginatedData = tempData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
@@ -179,6 +179,7 @@ export default function Partners({ title }) {
                                     <td className="py-5 px-6" >{row?.clientId ? row.clientId.designation : "-"}</td>
                                     <td className="py-5 px-6" >{row?.clientId ? row.clientId.phone : "-"}</td>
                                     <td className="py-5 px-6" >{row?.clientId ? row.clientId.email : "-"}</td>
+                                    {/* <td className="py-5 px-6" >{row?.workspaceId ? row.workspaceId.contactEmail : "-"}</td> */}
                                     {/* <td className="py-5 px-6" >{row?.contacts}</td> */}
                                     
                                     {/* <td>
