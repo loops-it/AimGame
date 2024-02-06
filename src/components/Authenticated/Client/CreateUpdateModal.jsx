@@ -40,12 +40,15 @@ export default function CreateUpdateModal({ show, onClose, data, industryTypes, 
 
             if (response.status === 201) {
                 console.log('Client created successfully');
+                window.alert('Client created successfully');
                 onClose();
             } else {
                 console.error('Failed to create client:', response.statusText);
+                window.alert('Failed to create client');
             }
         } catch (error) {
             console.error('Error creating client:', error);
+            window.alert('Failed to create client');
         }
     }
 
@@ -57,12 +60,15 @@ export default function CreateUpdateModal({ show, onClose, data, industryTypes, 
 
             if (response.status === 200 || response.status === 201) {
                 console.log('Client updated successfully');
+                window.alert('Client updated successfully');
                 onClose();
             } else {
                 console.error('Failed to update client:', response.statusText);
+                window.alert('Failed to update client');
             }
         } catch (error) {
             console.error('Error updating client:', error);
+            window.alert('Failed to update client');
         }
     }
 
