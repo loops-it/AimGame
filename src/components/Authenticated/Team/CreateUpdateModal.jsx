@@ -15,7 +15,12 @@ const designations = [
     {name: 'Chief Executive officer' },
     {name: 'Presales' },
 ]
-
+const userRoles = [
+    {name: 'editor' },
+    {name: 'sales' },
+    {name: 'admin' },
+    {name: 'team member' },
+]
 const initialState = {
     //industryType: null,
     image: null
@@ -123,6 +128,14 @@ export default function CreateUpdateModal({ show, onClose, data }) {
                             label={"Designation"}
                             placeholder={"Please Select Designation"}
                             options={designations}
+                        />
+                        <MainSelect
+                            disabled={loading}
+                            value={userRoles?.find(row => row?.name == team?.userRole)}
+                            onChange={value => setTeam({ ...team, userRole: value?.name })}
+                            label={"User Role"}
+                            placeholder={"Please Select User Role"}
+                            options={userRoles}
                         />
                         <MainInput
                             disabled={loading}
