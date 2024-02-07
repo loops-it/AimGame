@@ -33,6 +33,11 @@ export default function CreateUpdateModal({ show, onClose, data, worspaces, allw
     async function onCreate() {
         // console.log("partner data : ",partner);
         try {
+            if (!partner.name || !partner.workspaceId ) {
+                window.alert('Please fill in all required fields.');
+                return;
+            }
+
             const response = await api.post('/api-v1/partners', partner);
 
             if (response.status === 201) {

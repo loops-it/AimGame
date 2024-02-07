@@ -303,7 +303,7 @@ export default function Opportunities({ title }) {
                             // console.log("Completion Date:", row?.completionDate);
                             return (
                                 <tr key={index} className="bg-white border-b text-gray-900 ">
-                                    <td className="py-5 px-6" >{row?._id}</td>
+                                    <td className="py-5 px-6" >{row?.referenceNumber}</td>
                                     <td className="py-5 px-6">
                                         {row?.creationDate ? new Date(row.creationDate).toLocaleDateString('en-US', {
                                             year: 'numeric',

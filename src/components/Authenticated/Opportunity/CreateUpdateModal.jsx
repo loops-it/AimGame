@@ -16,6 +16,7 @@ import MainSelectStage from '../../MainSelectStage'
 import MainSelectRate from '../../MainSelectRate'
 import MainMultipleSelectTasks from '../../MainMultipleSelectTasks'
 import MainDateInput from '../../MainDateInput'
+import MainRequiredInput from '../MainRequiredInput'
 
 const designations = [
     { id: 1, name: 'Head of Sales' },
@@ -83,15 +84,20 @@ const initialState = {
 
 export default function CreateUpdateModal({ show, onClose, data, onPartnerAddClick, onTaskAddClick, onOpMappingAddClick, leadData, partners, teamMembers, clients, allworkspaces, tasks, funnelStatus }) {
 
-    const [opportunity, setOpportunity] = useState(initialState)
+    // const [opportunity, setOpportunity] = useState(initialState)
+    const [opportunity, setOpportunity] = useState({
+        name: '',
+    referenceNumber: '',
+    leadId: '',
+})
     const [loading, setLoading] = useState(false)
     const [mappingRoles, setMappingRoles] = useState([]);
     const [message, setMessage] = useState('');
 
-    const opportunityMappingRoles = data.opportunityMappingRoles;
+    // const opportunityMappingRoles = data.opportunityMappingRoles;
 
 
-    console.log("opportunityMappingRoles : - ", opportunityMappingRoles)
+    // console.log("opportunityMappingRoles : - ", opportunityMappingRoles)
 
     useEffect(() => {
         if (leadData && leadData.length > 0) {
@@ -118,8 +124,20 @@ export default function CreateUpdateModal({ show, onClose, data, onPartnerAddCli
     }, [data])
 
     async function onCreate() {
+        console.log("opportunity : ", opportunity)
         try {
+            const missingFields = [];
+            if (!opportunity.referenceNumber) missingFields.push('Reference Number');
+            if (!opportunity.name) missingFields.push('Name');
+            if (!opportunity.workspaceId) missingFields.push('Workspace');
+            if (!opportunity.clientId) missingFields.push('Client');
+            if (!opportunity.leadId) missingFields.push('Lead');
 
+            if (missingFields.length > 0) {
+                window.alert(`Please fill in all required fields: ${missingFields.join(', ')}.`);
+                return;
+            }
+            // console.log("opportunity : ", updatedOpportunity)
             const updatedOpportunity = {
                 ...opportunity,
                 completionDate: opportunity.completionDate || null,
@@ -128,7 +146,11 @@ export default function CreateUpdateModal({ show, onClose, data, onPartnerAddCli
                 workspaceId: opportunity.workspaceId._id || opportunity.workspaceId,
                 funnelStatusId: opportunity.funnelStatusId._id || opportunity.funnelStatusId
             };
-            console.log("opportunity updated : ", updatedOpportunity)
+            console.log("opportunity Updated : ", updatedOpportunity)
+
+            
+
+
             const response = await api.post('/api-v1/opportunities', updatedOpportunity);
 
             if (response.status === 201) {
@@ -144,7 +166,7 @@ export default function CreateUpdateModal({ show, onClose, data, onPartnerAddCli
             }
         } catch (error) {
             setMessage('Error creating opportunity');
-            window.alert('Failed to create opportunity');
+            window.alert('Failed ');
             // console.error('Error creating opportunity:', error);
         }
     }
@@ -241,21 +263,21 @@ export default function CreateUpdateModal({ show, onClose, data, onPartnerAddCli
                 </div>
                 <div className='max-h-[80vh] h-[80vh] lg:h-fit overflow-scroll no-scrollbar' >
                     <div className='grid gap-5 grid-cols-1 lg:grid-cols-2 px-10 pt-10' >
-                        <MainInput
+                        <MainRequiredInput
                             disabled={loading}
                             value={opportunity?.name}
                             onChange={text => setOpportunity({ ...opportunity, name: text })}
                             label={"Opportunity Name"}
                             placeholder={"Enter Opportunity Name"}
                         />
-                        <MainInput
+                        <MainRequiredInput
                             disabled={loading}
                             value={opportunity?.referenceNumber}
                             onChange={text => setOpportunity({ ...opportunity, referenceNumber: text })}
                             label={"Reference Number"}
                             placeholder={"Enter Reference Number"}
                         />
-                        {/* <MainSelect
+                        <MainSelect
                             disabled={loading}
                             value={leadData?.find(row => row?.name === opportunity?.leadId?.name)}
                             onChange={value => setOpportunity({
@@ -273,10 +295,10 @@ export default function CreateUpdateModal({ show, onClose, data, onPartnerAddCli
                             }
                             label={"Designation"}
                             placeholder={"Please Select Designation"}
-                        /> */}
+                        />
 
 
-                        <MainSelect
+                        {/* <MainSelect
                             disabled={loading}
                             value={opportunity.leadId}
                             onChange={value => setOpportunity({
@@ -290,11 +312,13 @@ export default function CreateUpdateModal({ show, onClose, data, onPartnerAddCli
                         <MainInput
                             disabled={true}
                             value={
-                                leadData.find(lead => lead._id === opportunity.leadId)?.designation || ''
+                                opportunity.leadId
+                                    ? leadData.find(lead => lead._id === opportunity.leadId)?.designation || ''
+                                    : ''
                             }
                             label={"Designation"}
                             placeholder={"Please Select Designation"}
-                        />
+                        /> */}
                         {/* <MainSelect
                             disabled={loading}
                             value={designations?.find(row => row?.name == opportunity?.designation)}

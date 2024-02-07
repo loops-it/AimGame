@@ -36,6 +36,22 @@ export default function CreateUpdateModal({ show, onClose, data, industryTypes, 
     // create client
     async function onCreate() {
         try {
+            // if (!client.name || !client.address || !client.email || !client.industryTypeId || !client.workspaceId ) {
+            //     window.alert('Please fill in all required fields.');
+            //     return;
+            // }
+            const missingFields = [];
+
+            if (!client.name) missingFields.push('Name');
+            if (!client.address) missingFields.push('Address');
+            if (!client.email) missingFields.push('Email');
+            if (!client.industryTypeId) missingFields.push('Industry Type');
+            if (!client.workspaceId) missingFields.push('Workspace');
+
+            if (missingFields.length > 0) {
+                window.alert(`Please fill in all required fields: ${missingFields.join(', ')}.`);
+                return;
+            }
             const response = await api.post('/api-v1/clients', client);
 
             if (response.status === 201) {
@@ -54,7 +70,7 @@ export default function CreateUpdateModal({ show, onClose, data, industryTypes, 
 
 
     async function onUpdate() {
-        console.log(client)
+        // console.log(client)
         try {
             const response = await api.put(`/api-v1/clients/${client._id}`, client);
 
