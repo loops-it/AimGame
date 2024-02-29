@@ -20,7 +20,7 @@ export default function Clients({ title }) {
 
 
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 10;
+    const itemsPerPage = 50;
 
 
 
@@ -86,7 +86,7 @@ export default function Clients({ title }) {
 
     //     fetchData();
     // }, []);
-    // console.log("clients : ", clients)
+    
     
     useEffect(() => {
         const fetchData = async () => {
@@ -131,6 +131,7 @@ export default function Clients({ title }) {
             console.error('Error fetching workspaces:', error);
         }
     };
+
     useEffect(() => {
         fetchClients();
         fetchAllWorkspaces();
@@ -150,7 +151,7 @@ export default function Clients({ title }) {
     };
 
 
-
+    console.log("allClients : ", allClients)
     // console.log(clients)
     const paginatedData = allClients.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
@@ -250,6 +251,7 @@ export default function Clients({ title }) {
                                             src={row?.photo}
                                             sx={{ border: "0.5px solid #ABB3BB" }}
                                         />
+                                        {/* <img src={row?.photo} style={{height:"50px", width: "50px", borderRadius: '100%'}}></img> */}
                                     </td>
                                     <td className="py-5 px-6" >{formattedDate}</td>
                                     <td className="py-5 px-6" >{row?.name}</td>

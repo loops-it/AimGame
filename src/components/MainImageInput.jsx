@@ -1,3 +1,7 @@
+/* eslint-disable react/jsx-key */
+/* eslint-disable no-unused-vars */
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable react/prop-types */
 import { Avatar } from '@mui/material';
 import React, { useCallback, useEffect, useState } from 'react'
 import { useDropzone } from 'react-dropzone'
@@ -10,7 +14,7 @@ export default function MainImageInput({ type, onChange, value }) {
     const onDrop = useCallback(async acceptedFiles => {
         setImage(acceptedFiles[0])
         onChange(acceptedFiles[0])
-    }, [])
+    }, [onChange])
 
     useEffect(() => {
         setImage(value)
@@ -57,7 +61,7 @@ export default function MainImageInput({ type, onChange, value }) {
         return (
             <div className='flex flex-col gap-5 text-xs '>
                 <div className='flex flex-col justify-center items-center gap-4 text-sm text-[#5A618159] bg-[#F8F8F8] h-[18rem]' {...getRootProps()}>
-                    <input {...getInputProps()} />
+                    <input {...getInputProps()}  />
                     <DocumentIcon className={'w-16 h-16 '} />
                     <div>No Attachments</div>
                 </div>
@@ -72,7 +76,7 @@ export default function MainImageInput({ type, onChange, value }) {
         return (
             <div className='flex flex-col gap-5 text-xs'>
                 <div className='flex gap-4 items-center text-sm text-app-blue' {...getRootProps()}>
-                    <input {...getInputProps()} />
+                    <input {...getInputProps()} type="file" />
                     <div>Profile Picture</div>
                     <Avatar
                         src={image && typeof image == "object" ? URL.createObjectURL(image) : image}
@@ -101,7 +105,7 @@ export default function MainImageInput({ type, onChange, value }) {
             {
                 isDragActive ?
                     <p>Drop the files here ...</p> :
-                    <p>Drag 'n' drop some files here, or click to select files</p>
+                    <p>Drag &apos;n&apos; drop some files here, or click to select files</p>
             }
         </div>
     )
