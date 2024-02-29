@@ -34,12 +34,14 @@ export default function CreateUpdateModal({ show, onClose, data, industryTypes, 
 
 
     // create client
+
+    // if (!client.name || !client.address || !client.email || !client.industryTypeId || !client.workspaceId ) {
+    //     window.alert('Please fill in all required fields.');
+    //     return;
+    // }
     async function onCreate() {
+        console.log(client)
         try {
-            // if (!client.name || !client.address || !client.email || !client.industryTypeId || !client.workspaceId ) {
-            //     window.alert('Please fill in all required fields.');
-            //     return;
-            // }
             const missingFields = [];
 
             if (!client.name) missingFields.push('Name');
@@ -52,7 +54,28 @@ export default function CreateUpdateModal({ show, onClose, data, industryTypes, 
                 window.alert(`Please fill in all required fields: ${missingFields.join(', ')}.`);
                 return;
             }
-            const response = await api.post('/api-v1/clients', client);
+
+            const formData = new FormData();
+            formData.append('name', client.name);
+            formData.append('address', client.address);
+            formData.append('email', client.email);
+            formData.append('phone', client.phone);
+            formData.append('refNo', client.refNo);
+            formData.append('industryTypeId', client.industryTypeId);
+            formData.append('workspaceId', client.workspaceId);
+            // formData.append('photo', client.photo);
+
+            if (client.photo) {
+                formData.append('photo', client.photo);
+                console.log("client.photo : ", client.photo)
+            }
+            // if (typeof client.photo !== 'undefined' && client.photo !== null && client.photo !== 'undefined') {
+            //     formData.append('photo', client.photo);
+            //     console.log("client.photo : ", client.photo)
+            // }
+
+            const headers = { 'Content-Type': 'multipart/form-data' };
+            const response = await api.post('/api-v1/clients', formData, {headers} );
 
             if (response.status === 201) {
                 console.log('Client created successfully');
@@ -70,7 +93,7 @@ export default function CreateUpdateModal({ show, onClose, data, industryTypes, 
 
 
     async function onUpdate() {
-        // console.log(client)
+        console.log(client)
         try {
             const response = await api.put(`/api-v1/clients/${client._id}`, client);
 
@@ -114,7 +137,7 @@ export default function CreateUpdateModal({ show, onClose, data, industryTypes, 
                     <div className='flex justify-center items-center mt-5' >
                         <MainImageInput
                             type="client"
-                            onChange={file => setClient({ ...client, photo: file.path })}
+                            onChange={file => setClient({ ...client, photo: file })}
                             value={client?.photo}
                         />
                     </div>
