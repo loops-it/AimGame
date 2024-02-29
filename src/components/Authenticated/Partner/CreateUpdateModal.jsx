@@ -16,7 +16,7 @@ const rates = [
 
 const initialState = {}
 
-export default function CreateUpdateModal({ show, onClose, data, worspaces, allworkspaces }) {
+export default function CreateUpdateModal({ show, onClose, data, workspaces, allworkspaces }) {
     const [partner, setPartner] = useState(initialState)
     const [loading, setLoading] = useState(false)
 // console.log(worspaces);
@@ -98,15 +98,16 @@ export default function CreateUpdateModal({ show, onClose, data, worspaces, allw
                     />
                     <MainSelect
                             disabled={loading}
-                            value={allworkspaces?.find(row => row?.name === partner?.workspaceId)}
+                            value={workspaces?.find(row => row?.name === partner?.workspaceId)}
                             onChange={value => setPartner({
                                 ...partner,
                                 workspaceId: value?._id || ''
                             })}
                             label={"Workspaces"}
                             placeholder={"Please Select workspaces"}
-                            options={allworkspaces ?? []}
+                            options={workspaces ?? []}
                         />
+                        
                     <MainSelect
                         disabled={loading}
                         value={rates?.find(row => row?.name == partner?.rate)}

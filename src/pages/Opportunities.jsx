@@ -44,7 +44,9 @@ export default function Opportunities({ title }) {
 
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 10;
-
+    const updateTempData = (data) => {
+        setTempData(data);
+      };
 
     useEffect(() => {
         setTimeout(() => {
@@ -403,6 +405,7 @@ export default function Opportunities({ title }) {
                 list={tempData}
                 show={showSearch}
                 onClose={() => setShowSearch(false)}
+                updateTempData={updateTempData}
             />
 
             <RoleMappingModal

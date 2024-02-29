@@ -4,22 +4,25 @@ import { XCircleIcon } from '@heroicons/react/24/outline'
 // import MainInput from '../../MainInput'
 import api from '../../../services/api'
 
-export default function SearchModal({ show, onClose, list }) {
+export default function SearchModal({ show, onClose, list, updateTempData }) {
 
     const [searchValue, setSearchValue] = useState([]);
-
+    const [searchResults, setSearchResults] = useState([]);
     // search
     const fetchSearchResults = async () => {
         if (searchValue.trim() !== '') {
-            try {
-                const response = await api.get(`/api-v1/opportunities/${searchValue}`);
-                const data = response.data.data;
-                console.log('Search results:', data);
-            } catch (error) {
-                console.error('Error fetching data by id:', error);
-            }
+          try {
+            const response = await api.get(`/api-v1/opportunities/search/${searchValue}`);
+            const data = response.data.data;
+            setSearchResults(data);
+            // Update the parent component's state with search results
+            updateTempData(data);
+          } catch (error) {
+            console.error('Error fetching search results:', error);
+          }
         }
-    };
+      };
+      
     return (
         <Transition
             show={show}
@@ -44,7 +47,7 @@ export default function SearchModal({ show, onClose, list }) {
                 <div className='flex flex-row p-3 align-middle justify-center'>
                 <input
                         type="search"
-                        placeholder='Search'
+                        placeholder='Search by ID'
                         className={`w-full border border-app-gray h-[50px] px-4 rounded-lg text-sm lg:text-base`}
                         onChange={(e) => setSearchValue(e.target.value)}
                     />
