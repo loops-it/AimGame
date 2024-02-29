@@ -5,6 +5,7 @@ import MainInput from '../components/MainInput';
 import MainPasswordInput from '../components/MainPasswordInput';
 import Link from '../components/Link';
 import { useNavigate } from 'react-router-dom';
+import api from '../services/api'
 
 export default function Login({ title }) {
     document.title = title;
@@ -15,13 +16,35 @@ export default function Login({ title }) {
     const handleFormSubmit = async (e) => {
         e.preventDefault();
 
+            // const email = e.target.email.value;
+            // const password = e.target.password.value;
+        
+            // console.log(JSON.stringify({ email, password }));
+            // const response = await api.post('/api-v1/auth/login', {
+            //     email,
+            //     password
+            // });
+            //  console.log(response);
+            // if (response.data.code == 200) {
+            //     // console.log(response.data);
+            //     console.log('Login successful');
+            //     const data = response.data;
+            //     localStorage.setItem('accessToken', data.token);
+            //     localStorage.setItem('userID', data.userID);
+            //     localStorage.setItem('userRole', data.userRole);
+            //     navigateTo('/dashboard');
+            // } else {
+            //     console.log(response.data);
+            // }
+ 
+        
         try {
             const email = e.target.email.value;
             const password = e.target.password.value;
 
             console.log(JSON.stringify({ email, password }));
 
-            const response = await fetch('http://13.126.15.131:4065/api-v1/auth/login', {
+            const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_BASE_URL}/api-v1/auth/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -36,6 +59,7 @@ export default function Login({ title }) {
                 const data = await response.json();
                 localStorage.setItem('accessToken', data.token);
                 localStorage.setItem('userID', data.userID);
+                localStorage.setItem('userRole', data.userRole);
                 navigateTo('/dashboard');
             }
         } catch (error) {
