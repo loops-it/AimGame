@@ -278,11 +278,11 @@ export default function Opportunities({ title }) {
                             <th scope="col" className="py-5 px-6 border-b">
                                 Probability
                             </th>
-                            <th scope="col" className="py-5 px-6 border-b">
+                            {/* <th scope="col" className="py-5 px-6 border-b">
                                 Funnel Status
-                            </th>
+                            </th> */}
                             <th scope="col" className="py-5 px-6 border-b">
-                                Status
+                            Funnel Status
                             </th>
                             <th scope="col" className="py-5 px-6 border-b">
                                 Team
@@ -330,8 +330,8 @@ export default function Opportunities({ title }) {
                                     </td>
                                     <td className="py-5 px-6" >{row?.name}</td>
                                     <td className="py-5 px-6" >{row?.funnelStatusId ? row.funnelStatusId.stage : "-"}</td>
-                                    <td className="py-5 px-6" >{row?.funnelStatusId ? row.funnelStatusId.level : "-"}</td>
-                                    <td className="py-5 px-6" >{row?.funnelStatusId ? row.funnelStatusId.status : "-"}</td>
+                                    <td className="py-5 px-6" >{row?.funnelStatusId ? row.funnelStatusId.level : "-"}%</td>
+                                    {/* <td className="py-5 px-6" >{row?.funnelStatusId ? row.funnelStatusId.status : "-"}</td> */}
                                     <td className="py-5 px-6" >
                                         <Chip
                                             sx={{ borderColor: getStatusColor(row?.funnelStatusId ? row.funnelStatusId.status : "-"), color: getStatusColor(row?.status), fontWeight: "700", textTransform: "uppercase" }}

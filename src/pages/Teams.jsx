@@ -7,7 +7,7 @@ import Divider from '@mui/material/Divider';
 import Avatar from '@mui/material/Avatar';
 import CreateUpdateModal from '../components/Authenticated/Team/CreateUpdateModal'
 import api from '../services/api'
-
+import SearchModal from '../components/Authenticated/Team/SearchModal';
 
 
 export default function Teams({ title }) {
@@ -15,10 +15,15 @@ export default function Teams({ title }) {
 
     const [loading, setLoading] = useState(false)
     const [show, setShow] = useState(false)
+    const [showSearch, setShowSearch] = useState(false)
     const [selectedData, setSelectedData] = useState(null)
     const [tempData, setTempData] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 10;
+    const updateTempData = (data) => {
+        setTempData(data);
+      };
+
     useEffect(() => {
         const fetchOpportunities = async () => {
             try {
@@ -44,12 +49,13 @@ export default function Teams({ title }) {
         <AuthenticatedLayout>
             <div className='flex justify-between gap-5 items-center' >
                 <div className='w-[30%] relative flex items-center' >
-                    <MainInput
+                    {/* <MainInput
                         placeholder={"Search Email"}
                     />
-                    <MagnifyingGlassIcon className='text-[#A6A9B9] w-5 h-5 absolute right-5' />
+                    <MagnifyingGlassIcon className='text-[#A6A9B9] w-5 h-5 absolute right-5' /> */}
+                     <button onClick={() => setShowSearch(true)} className='flex justify-center items-center text-white bg-app-gray-5 px-5 py-2 w-full lg:w-fit rounded-lg' >Search</button>
                 </div>
-
+ 
                 <button onClick={() => {
                     setShow(true)
                     setSelectedData(null)
@@ -147,6 +153,14 @@ export default function Teams({ title }) {
                 show={show}
                 onClose={() => setShow(false)}
             />
+
+            <SearchModal
+                list={tempData}
+                show={showSearch}
+                onClose={() => setShowSearch(false)}
+                updateTempData={updateTempData}
+            />
+
         </AuthenticatedLayout>
     )
 }

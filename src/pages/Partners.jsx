@@ -20,12 +20,27 @@ export default function Partners({ title }) {
     const itemsPerPage = 10;
     const [workspaces, setWorkspaces] = useState([]);
     const [clients, setClients] = useState([]);
+    const [selectedWorkspace, setSelectedWorkspace] = useState(null);
 
-
+    const handleWorkspaceChange = async (workspaceId) => {
+        try {
+            setLoading(true);
+            console.log("selectedWorkspaceId :" , workspaceId);
+            // Fetch filtered data based on selected workspace
+            const response = await api.get(`/api-v1/partners/filterbyworkspace/${workspaceId}`);
+            setTempData(response.data.data);
+            
+            setLoading(false);
+        } catch (error) {
+            console.error('Error fetching filtered data:', error);
+            setLoading(false);
+        }
+    };
     useEffect(() => {
         const fetchWorkspaces = async () => {
             try {
                 const response = await api.get('/api-v1/workspaces');
+                // console.log("WORKSPACES :" , response.data.data);
                 setWorkspaces(response.data.data);
             } catch (error) {
                 console.error('Error fetching workspaces:', error);
@@ -89,6 +104,10 @@ export default function Partners({ title }) {
                         variant="small"
                         placeholder={"Select Workspace"}
                         options={workspaces}
+                        onChange={(selectedOption) => {
+                            setSelectedWorkspace(selectedOption._id);
+                            handleWorkspaceChange(selectedOption._id);
+                        }}
                     />
                 </div>
                 <div className='flex flex-col lg:flex-row gap-3 lg:gap-5' >

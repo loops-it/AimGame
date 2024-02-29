@@ -8,7 +8,7 @@ import Divider from '@mui/material/Divider';
 import Avatar from '@mui/material/Avatar';
 import CreateUpdateModal from '../components/Authenticated/Client/CreateUpdateModal';
 import api from '../services/api'
-
+import SearchModal from '../components/Authenticated/Client/SearchModal';
 
 export default function Clients({ title }) {
     document.title = title
@@ -17,10 +17,13 @@ export default function Clients({ title }) {
     const [show, setShow] = useState(false)
     const [selectedData, setSelectedData] = useState(null)
     const [showSearch, setShowSearch] = useState(false)
+    const [allClients, setAllClients] = useState([]);
 
-
+    const updateAllClients = (data) => {
+        setAllClients(data);
+      };
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 50;
+    const itemsPerPage = 10;
 
 
 
@@ -113,7 +116,7 @@ export default function Clients({ title }) {
         fetchData();
     }, []);
 
-    const [allClients, setAllClients] = useState([]);
+
     const fetchAllWorkspaces = async () => {
         try {
             const response = await api.get('/api-v1/workspaces');
@@ -127,6 +130,7 @@ export default function Clients({ title }) {
         try {
             const response = await api.get('/api-v1/clients');
             setAllClients(response.data.data);
+            console.log("allClients2 : ", response.data.data)
         } catch (error) {
             console.error('Error fetching workspaces:', error);
         }
@@ -151,15 +155,14 @@ export default function Clients({ title }) {
     };
 
 
-    console.log("allClients : ", allClients)
+   
     // console.log(clients)
     const paginatedData = allClients.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
-
     return (
         <AuthenticatedLayout>
             <div className='flex flex-col-reverse lg:flex-row  lg:items-center justify-between gap-3'  >
                 <div className='flex lg:items-center gap-3' >
-                    <input
+                    {/* <input
                         type="search"
                         placeholder='Search'
                         onChange={(e) => setSearchValue(e.target.value)}
@@ -170,7 +173,8 @@ export default function Clients({ title }) {
                         className='flex justify-center items-center text-white bg-app-gray-5 px-5 py-2 w-full lg:w-fit rounded-lg'
                     >
                         Search
-                    </button>
+                    </button> */}
+                     <button onClick={() => setShowSearch(true)} className='flex justify-center items-center text-white bg-app-gray-5 px-5 py-2 w-full lg:w-fit rounded-lg' >Search</button>
                 </div>
                 <button onClick={() => {
                     setShow(true)
@@ -196,13 +200,13 @@ export default function Clients({ title }) {
                 </div>
                 <Divider />
                 <TableProvider
-                    currentPage={currentPage}
-                    setCurrentPage={page => setCurrentPage(page)}
-                    itemsPerPage={itemsPerPage}
-                    pagination={true}
-                    data={clients}
-                    loading={loading}
-                    emptyMessage="No Clients Found"
+                     currentPage={currentPage}
+                     setCurrentPage={page => setCurrentPage(page)}
+                     itemsPerPage={itemsPerPage}
+                     pagination={true}
+                     data={allClients}
+                     loading={loading}
+                     emptyMessage="No Opportunity Found"
                 >
                     <thead className="text-xs text-app-blue uppercase bg-white">
                         <tr>
@@ -243,7 +247,7 @@ export default function Clients({ title }) {
                             const formattedDate = new Date(row?.createdAt).toLocaleDateString();
                             return (
                                 <tr key={index} className="bg-white border-b text-gray-900 ">
-                                    <td className="py-5 px-6" >{row?.id}</td>
+                                    <td className="py-5 px-6" >{row?._id}</td>
                                     <td className="py-5 px-6" >{row?.refNo}</td>
                                     <td className="py-5 px-6" >
                                         <Avatar
@@ -282,6 +286,12 @@ export default function Clients({ title }) {
                 allworkspaces={allworkspaces}
                 show={show}
                 onClose={() => setShow(false)}
+            />
+            <SearchModal
+                list={allClients}
+                show={showSearch}
+                onClose={() => setShowSearch(false)}
+                updateAllClients={updateAllClients}
             />
         </AuthenticatedLayout>
     )

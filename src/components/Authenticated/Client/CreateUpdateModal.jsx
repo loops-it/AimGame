@@ -76,14 +76,14 @@ export default function CreateUpdateModal({ show, onClose, data, industryTypes, 
 
             const headers = { 'Content-Type': 'multipart/form-data' };
             const response = await api.post('/api-v1/clients', formData, {headers} );
-
+            console.log(response);
             if (response.status === 201) {
                 console.log('Client created successfully');
                 window.alert('Client created successfully');
                 onClose();
             } else {
                 console.error('Failed to create client:', response.statusText);
-                window.alert('Failed to create client');
+                window.alert(response.statusText);
             }
         } catch (error) {
             console.error('Error creating client:', error);
