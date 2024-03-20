@@ -216,12 +216,12 @@ export default function Opportunities({ title }) {
         <AuthenticatedLayout>
             <div className='flex flex-col-reverse lg:flex-row  lg:items-center justify-between gap-3' >
                 <div className='flex lg:items-center gap-3' >
-                    <button className='flex items-center justify-between gap-3 bg-app-blue-2 rounded-lg w-full lg:w-fit px-6 py-2 text-white' >
+                    {/* <button className='flex items-center justify-between gap-3 bg-app-blue-2 rounded-lg w-full lg:w-fit px-6 py-2 text-white' >
                         <div>Period</div>
                         <ChevronUpDownIcon
                             className="h-5 w-5"
                         />
-                    </button>
+                    </button> */}
                     <button onClick={() => setShowSearch(true)} className='flex justify-center items-center text-white bg-app-gray-5 px-5 py-2 w-full lg:w-fit rounded-lg' >Search</button>
                 </div>
                 <button onClick={() => {
@@ -244,9 +244,9 @@ export default function Opportunities({ title }) {
                             <ArrowPathIcon className={`${loading ? "animate-spin" : ""} w-6 h-6`} />
                         </button>
                     </div>
-                    <button>
+                    {/* <button>
                         <EllipsisVerticalIcon className='w-8 h-8' />
-                    </button>
+                    </button> */}
                 </div>
                 <Divider />
                 <TableProvider

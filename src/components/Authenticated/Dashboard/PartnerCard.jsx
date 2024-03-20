@@ -52,9 +52,9 @@ export default function PartnerCard() {
                         <ArrowPathIcon className={`${loading ? "animate-spin" : ""} w-6 h-6`} />
                     </button>
                 </div>
-                <button>
+                {/* <button>
                     <EllipsisVerticalIcon className='w-8 h-8' />
-                </button>
+                </button> */}
             </div>
             <Divider />
             <TableProvider data={tempData} loading={loading} emptyMessage="No Partners Found" >

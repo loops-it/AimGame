@@ -54,7 +54,7 @@ export default function SearchModal({ show, onClose, list, updateAllClients }) {
 
                     <button
                         onClick={fetchSearchResults}
-                        className='flex justify-center items-center text-white bg-app-gray-5 px-5 py-2 w-full lg:w-fit rounded-lg'
+                        className='flex justify-center items-center text-white bg-app-gray-5 px-5 py-2 w-full lg:w-fit rounded-lg custom-margin-left'
                     >
                         Search
                     </button>

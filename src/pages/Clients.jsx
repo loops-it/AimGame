@@ -194,9 +194,9 @@ export default function Clients({ title }) {
                             <ArrowPathIcon className={`${loading ? "animate-spin" : ""} w-6 h-6`} />
                         </button>
                     </div>
-                    <button>
+                    {/* <button>
                         <EllipsisVerticalIcon className='w-8 h-8' />
-                    </button>
+                    </button> */}
                 </div>
                 <Divider />
                 <TableProvider
