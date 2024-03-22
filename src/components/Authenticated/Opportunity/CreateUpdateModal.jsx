@@ -133,6 +133,12 @@ export default function CreateUpdateModal({ show, onClose, data, onPartnerAddCli
             if (!opportunity.clientId) missingFields.push('Client');
             if (!opportunity.leadId) missingFields.push('Lead');
 
+            if (!opportunity.funnelStatusId) missingFields.push('Funnel Status');
+            if (!opportunity.completionDate) missingFields.push('Completion Date');
+            if (!opportunity.partners) missingFields.push('Partners');
+            if (!opportunity.team) missingFields.push('Team Members');
+
+
             if (missingFields.length > 0) {
                 window.alert(`Please fill in all required fields: ${missingFields.join(', ')}.`);
                 return;

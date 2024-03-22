@@ -49,6 +49,7 @@ export default function CreateUpdateModal({ show, onClose, data, industryTypes, 
             if (!client.email) missingFields.push('Email');
             if (!client.industryTypeId) missingFields.push('Industry Type');
             if (!client.workspaceId) missingFields.push('Workspace');
+            if (!client.refNo) missingFields.push('Reference No');
 
             if (missingFields.length > 0) {
                 window.alert(`Please fill in all required fields: ${missingFields.join(', ')}.`);
